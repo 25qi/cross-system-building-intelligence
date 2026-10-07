@@ -83,7 +83,7 @@ python3 -m http.server 4178
 
 ```
 Incident Processing
-[1 Telemetry › 2 Observation › 3 Event › 4 Incident]
+[1 Telemetry › 2 Normalize › 3 Event › 4 Incident]
 [5 AI tools/query › 6 Analysis › 7 Human Review › 8 Action › 9 New Observation]
 未建立 Incident 時的原因（已建立時這一塊不顯示）
 AI 分析摘要 → 可執行依據 → 拒絕／核准操作 → 執行結果 → 回饋 Observation
@@ -209,7 +209,7 @@ AI 分析摘要 → 可執行依據 → 拒絕／核准操作 → 執行結果 �
 9 階段 pipeline，對應畫面下方流程列與 `flowSteps` 陣列：
 
 ```
-Telemetry → Observation → Event → Incident → AI tools/query
+Telemetry → Normalize → Event → Incident → AI tools/query
           → Analysis → Human Review → Action → New Observation
 ```
 
@@ -303,3 +303,9 @@ localStorage key：`csbi-demo-v21`。所有讀寫都經過 `storage` 抽象層
 - 情境選擇是 `<select id="scenarioSelect">`，用 `<optgroup>` 分成「應建立 Incident」
   與「反例 · 應保持安靜」兩組。分組不只是排版：它讓「這個 demo 也驗證何時該保持安靜」
   這個重點在收合成下拉後仍然看得見，新增情境時請歸入正確分組。
+
+## 流程節點的命名
+
+節點顯示文字與內部 key 是分開的：步驟 2 顯示 `Normalize`（動作），
+但 `data-step` / `data-stage` 仍是 `observation`。改顯示文字時不要連帶改 key —
+`reviewStages`、`#overview [data-stage]` 與 `setStep()` 都靠它對應。
