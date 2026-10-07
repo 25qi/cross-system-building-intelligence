@@ -104,7 +104,12 @@ AI 建議與人工審核    [5 AI tools/query › 6 Analysis › 7 Human Review 
 - `#actionBox` 在 `PROPOSED` 期間透過 `.decision-panel.awaiting-review` 變成
   `position: sticky`，確保核准／拒絕永遠在可視範圍內。核准後 class 移除，
   才不會蓋住 `#executionBox` 與 `#feedbackBox`。
-- `.incident-context` 設 `max-height: 40%`；流程列佔掉約 30px，其餘給證據清單捲動。
+- `.incident-context` 設 `max-height: 34%`；內含流程列與 Incident 判定結果。
+- **左欄兩塊共用高度，不可讓其中一塊用 `flex: 1`。** `flex: 1` 等同
+  `flex-basis: 0`，那一塊只能拿「剩下的」空間；另一塊用自然高度就會把它擠到看不見
+  （短視窗時設備脈絡曾被壓到只剩 190px，近期事實與 Relationships 全被切掉）。
+  現為 `.inspector-panel { flex: 1 1 auto; min-height: 90px }` 搭配
+  `.observation-list { flex: 0 1 auto; max-height: 45% }`，兩塊各自捲動。
 
 ### 呼吸燈
 

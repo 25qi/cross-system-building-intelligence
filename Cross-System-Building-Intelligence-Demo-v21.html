@@ -129,7 +129,9 @@ h3 {
 /* 觀測事實是「哪個設備量到什麼」，與左欄的設備脈絡同屬設備視角，
    因此放在左欄底部；右欄留給規則判定與關聯結果。 */
 .observation-list {
+  /* 上限避免觀測清單把設備脈絡擠掉；超過就自行捲動 */
   flex: 0 1 auto;
+  max-height: 45%;
   min-height: 0;
   overflow: auto;
   overscroll-behavior: contain;
@@ -709,8 +711,11 @@ body {
   width: var(--right);
 }
 .inspector-panel {
-  flex: 1;
-  min-height: 0;
+  /* flex:1 等同 flex-basis:0，這一欄只能拿「剩下的」空間；
+     下方觀測清單用自然高度把空間吃光時，設備脈絡會被壓到看不見。
+     改為 basis auto，兩塊依內容公平分配。 */
+  flex: 1 1 auto;
+  min-height: 90px;
   overflow: auto;
   overscroll-behavior: contain;
   padding: 12px 14px;
