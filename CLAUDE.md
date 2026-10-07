@@ -68,7 +68,7 @@ python3 -m http.server 4178
 | 欄位 | 內容 | 角色 |
 |---|---|---|
 | 上方 HUD `.world-readings` | 三個觀測讀數 + 情境選擇 | 四格同一列；讀數是輸入值故壓小，情境選擇是操作點 |
-| 左 `.context-left` | 設備脈絡 Context Inspector | AI 查詢快照 vs 目前狀態 |
+| 左 `.context-left` | 設備脈絡 Context Inspector ＋ 底部 Incident 區塊 | 選取設備的狀態／能力／關係；底部顯示關聯判定結果，未建立時說明原因 |
 | 中 `.twin-scene` | 2.5D 場景 | Building Context 的空間呈現 |
 | 右 `.context-right` | 事件證據 + AI 建議與人工審核 | 流程與結果一體 |
 
@@ -102,9 +102,27 @@ AI 建議與人工審核    [5 AI tools/query › 6 Analysis › 7 Human Review 
 
 ### 呼吸燈
 
-`pulseNodes()` 全域只維持一組。開新的一組會先 `stopPulse()` 停掉前一組，
-避免同時有多處在閃、看不出哪一個才是剛變動的。移除 class 後需強制一次 reflow
-動畫才會重播。
+**只在「核准並實際執行操作後」出現一次**，標示真正改變的設備與新增的紀錄。
+執行情境、點選場景設備、點選流程步驟都不觸發 — 動畫是用來指出狀態改變，
+不是用來回應每一次點擊。
+
+`pulseNodes()` 全域只維持一組，開新的一組會先 `stopPulse()` 停掉前一組。
+`deviceNodes()` 只回傳節點清單而不自己點亮，因為呼叫端通常要再加上其他節點
+組成同一組；若它自己呼叫 `pulseNodes()`，後續那次會把前一組取消掉。
+移除 class 後需強制一次 reflow 動畫才會重播。
+
+### 已移除的區塊（勿重新加回）
+
+這些都曾存在，因為資訊重複而刻意移除：
+
+- `AI 本次查詢快照`：State／Zone／Capabilities／近期紀錄在下方設備脈絡都有，
+  而「查詢時 vs 目前」的對照右欄「可執行依據」已經在做。
+- `#twinUsageBadge`：與場景上的 `#contextLiveBanner` 是同一個數字。
+- `.review-label`「Human Review → Action → New Observation」：就是流程步驟 7–9。
+- 九個 `.flow-description`：全部 `display:none` 的死 UI。
+- `.decision-inputs`、`#decisionContext` 收合清單、`.scene-bottom` 圖例。
+- `#flowStatus` 仍存在但以 sr-only 隱藏 — 它是這個流程唯一的 `aria-live` 區域，
+  刪掉會讓螢幕閱讀器收不到任何進度通知。
 
 ## 核心架構
 
