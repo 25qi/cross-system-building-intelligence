@@ -42,9 +42,13 @@ MVP Success Criteria、Risks & Assumptions、Closing Note。
 
 ## 執行方式
 
-**必須透過 http:// 開啟，不可用 `file://` 或 data: URL。**
-程式使用 `localStorage` 保存狀態；在 `data:` URL 下會丟 `SecurityError`，
-流程會卡在 Step 1 並顯示「處理未完成，請再執行情境」。
+**直接雙擊開啟（`file://`）即可，這是寄給面試官的主要使用方式。**
+
+瀏覽器在 `file://` 與 `data:` URL 下會停用 `localStorage`。程式啟動時會探測可用性，
+偵測不到就降級為記憶體保存：四個情境與完整流程照常執行，只是重新整理後不保留先前紀錄，
+並在右上角顯示「記憶體模式 · 關閉頁面後不保留紀錄」提示。
+
+若要測試完整的 localStorage 持久化行為，需透過 http:// 提供服務：
 
 ```bash
 python3 -m http.server 4178
@@ -53,8 +57,9 @@ python3 -m http.server 4178
 然後開啟 `http://localhost:4178/Cross-System-Building-Intelligence-Demo-v21.html`。
 （`.claude/launch.json` 已設定好同一組指令，可用 preview_start 的 `demo` 設定啟動。）
 
-版面為桌面寬版設計（`.wrap` max-width 1760px），窄視窗下 2.5D 場景的設備標籤會重疊，
-驗證畫面時請用 ≥1400px 寬度。
+版面是 `height:100dvh; overflow:hidden` 的固定視窗儀表板，為桌面寬版設計。
+≤1000px 時 2.5D 場景的設備標籤會自動收合為只顯示設備代碼（數值改由上方 HUD 與
+左側設備脈絡面板呈現），避免標籤互相重疊。驗證完整版面請用 ≥1400px 寬度。
 
 ## 核心架構
 
@@ -82,7 +87,8 @@ Telemetry → Observation → Event → Incident → AI tools/query
 | `state` | 持久化狀態：`observations` / `events` / `incidents` / `analyses` / `actions` / `deviceStates`，存於 localStorage |
 | `currentRun` | 本次執行的暫態：`raw` / `obs` / `events` / `incident` / `tools` / `analysis` / `action` / `scenario` |
 
-localStorage key：`csbi-demo-v12`（**注意：key 仍停留在 v12，與檔名 v21 不一致**）。
+localStorage key：`csbi-demo-v21`。所有讀寫都經過 `storage` 抽象層
+（`storage.persistent` / `read` / `write`），在儲存不可用時自動退回記憶體模式。
 
 ### 核心函式
 
@@ -96,6 +102,8 @@ localStorage key：`csbi-demo-v12`（**注意：key 仍停留在 v12，與檔名
 | `approveAction()` / `rejectAction()` | human review 分支 |
 | `executeApprovedAction()` | 執行控制並回寫新 Observation |
 | `querySnapshot()` | 取出「AI 當時查詢到的狀態」，與目前狀態分開呈現 |
+| `resetScenarioState()` | 每次執行前把設備狀態還原為 buildingModel 初始值，並撤掉上一輪 Action Service 寫回的 Observation |
+| `storage` | localStorage 可用性探測與記憶體 fallback |
 
 ### Event rules
 
@@ -133,10 +141,12 @@ localStorage key：`csbi-demo-v12`（**注意：key 仍停留在 v12，與檔名
 - 無測試框架。驗證方式為手動跑完四個情境（含核准與拒絕兩條分支）。
 - 修改後請同步確認內嵌 PRD（`prdPageHtml`）敘述是否仍一致，兩者會互相對照。
 
-## 已知問題
+## 注意事項
 
-- localStorage key `csbi-demo-v12` 與檔名版本 v21 不同步。
-- `runScenario()` 每次執行會強制重設 `state.deviceStates.IRR01='RUNNING'`，
-  但先前產生的 `OBS-036`（STOPPED）仍留在 observation store，
-  造成「目前狀態 RUNNING / 近期事實 STOPPED」的顯示落差。
-- 窄視窗（< ~1000px）下 2.5D 場景的設備標籤會重疊。
+- **場景互動有兩個入口**：浮動的設備標籤按鈕（`.scene-device`）與 SVG 上的圖釘
+  （`.scene-marker`）。SVG 整體是 `pointer-events:none`，圖釘靠 `.scene-marker`
+  單獨開啟，兩者都在 `renderContext()` 綁定點擊。新增設備時兩邊都要接。
+- **`OBS-036` 是寫死的 ID**，對應 PRD 文件中的範例編號，因此同時只會存在一筆回饋
+  Observation。清除判定靠 `raw_payload.source === 'action_service'`，不是靠 ID。
+- `.scene-device` 的寬度在 `max-height: 650px` 斷點仍為固定值（短視窗但寬螢幕時
+  標籤不需收合），修改 RWD 時注意不要和 ≤1000px 的收合規則互相覆寫。
