@@ -850,7 +850,8 @@ body {
 .world-scenario {
   pointer-events: auto;
   position: relative;
-  padding: 5px 9px;
+  z-index: 4;
+  padding: 5px 9px 7px;
   background: #fffffff5;
   border: 1px solid #d3deeb;
   border-radius: 8px;
@@ -892,18 +893,21 @@ body {
   line-height: 1.4;
 }
 /* 說明以浮層展開，避免把 HUD 撐高而壓縮下方場景。 */
+/* 說明不再是浮在格子外的下拉浮層，而是接在選單下方、共用同一個方框，
+   讓「選情境 → 讀說明 → 執行」讀起來是同一塊而不是兩塊。 */
 .world-scenario .scenario-brief {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 60;
-  margin-top: 6px;
-  max-height: 58vh;
+  position: static;
+  margin: 6px 0 0;
+  padding: 7px 0 0;
+  border: 0;
+  border-top: 1px solid #e3eaf3;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  max-height: 46vh;
   overflow: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  box-shadow: 0 10px 26px #3f5b8c2e;
 }
 .world-reading {
   padding: 3px 8px;
