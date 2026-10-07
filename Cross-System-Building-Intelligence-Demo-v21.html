@@ -2735,17 +2735,16 @@ body {
   function renderDecision() {
     const obs = currentRun.obs.filter((o) => o.id !== 'OBS-036');
     const incident = currentRun.incident;
-    const incidentBody = !obs.length
-      ? '<div class="small">執行情境後顯示關聯判定結果。</div>'
-      : incident
-        ? `<div class="evidence"><b>${esc(incident.title)}</b><div class="small">${esc(incident.id)}<br>${esc(incident.incident_type)} · ${esc(incident.zone_id)}<br>${incident.event_ids.length} 個 Event 已依時間、位置與語意關聯</div></div>`
-        : `<div class="small">${esc(
-            currentRun.scenario === 'rainOnly'
-              ? '只有強降雨；水位 58 cm 未超過 80 cm。不建立 Incident，不啟動 AI。'
-              : '室外 35°C、人流 HIGH，空調高負載可能合理。不建立 Incident，不啟動 AI。',
-          )}</div>`;
+    // 已建立 Incident 時不另外列出判定卡：流程步驟 4 已標示，下方 AI 分析也會描述它。
+    // 只有反例情境需要說明「為什麼不建立」，那是這個 demo 的展示重點。
+    const noIncidentReason =
+      currentRun.scenario === 'rainOnly'
+        ? '只有強降雨；水位 58 cm 未超過 80 cm。不建立 Incident，不啟動 AI。'
+        : '室外 35°C、人流 HIGH，空調高負載可能合理。不建立 Incident，不啟動 AI。';
     $('#incidentSummary').innerHTML =
-      `<h3>Incident <span class="sidebar-title">Correlation</span></h3>` + incidentBody;
+      obs.length && !incident
+        ? `<h3>未建立 Incident <span class="sidebar-title">Correlation</span></h3><div class="small">${esc(noIncidentReason)}</div>`
+        : '';
     $('#decisionEvidence').innerHTML = `${obs
       .map((o) => {
         const event = currentRun.events.find((e) => e.source_observation_id === o.id);

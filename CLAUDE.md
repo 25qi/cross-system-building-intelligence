@@ -85,12 +85,16 @@ python3 -m http.server 4178
 Incident Processing
 [1 Telemetry › 2 Observation › 3 Event › 4 Incident]
 [5 AI tools/query › 6 Analysis › 7 Human Review › 8 Action › 9 New Observation]
-Incident 判定結果（未建立時說明原因）
+未建立 Incident 時的原因（已建立時這一塊不顯示）
 AI 分析摘要 → 可執行依據 → 拒絕／核准操作 → 執行結果 → 回饋 Observation
 ```
 
 步驟 7–9 沒有獨立資料卡，點擊它們不開資料面板，改為標示對應區塊
 （見 `reviewStages`）；步驟 1–6 才開 `#flowDetails`。
+
+`#incidentSummary` **只在未建立 Incident 時才有內容**。已建立時流程步驟 4
+已經標示，下方 AI 分析也會描述它，再列一張判定卡只是重複；反例情境的
+「為什麼不建立」才是這個 demo 要證明的事，所以保留。
 
 原始觀測值在左欄「本次觀測事實」。事實與推論的區分現在是左欄與右欄之分，
 不再靠色條。
