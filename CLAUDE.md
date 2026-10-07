@@ -73,9 +73,9 @@ python3 -m http.server 4178
 | 欄位 | 內容 | 角色 |
 |---|---|---|
 | 上方 HUD `.world-readings` | 三個觀測讀數 + 情境選擇 | 四格同一列；讀數是輸入值故壓小，情境選擇是操作點 |
-| 左 `.context-left` | 設備脈絡 Context Inspector ＋ 底部 Incident 區塊 | 選取設備的狀態／能力／關係；底部顯示關聯判定結果，未建立時說明原因 |
+| 左 `.context-left` | 設備脈絡 Context Inspector ＋ 底部本次觀測事實 | 皆為設備視角：上方是選取設備的狀態／能力／關係，下方是本次各設備量到什麼 |
 | 中 `.twin-scene` | 2.5D 場景 | Building Context 的空間呈現 |
-| 右 `.context-right` | 事件證據 + AI 建議與人工審核 | 流程與結果一體 |
+| 右 `.context-right` | 事件證據（流程 1–4 ＋ Incident 判定）+ AI 建議與人工審核 | 流程與結果一體；判定與推論都在這一欄 |
 
 ### 右欄：流程與結果是同一件事
 
@@ -83,7 +83,8 @@ python3 -m http.server 4178
 
 ```
 事件證據            [1 Telemetry › 2 Observation › 3 Event › 4 Incident]
-                    Incident、Observation、對應的 Event 規則
+                    Incident 判定結果；未建立時於同位置說明原因
+                    （各設備的原始觀測值在左欄「本次觀測事實」）
 AI 建議與人工審核    [5 AI tools/query › 6 Analysis › 7 Human Review › 8 Action › 9 New Observation]
                     分析摘要、可執行依據、核准／拒絕、執行結果、回饋 Observation
 ```
