@@ -34,7 +34,12 @@ Cross-System-Building-Intelligence-Demo-v21.html   # 全部內容（HTML + CSS +
 PRD 不是獨立檔案，而是 line 134 的 `prdPageHtml` 字串。執行時以
 `URL.createObjectURL(new Blob([...]))` 產生 blob URL 掛到右上角「專案 PRD ↗」。
 
-要閱讀／修改 PRD 內容時，請直接處理該字串（可先用 `JSON.parse` 解出再編輯）。
+要閱讀／修改 PRD 內容時，請直接處理該字串（prettier 會把它轉成單引號，
+解析時用 `eval('(' + literal + ')')` 比 `JSON.parse` 穩）。改完務必重新解出渲染確認。
+
+PRD 頁面自己有一套響應式版面：桌面版（無 media query）的
+`.doc-layout` 是 `180px minmax(0,1fr)`，側邊目錄 180px；
+≤800px 與 ≤450px 另有堆疊版本，改寬度時注意不要動錯那一條。
 PRD 共 16 章：Executive Summary、Background & Problem、Product Goal、Target User、
 Product Concept、Core Flow、Building Context、Scenario A、Scenario B、
 Negative Scenarios、AI Role & Guardrails、Persistence & Auditability、MVP Scope、
