@@ -230,6 +230,10 @@ localStorage key：`csbi-demo-v21`。所有讀寫都經過 `storage` 抽象層
 
 ### Event rules
 
+每條規則都帶 `text`（如 `rainfall > 30 mm/h`），會顯示在觀測事實與 Event 卡片上。
+門檻原本只存在於程式碼，畫面只看得到 `RULE-W01` 這個代號，無從判斷為何成立；
+新增或修改規則時 `text` 要一起更新，否則畫面會少掉判定依據。
+
 | Rule | 條件 | Event |
 |---|---|---|
 | RULE-W01 | weather.rainfall > 30 | HEAVY_RAINFALL |

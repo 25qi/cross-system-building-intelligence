@@ -138,6 +138,30 @@ h3 {
 #incidentSummary .evidence {
   margin: 6px 0 0;
 }
+/* 觀測事實與 Event 都用「標籤 ｜ 值」兩欄，讓每一行自己說明自己是什麼。 */
+.obs-value {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+.obs-row {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 8px;
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.obs-row > span {
+  color: #a3b0c2;
+}
+.obs-row > div {
+  color: #5b6b82;
+  overflow-wrap: anywhere;
+}
+.obs-row .rule {
+  color: #8494a9;
+}
 .device-head {
   display: flex;
   align-items: baseline;
@@ -2022,16 +2046,18 @@ body {
     const out = [];
     for (const o of obsBatch) {
       let e = null;
+      // rule_text 是給畫面看的條件說明：原本門檻只存在於程式碼，
+      // 使用者只看得到 RULE-W01 這個代號，無從判斷「為什麼這筆成立」。
       if (o.system === 'weather' && o.metric === 'rainfall' && o.value_numeric > 30)
-        e = { type: 'HEAVY_RAINFALL', severity: 'warning', rule: 'RULE-W01' };
+        e = { type: 'HEAVY_RAINFALL', severity: 'warning', rule: 'RULE-W01', text: 'rainfall > 30 mm/h' };
       if (o.system === 'lake' && o.metric === 'water_level' && o.value_numeric > 80)
-        e = { type: 'HIGH_WATER_LEVEL', severity: 'warning', rule: 'RULE-L01' };
+        e = { type: 'HIGH_WATER_LEVEL', severity: 'warning', rule: 'RULE-L01', text: 'water_level > 80 cm' };
       if (o.system === 'irrigation' && o.metric === 'status' && o.value_text === 'RUNNING')
-        e = { type: 'IRRIGATION_ACTIVE', severity: 'info', rule: 'RULE-I01' };
+        e = { type: 'IRRIGATION_ACTIVE', severity: 'info', rule: 'RULE-I01', text: 'status = RUNNING' };
       if (o.system === 'hvac' && o.metric === 'power' && o.value_numeric > 85)
-        e = { type: 'HVAC_HIGH_CONSUMPTION', severity: 'warning', rule: 'RULE-H01' };
+        e = { type: 'HVAC_HIGH_CONSUMPTION', severity: 'warning', rule: 'RULE-H01', text: 'power > 85 kW' };
       if (o.system === 'energy' && o.metric === 'power' && o.value_numeric > 170)
-        e = { type: 'BUILDING_ENERGY_HIGH', severity: 'warning', rule: 'RULE-E01' };
+        e = { type: 'BUILDING_ENERGY_HIGH', severity: 'warning', rule: 'RULE-E01', text: 'power > 170 kW' };
       if (e) {
         const event = {
           id: uid('EVT'),
@@ -2041,6 +2067,7 @@ body {
           device_id: o.device_id,
           zone_id: o.zone_id,
           rule_id: e.rule,
+          rule_text: e.text,
           started_at: o.observed_at,
           status: 'ACTIVE',
         };
@@ -2449,7 +2476,7 @@ body {
       ? currentRun.events
           .map(
             (e) =>
-              `<div class="event"><b>${esc(e.event_type)}</b> <span class="pill ${e.severity === 'warning' ? 'warn' : 'info'}">${esc(e.severity)}</span><div class="sub">${esc(e.id)} · ${esc(e.rule_id)} · 來源 ${esc(e.source_observation_id)}</div></div>`,
+              `<div class="event"><b>${esc(e.event_type)}</b> <span class="pill ${e.severity === 'warning' ? 'warn' : 'info'}">${esc(e.severity)}</span><div class="obs-row"><span>ID</span><div>${esc(e.id)}</div></div><div class="obs-row"><span>規則</span><div>${esc(e.rule_id)}：${esc(e.rule_text || '')}</div></div><div class="obs-row"><span>來源</span><div>${esc(e.source_observation_id)}</div></div></div>`,
           )
           .join('')
       : '<div class="empty">未產生規則判定 Event；部分反例情境預期會有此結果。</div>';
@@ -2667,7 +2694,20 @@ body {
     $('#decisionEvidence').innerHTML = `${obs
       .map((o) => {
         const event = currentRun.events.find((e) => e.source_observation_id === o.id);
-        return `<div class="evidence"><b>${esc(o.device_id)}.${esc(o.metric)}</b> = ${esc(o.value_numeric ?? o.value_text)} ${esc(o.unit || '')}<div class="small">${esc(o.id)}${event ? `<br>${esc(event.event_type)} · ${esc(event.rule_id)}` : '<br>Observation · 無對應 Event'}</div></div>`;
+        const rows = [
+          ['ID', esc(o.id)],
+          ['設備', `${esc(o.device_id)} · ${esc(deviceName(o.device_id))}`],
+          ['項目', esc(o.metric)],
+          [
+            '判定',
+            event
+              ? `${esc(event.event_type)}<br><span class="rule">${esc(event.rule_id)}：${esc(event.rule_text || '')}</span>`
+              : '未命中任何規則，不產生 Event',
+          ],
+        ];
+        return `<div class="evidence"><b class="obs-value">${esc(o.value_numeric ?? o.value_text)} ${esc(o.unit || '')}</b>${rows
+          .map(([k, v]) => `<div class="obs-row"><span>${k}</span><div>${v}</div></div>`)
+          .join('')}</div>`;
       })
       .join('')}`;
     if (currentRun.analysis) {
