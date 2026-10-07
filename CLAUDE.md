@@ -90,8 +90,9 @@ AI 分析摘要 → 可執行依據 → 拒絕／核准操作 → 執行結果 �
 ```
 
 **點選流程節點，該階段的資料就顯示在節點正下方**（`#overview .stage-data`），
-再點一次收合；不另開面板。步驟 7–9 沒有獨立資料卡，它們的結果就是下方的
-審核與處置區塊（見 `reviewStages`）。
+再點一次收合；不另開面板。資料卡共七張：步驟 1–6 加上步驟 7（人工審核依據，
+`#decisionRecommendation`）。只有步驟 8、9 沒有資料卡，它們的結果就是下方的
+`#executionBox` 與 `#feedbackBox`（見 `reviewStages`）。
 
 `setStep()` 在流程推進時會同步 `selectedFlowStage`，否則下一次點同一個節點
 會被當成「再按一次收合」。

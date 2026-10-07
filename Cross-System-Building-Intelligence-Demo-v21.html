@@ -1515,10 +1515,17 @@ body {
           <div class="block-note"><b>作用與資料流：</b>整合 Incident 與工具查詢結果，產生附有證據參照的結構化分析，保留推論與事實的區別。</div>
         </div>
 
+        <div class="card" data-stage="review">
+          <div class="kicker">審核依據</div>
+          <h2>7. 人工審核</h2>
+          <div id="decisionRecommendation"></div>
+          <div class="block-note"><b>作用與資料流：</b>管理者依據分析與設備查詢快照核准或拒絕；核准前不送出任何控制指令。</div>
+        </div>
+
         
         
         
-    </div></div><div class="flow-status" id="flowStatus" role="status" aria-live="polite"></div><div id="incidentSummary"></div><div id="decisionRecommendation"></div><div id="actionBox"></div><div id="executionBox"></div><div id="feedbackBox"></div></div></aside></div>
+    </div></div><div class="flow-status" id="flowStatus" role="status" aria-live="polite"></div><div id="incidentSummary"></div><div id="actionBox"></div><div id="executionBox"></div><div id="feedbackBox"></div></div></aside></div>
 <div class="workspace-footer"><details><summary>稽核鏈與保存紀錄 · Audit / localStorage</summary><div class="audit-line" id="auditLine"></div><details class="records"><summary>已保存紀錄 / localStorage</summary><div class="records-grid"><div><h3>Observation · 原始事實</h3><div id="obsStore"></div></div><div id="derivedStore"></div><div><h3>操作審核與執行</h3><div id="actionStore"></div></div></div></details></details></div></section>
 <footer class="foot"><span>Observation 是 source of truth · AI 新增 inference · 操作需 human approval</span><span>Executable concept prototype · v21</span></footer></div><script>
 (() => {
@@ -2710,7 +2717,7 @@ body {
 
   // 階段資料直接顯示在流程節點正下方，不另開面板。
   // 步驟 7–9 沒有獨立資料卡，它們的結果就是下方的審核與處置區塊。
-  const reviewStages = ['review', 'action', 'loop'];
+  const reviewStages = ['action', 'loop'];
 
   function focusFlowStage(name) {
     const same = selectedFlowStage === name;
