@@ -1913,6 +1913,7 @@ body {
     );
   }
   let selectedFlowStage = null;
+  let lastCorrelation = null;
   const flowSteps = [
     'telemetry',
     'observation',
@@ -2125,48 +2126,97 @@ body {
     return out;
   }
 
-  function correlate(obsBatch, eventBatch) {
+  // 關聯規則：三個條件都要成立才建立 Incident。
+  // 語意＝哪些 Event 類型組合起來才有意義；時間＝是否落在同一個觀察窗內；
+  // 空間＝設備是否在同一區或有上下層關係。三者分開評估，才能說明「為什麼不成立」。
+  const CORRELATION_WINDOW_MIN = 15;
+  const correlationRules = [
+    {
+      id: 'CORR-01',
+      incident_type: 'WEATHER_RELATED_LAKE_RISK',
+      title: '降雨相關湖區風險',
+      zone_id: 'OUTDOOR',
+      requires: ['HEAVY_RAINFALL', 'HIGH_WATER_LEVEL'],
+      collects: ['HEAVY_RAINFALL', 'HIGH_WATER_LEVEL', 'IRRIGATION_ACTIVE'],
+      semantic_text: '同時出現 HEAVY_RAINFALL 與 HIGH_WATER_LEVEL',
+    },
+    {
+      id: 'CORR-02',
+      incident_type: 'HVAC_ENERGY_EFFICIENCY_RISK',
+      title: '空調與用電效率風險',
+      zone_id: 'TOWER-A-L3',
+      requires: ['HVAC_HIGH_CONSUMPTION', 'BUILDING_ENERGY_HIGH'],
+      collects: ['HVAC_HIGH_CONSUMPTION', 'BUILDING_ENERGY_HIGH'],
+      semantic_text: '同時出現 HVAC_HIGH_CONSUMPTION 與 BUILDING_ENERGY_HIGH',
+      // 第二層：高負載若能被外在條件合理解釋，就不該報
+      context_text: '室外溫度 ≤ 30°C 且人流 = LOW',
+      context_test: (obsBatch) => {
+        const temp = latest(obsBatch, 'weather', 'temperature');
+        const occ = latest(obsBatch, 'occupancy', 'level');
+        return !!(temp && occ && temp.value_numeric <= 30 && occ.value_text === 'LOW');
+      },
+    },
+  ];
+
+  // 兩個 zone 是否相關：同一區，或其中一個是另一個的上層（A 棟三樓 ⊂ A 棟）。
+  function zonesRelated(a, b) {
+    if (a === b) return true;
+    const chain = (z) => {
+      const path = [];
+      let cur = buildingModel.zones.find((x) => x.id === z);
+      while (cur) {
+        path.push(cur.id);
+        cur = cur.parent ? buildingModel.zones.find((x) => x.id === cur.parent) : null;
+      }
+      return path;
+    };
+    return chain(a).includes(b) || chain(b).includes(a);
+  }
+
+  function evaluateCorrelation(rule, obsBatch, eventBatch) {
     const types = new Set(eventBatch.map((e) => e.event_type));
-    const rain = types.has('HEAVY_RAINFALL'),
-      lake = types.has('HIGH_WATER_LEVEL');
-    if (rain && lake) {
+    const semantic = rule.requires.every((t) => types.has(t));
+    const matched = eventBatch.filter((e) => rule.collects.includes(e.event_type));
+    const times = matched.map((e) => new Date(e.started_at).getTime());
+    const spanSec = times.length ? Math.round((Math.max(...times) - Math.min(...times)) / 1000) : 0;
+    const temporal = semantic && spanSec <= CORRELATION_WINDOW_MIN * 60;
+    const zones = [...new Set(matched.map((e) => e.zone_id))];
+    const spatial = semantic && zones.every((z) => zonesRelated(z, zones[0]));
+    const context = rule.context_test ? rule.context_test(obsBatch) : true;
+    return { rule, semantic, temporal, spatial, context, matched, spanSec, zones };
+  }
+
+  function correlate(obsBatch, eventBatch) {
+    const evaluations = correlationRules.map((rule) => evaluateCorrelation(rule, obsBatch, eventBatch));
+    // 都不成立時要指出「卡在哪」，所以報最接近成立的那條規則，而不是最後評估的那條。
+    // 進度 = 已出現的必要 Event 類型數，相同時再比已通過的條件數。
+    const types = new Set(eventBatch.map((e) => e.event_type));
+    const progress = (ev) =>
+      ev.rule.requires.filter((t) => types.has(t)).length * 10 +
+      [ev.semantic, ev.temporal, ev.spatial, ev.context].filter(Boolean).length;
+    lastCorrelation = evaluations.reduce((a, b) => (progress(b) > progress(a) ? b : a));
+    for (const ev of evaluations) {
+      if (!(ev.semantic && ev.temporal && ev.spatial && ev.context)) continue;
+      lastCorrelation = ev;
+      const rule = ev.rule;
       const inc = {
         id: uid('INC'),
-        incident_type: 'WEATHER_RELATED_LAKE_RISK',
-        title: '降雨相關湖區風險',
+        incident_type: rule.incident_type,
+        title: rule.title,
         severity: 'MEDIUM',
-        zone_id: 'OUTDOOR',
+        zone_id: rule.zone_id,
         status: 'OPEN',
         created_at: new Date().toISOString(),
-        event_ids: eventBatch
-          .filter((e) => ['HEAVY_RAINFALL', 'HIGH_WATER_LEVEL', 'IRRIGATION_ACTIVE'].includes(e.event_type))
-          .map((e) => e.id),
+        event_ids: ev.matched.map((e) => e.id),
+        rule_id: rule.id,
+        rule_semantic: rule.semantic_text,
+        rule_context: rule.context_text || null,
+        window_min: CORRELATION_WINDOW_MIN,
+        span_sec: ev.spanSec,
+        zones: ev.zones,
       };
       state.incidents.push(inc);
       return inc;
-    }
-    const hv = types.has('HVAC_HIGH_CONSUMPTION'),
-      en = types.has('BUILDING_ENERGY_HIGH');
-    if (hv && en) {
-      const temp = latest(obsBatch, 'weather', 'temperature');
-      const occ = latest(obsBatch, 'occupancy', 'level');
-      const suspicious = temp && occ && temp.value_numeric <= 30 && occ.value_text === 'LOW';
-      if (suspicious) {
-        const inc = {
-          id: uid('INC'),
-          incident_type: 'HVAC_ENERGY_EFFICIENCY_RISK',
-          title: '空調與用電效率風險',
-          severity: 'MEDIUM',
-          zone_id: 'TOWER-A-L3',
-          status: 'OPEN',
-          created_at: new Date().toISOString(),
-          event_ids: eventBatch
-            .filter((e) => ['HVAC_HIGH_CONSUMPTION', 'BUILDING_ENERGY_HIGH'].includes(e.event_type))
-            .map((e) => e.id),
-        };
-        state.incidents.push(inc);
-        return inc;
-      }
     }
     return null;
   }
@@ -2528,20 +2578,42 @@ body {
           .join('')
       : '<div class="empty">未產生規則判定 Event；部分反例情境預期會有此結果。</div>';
 
-    if (currentRun.incident) {
+    // 步驟 4 要說明「怎麼判的」，不只是結果：三個條件逐條列出，
+    // 不成立時指出卡在哪一條（對照步驟 3 顯示 RULE-xx 的作法）。
+    const corrRow = (label, ok, text) =>
+      `<div class="obs-row"><span>${label}</span><div>${ok ? '✓' : '✗'} ${esc(text)}</div></div>`;
+    const inc = currentRun.incident;
+    const ev = lastCorrelation;
+    if (inc) {
       $('#incidentBox').innerHTML =
-        `<div class="incident"><div><span class="pill bad">${esc(currentRun.incident.severity)}</span></div><h3 style="margin-top:8px">${esc(currentRun.incident.title)}</h3><div class="small">${esc(currentRun.incident.id)} · ${esc(currentRun.incident.incident_type)} · ${esc(currentRun.incident.zone_id)}</div><p>${currentRun.incident.event_ids.length} 個相關 Event 已依時間、位置與語意規則整合。</p></div>`;
+        `<div class="incident"><div><span class="pill bad">${esc(inc.severity)}</span></div><h3 style="margin-top:8px">${esc(inc.title)}</h3><div class="small">${esc(inc.id)} · ${esc(inc.incident_type)} · ${esc(inc.zone_id)}</div>` +
+        `<div class="obs-row"><span>規則</span><div>${esc(inc.rule_id)}</div></div>` +
+        corrRow('語意', true, inc.rule_semantic) +
+        corrRow(
+          '時間',
+          true,
+          `${inc.event_ids.length} 個 Event 間隔 ${inc.span_sec} 秒，在 ${inc.window_min} 分鐘窗內`,
+        ) +
+        corrRow(
+          '區域',
+          true,
+          inc.zones.join('、') + (inc.zones.length > 1 ? '（同一棟的上下層）' : '（同一區）'),
+        ) +
+        (inc.rule_context ? corrRow('脈絡', true, inc.rule_context) : '') +
+        `</div>`;
     } else {
-      // 未建立的原因只在步驟 4 的資料卡裡說明，不另外常駐一塊。
-      const reason =
-        currentRun.scenario === 'rainOnly'
-          ? '只有強降雨；水位 58 cm 未超過 80 cm，未產生 HIGH_WATER_LEVEL，關聯條件不成立。'
-          : currentRun.scenario === 'legitHvac'
-            ? '兩個用電 Event 都成立，但室外 35°C、人流 HIGH 可合理解釋此用電量，第二層條件擋下。'
-            : '';
-      $('#incidentBox').innerHTML = `<div class="incident none"><b>未建立 Incident。</b>${
-        reason ? `<p class="small">${esc(reason)}</p>` : ''
-      }<p class="small">未符合跨系統關聯條件，因此不建立 Incident，也不啟動 AI 分析。</p></div>`;
+      $('#incidentBox').innerHTML =
+        `<div class="incident none"><b>未建立 Incident。</b>` +
+        (ev
+          ? `<div class="obs-row"><span>規則</span><div>${esc(ev.rule.id)}</div></div>` +
+            corrRow('語意', ev.semantic, ev.rule.semantic_text) +
+            (ev.semantic
+              ? corrRow('時間', ev.temporal, `間隔 ${ev.spanSec} 秒 / 窗 ${CORRELATION_WINDOW_MIN} 分鐘`)
+              : '') +
+            (ev.semantic ? corrRow('區域', ev.spatial, ev.zones.join('、')) : '') +
+            (ev.rule.context_text ? corrRow('脈絡', ev.context, ev.rule.context_text) : '')
+          : '') +
+        `<p class="small">條件未全部成立，因此不建立 Incident，也不啟動 AI 分析。</p></div>`;
     }
 
     $('#toolLog').innerHTML = currentRun.tools.length
