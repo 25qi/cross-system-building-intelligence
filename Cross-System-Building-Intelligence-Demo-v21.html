@@ -112,38 +112,73 @@ h3 {
 .small {
   font-size: 11px;
 }
-.scenario-bar {
-  display: flex;
-  gap: 12px;
-  align-items: stretch;
-  margin-bottom: 10px;
+/* 情境選擇放在右欄最上方，讓「選情境 → 執行 → 事件證據 → AI 建議」
+   在同一欄由上而下讀完，直接表達證據與建議是執行情境後才產生的。 */
+.scenario-picker {
+  /* 展開「情境背景」時這一塊會長到 500px 以上。若不設上限，下方的事件證據
+     與 AI 建議會被壓到幾乎看不見，連核准按鈕都構不到，因此限高後自行捲動。 */
+  flex: 0 1 auto;
+  max-height: 50%;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  background: #fafcfe;
 }
-.scenario-options {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  flex: 1;
+.scenario-picker > h3 {
+  font-size: 13px;
+  margin-bottom: 8px;
 }
-.scenario-option {
-  border: 1px solid var(--line);
-  background: white;
-  border-radius: 9px;
+.scenario-picker .primary {
+  width: 100%;
+  margin-top: 8px;
   padding: 8px 12px;
-  text-align: left;
-  font-size: 12px;
-  color: var(--ink);
-  font-weight: 650;
 }
-.scenario-option span {
-  display: block;
+/* 右欄由上而下是一條因果鏈：選情境 → 事實 → 推論 → 決策。
+   事實與推論用不同顏色的左側色條標示，把「Observation 是 source of truth、
+   AI 只新增 inference」這個主張畫進介面，而不是只寫在頁尾註腳。
+   情境選擇是輸入而非產出，所以不帶色條。 */
+.incident-context {
+  border-left: 3px solid #8fa3ba;
+}
+.decision-panel {
+  border-left: 3px solid var(--accent);
+}
+.decision-panel.awaiting-review #actionBox {
+  position: sticky;
+  bottom: -12px;
+  background: #fff;
+  padding: 6px 0 12px;
+  box-shadow: 0 -8px 12px -6px #ffffff;
+}
+.scenario-outcome {
+  margin-top: 10px;
+  text-align: center;
   font-size: 10px;
-  color: var(--muted);
-  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: #9aa8bc;
 }
-.scenario-option.active {
-  background: #eef3ff;
-  border-color: #9dafee;
-  color: #294bbd;
+#scenarioSelect {
+  width: 100%;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ink);
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 9px;
+}
+#scenarioSelect:focus-visible {
+  outline: 3px solid #7294ff;
+  outline-offset: 2px;
+}
+.scenario-hint {
+  margin: 6px 0 0;
+  font-size: 10px;
+  line-height: 1.45;
+  color: var(--muted);
 }
 .primary,
 .secondary,
@@ -168,8 +203,8 @@ h3 {
   color: #8f4848;
 }
 .scenario-details {
-  margin: 0 0 14px;
-  font-size: 12px;
+  margin: 10px 0 0;
+  font-size: 11px;
 }
 .scenario-details summary {
   color: var(--muted);
@@ -179,8 +214,12 @@ h3 {
   background: white;
   border: 1px solid var(--line);
   border-radius: 9px;
-  padding: 12px 16px;
-  margin-top: 8px;
+  padding: 9px 11px;
+  margin-top: 7px;
+  max-height: 34vh;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
 }
 .scenario-brief .title {
   font-weight: 700;
@@ -589,48 +628,24 @@ body {
   outline: 3px solid #7294ff;
   outline-offset: 3px;
 }
-.scenario-bar {
-  flex: none;
-  margin: 0;
-  gap: 8px;
-}
-.scenario-options {
-  gap: 6px;
-}
-.scenario-option {
-  padding: 6px 10px;
-  font-size: 12px;
-  line-height: 1.35;
-}
-.scenario-option span {
-  font-size: 10px;
-}
-.scenario-bar .primary {
+.scenario-picker .primary {
   padding: 7px 14px;
   font-size: 12px;
 }
 .scenario-details {
-  position: relative;
   flex: none;
-  margin: 0;
+  margin: 10px 0 0;
   font-size: 11px;
-  line-height: 16px;
+  line-height: 1.5;
 }
 .scenario-details summary {
   width: max-content;
   cursor: pointer;
 }
+/* 原本是錨在頂部橫列的下拉浮層；移進右欄後會被 .context-right 的
+   overflow:hidden 裁掉，改為內嵌並自行捲動。 */
 .scenario-brief {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 50;
-  max-height: 65vh;
-  overflow: auto;
-  overscroll-behavior: contain;
-  box-shadow: 0 8px 24px #405c8d25;
-  margin-top: 6px;
+  margin-top: 7px;
 }
 .building-workspace {
   flex: 1;
@@ -1344,13 +1359,7 @@ body {
   .top {
     min-height: 28px;
   }
-  .scenario-option {
-    padding: 5px 9px;
-  }
-  .scenario-option span {
-    display: none;
-  }
-  .scenario-bar .primary {
+  .scenario-picker .primary {
     padding: 5px 12px;
   }
   .scenario-details {
@@ -1455,14 +1464,7 @@ body {
     --left: 165px;
     --right: 200px;
   }
-  .scenario-options {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 4px;
-  }
-  .scenario-option span {
-    display: none;
-  }
-  .scenario-bar .primary {
+  .scenario-picker .primary {
     padding: 5px 9px;
   }
   .inspector-panel,
@@ -1557,13 +1559,6 @@ body {
 }
 </style></head><body><div class="wrap">
 <header class="top"><div><div class="kicker">陞訊 · 面試 follow-up / concept prototype</div><h1>跨系統建築智慧整合</h1><p>以事件理解現場，以建築脈絡支持決策。</p></div><div class="top-actions"><a class="secondary prd-link" id="prdLink" target="_blank" rel="noopener" title="新分頁開啟完整專案 PRD">專案 PRD <span aria-hidden="true">↗</span></a><span class="badge"><span class="dot"></span>合成情境 · 本機模擬</span><span class="badge badge-notice" id="storageNotice" hidden></span></div></header>
-<div class="scenario-bar"><div class="scenario-options" id="scenarioOptions">
-      <button type="button" class="scenario-option active" data-scenario="lake">情境 A · 湖區風險<span>強降雨、湖面水位與灌溉</span></button>
-      <button type="button" class="scenario-option" data-scenario="hvac">情境 B · 用電分析<span>空調、用電與人流</span></button>
-      <button type="button" class="scenario-option" data-scenario="rainOnly">反例 C<span>僅有強降雨</span></button>
-      <button type="button" class="scenario-option" data-scenario="legitHvac">反例 D<span>合理的空調高負載</span></button>
-    </div><button class="primary" id="runBtn">執行情境</button></div>
-<details class="scenario-details"><summary>情境背景與展示目標</summary><div class="scenario-brief" id="scenarioBrief"></div></details>
 <section class="building-workspace" aria-label="智慧社區場域與上下文工作介面">
 <div class="workspace-body" id="digitalTwinSection"><div class="world-readings" aria-label="本次情境觀測數值"><div class="world-reading"><span class="hud-label" id="hudLabel-0"></span><strong id="hudValue-0">—</strong><small id="hudSource-0"></small></div><div class="world-reading"><span class="hud-label" id="hudLabel-1"></span><strong id="hudValue-1">—</strong><small id="hudSource-1"></small></div><div class="world-reading"><span class="hud-label" id="hudLabel-2"></span><strong id="hudValue-2">—</strong><small id="hudSource-2"></small></div></div>
 <aside class="context-left" aria-label="選取設備脈絡"><div class="inspector-panel"><h3>設備脈絡 <span class="sidebar-title">Context Inspector</span></h3><div id="deviceDetail"></div><details class="context-read-list"><summary>查看本次 AI 引用的完整建築脈絡</summary><div id="decisionContext"></div></details></div></aside>
@@ -1594,8 +1589,9 @@ body {
 <text x="742" y="233" class="zone-text">TOWER A</text><text x="742" y="250" class="zone-sub">A 棟 · 三樓設備</text>
 <g transform="translate(109 330) scale(0.8)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(280 219) scale(0.8)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(379 276) scale(0.75)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(367 431) scale(1)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(577 490) scale(0.9)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(832 335) scale(0.85)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(778 400) scale(0.8)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(425 161) scale(0.65)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(492 493) scale(0.75)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><path class="query-route" data-route="W01" d="M187 263 313 380 492 411"/><path class="query-route" data-route="LS01" d="M264 385 313 380 492 411"/><path class="query-route" data-route="DP01" d="M154 415 208 373 313 380"/><path class="query-route" data-route="IRR01" d="M492 411 639 440"/><path class="query-route" data-route="AHU03" d="M602 150 650 220 639 440"/><path class="query-route" data-route="OCC03" d="M710 307 650 336 639 440"/><path class="query-route" data-route="EM01" d="M695 409 639 440"/><g class="scene-marker" data-device="W01"><circle class="pin-ring" cx="187" cy="258" r="12"/><circle class="pin" cx="187" cy="258" r="7"/></g><g class="scene-marker" data-device="LS01"><circle class="pin-ring" cx="264" cy="385" r="12"/><circle class="pin" cx="264" cy="385" r="7"/></g><g class="scene-marker" data-device="IRR01"><circle class="pin-ring" cx="492" cy="411" r="12"/><circle class="pin" cx="492" cy="411" r="7"/></g><g class="scene-marker" data-device="DP01"><circle class="pin-ring" cx="154" cy="415" r="12"/><circle class="pin" cx="154" cy="415" r="7"/></g><g class="scene-marker" data-device="AHU03"><circle class="pin-ring" cx="602" cy="150" r="12"/><circle class="pin" cx="602" cy="150" r="7"/></g><g class="scene-marker" data-device="OCC03"><circle class="pin-ring" cx="690" cy="307" r="12"/><circle class="pin" cx="690" cy="307" r="7"/></g><g class="scene-marker" data-device="EM01"><circle class="pin-ring" cx="695" cy="409" r="12"/><circle class="pin" cx="695" cy="409" r="7"/></g></g></svg><div class="device-labels"><button class="scene-device device-W01" type="button" data-device="W01" aria-label="W01 · 氣象站，查看設備脈絡"><span class="name"><span class="device-id">W01</span><span class="device-name"> · 氣象站</span></span><span class="reading" id="nodeReading-W01">待接收 Observation</span></button><button class="scene-device device-LS01" type="button" data-device="LS01" aria-label="LS01 · 水位感測，查看設備脈絡"><span class="name"><span class="device-id">LS01</span><span class="device-name"> · 水位感測</span></span><span class="reading" id="nodeReading-LS01">待接收 Observation</span></button><button class="scene-device device-DP01" type="button" data-device="DP01" aria-label="DP01 · 排水泵，查看設備脈絡"><span class="name"><span class="device-id">DP01</span><span class="device-name"> · 排水泵</span></span><span class="reading" id="nodeReading-DP01">待接收 Observation</span></button><button class="scene-device device-IRR01" type="button" data-device="IRR01" aria-label="IRR01 · 灌溉控制，查看設備脈絡"><span class="name"><span class="device-id">IRR01</span><span class="device-name"> · 灌溉控制</span></span><span class="reading" id="nodeReading-IRR01">待接收 Observation</span></button><button class="scene-device device-AHU03" type="button" data-device="AHU03" aria-label="AHU03 · 屋頂空調，查看設備脈絡"><span class="name"><span class="device-id">AHU03</span><span class="device-name"> · 屋頂空調</span></span><span class="reading" id="nodeReading-AHU03">待接收 Observation</span></button><button class="scene-device device-OCC03" type="button" data-device="OCC03" aria-label="OCC03 · 三樓人流，查看設備脈絡"><span class="name"><span class="device-id">OCC03</span><span class="device-name"> · 三樓人流</span></span><span class="reading" id="nodeReading-OCC03">待接收 Observation</span></button><button class="scene-device device-EM01" type="button" data-device="EM01" aria-label="EM01 · 總電表，查看設備脈絡"><span class="name"><span class="device-id">EM01</span><span class="device-name"> · 總電表</span></span><span class="reading" id="nodeReading-EM01">待接收 Observation</span></button></div></div></div><div class="scene-bottom"><span><i class="legend-dot"></i>藍色：AI 引用 · 虛線：查詢提示</span><span>場域位置為概念示意</span></div></div>
 
-<aside class="context-right" aria-label="事件證據與 AI 建議"><div class="incident-context"><h3>事件證據 <span class="sidebar-title">Observation / Event</span></h3><div id="decisionEvidence"></div></div>
-<div class="decision-panel" id="decisionSection"><h3>AI 建議與人工審核</h3><div class="decision-inputs">事件證據 ＋ Building Context → Recommendation</div><div id="decisionRecommendation"></div><div class="review-label">Human Review → Action → New Observation</div><div id="actionBox"></div><div id="executionBox"></div><div id="feedbackBox"></div></div></aside></div>
+<aside class="context-right" aria-label="情境選擇、事件證據與 AI 建議"><div class="scenario-picker"><h3>情境選擇 <span class="sidebar-title">Scenario</span></h3><select id="scenarioSelect" aria-label="選擇要執行的情境"><optgroup label="應建立 Incident"><option value="lake">情境 A · 湖區風險</option><option value="hvac">情境 B · 用電分析</option></optgroup><optgroup label="反例 · 應保持安靜"><option value="rainOnly">反例 C · 僅有強降雨</option><option value="legitHvac">反例 D · 合理的空調高負載</option></optgroup></select><p class="scenario-hint" id="scenarioHint"></p><button class="primary" id="runBtn">執行情境</button><details class="scenario-details"><summary>情境背景與展示目標</summary><div class="scenario-brief" id="scenarioBrief"></div></details><div class="scenario-outcome">執行後產生 ↓</div></div>
+<div class="incident-context"><h3>事件證據 <span class="sidebar-title">Observation / Event</span></h3><div id="decisionEvidence"></div></div>
+<div class="decision-panel" id="decisionSection"><h3>AI 建議與人工審核 <span class="sidebar-title">Inference / Review</span></h3><div class="decision-inputs">事件證據 ＋ Building Context → Recommendation</div><div id="decisionRecommendation"></div><div class="review-label">Human Review → Action → New Observation</div><div id="actionBox"></div><div id="executionBox"></div><div id="feedbackBox"></div></div></aside></div>
 <div class="workspace-toolbar" id="demoLayout"><div class="toolbar-top"><strong>宏道智慧社區 <span class="sidebar-title">Incident Processing</span></strong><span class="section-tag" id="twinUsageBadge">尚未引用建築脈絡</span></div><nav class="flow" id="flowBar" aria-label="處理流程"><div class="flow-node" data-flow="telemetry"><button class="step" type="button" data-step="telemetry" data-number="1">Telemetry</button><div class="flow-description" id="flowDescription-telemetry"></div></div><div class="flow-node" data-flow="observation"><button class="step" type="button" data-step="observation" data-number="2">Observation</button><div class="flow-description" id="flowDescription-observation"></div></div><div class="flow-node" data-flow="event"><button class="step" type="button" data-step="event" data-number="3">Event</button><div class="flow-description" id="flowDescription-event"></div></div><div class="flow-node" data-flow="incident"><button class="step" type="button" data-step="incident" data-number="4">Incident</button><div class="flow-description" id="flowDescription-incident"></div></div><div class="flow-node" data-flow="tools"><button class="step" type="button" data-step="tools" data-number="5">AI tools/query</button><div class="flow-description" id="flowDescription-tools"></div></div><div class="flow-node" data-flow="analysis"><button class="step" type="button" data-step="analysis" data-number="6">Analysis</button><div class="flow-description" id="flowDescription-analysis"></div></div><div class="flow-node" data-flow="review"><button class="step" type="button" data-step="review" data-number="7">Human Review</button><div class="flow-description" id="flowDescription-review"></div></div><div class="flow-node" data-flow="action"><button class="step" type="button" data-step="action" data-number="8">Action</button><div class="flow-description" id="flowDescription-action"></div></div><div class="flow-node" data-flow="loop"><button class="step" type="button" data-step="loop" data-number="9">New Observation</button><div class="flow-description" id="flowDescription-loop"></div></div></nav><div class="toolbar-status"><div class="flow-status" id="flowStatus" role="status" aria-live="polite">選擇情境後執行；處理結果一次顯示。</div><details class="flow-details" id="flowDetails"><summary>查看流程資料 / tool results</summary><main class="demo-main"><div class="flow-panel-head"><strong>流程資料與查詢結果</strong><button type="button" class="secondary" id="closeFlowDetails" aria-label="關閉流程資料面板">關閉 ×</button></div><div class="flow-panel-content"><section class="pane active" id="overview"><div class="run-placeholder" id="runPlaceholder">點選上方流程節點查看該階段的資料。</div><div class="grid">
         <div class="card" data-stage="telemetry">
           <div class="kicker">原始資料接收</div>
@@ -2049,7 +2045,7 @@ body {
   function setBusy(value) {
     busy = value;
     $('#runBtn').disabled = value;
-    $$('.scenario-option').forEach((btn) => (btn.disabled = value));
+    $('#scenarioSelect').disabled = value;
     $('#runBtn').textContent = value ? '處理中…' : '執行情境';
     ['#approveAction', '#rejectAction'].forEach((id) => {
       const btn = $(id);
@@ -2617,6 +2613,10 @@ body {
       $('#rejectAction')?.addEventListener('click', () => rejectAction(a));
     } else $('#actionBox').innerHTML = '<div class="empty">尚無建議操作。</div>';
     const action = currentRun.action;
+    // 情境選擇移入右欄後這一欄變長，待審核的操作卡片容易落在捲動範圍外。
+    // PROPOSED 期間把它釘在面板底部，確保核准／拒絕一定看得到；
+    // 此時 executionBox 與 feedbackBox 都還是空的，不會被蓋住。
+    $('#decisionSection').classList.toggle('awaiting-review', action?.status === 'PROPOSED');
     $('#executionBox').innerHTML =
       action?.status === 'EXECUTED'
         ? '<div class="success"><b>操作執行成功</b><p>IRR01: RUNNING → STOPPED</p></div>'
@@ -2928,16 +2928,22 @@ body {
   if (typeof window !== 'undefined') window.addEventListener('resize', fitScene);
   fitScene();
 
+  // 下拉選單只看得到情境名稱，用一行提示補上原本副標承載的「這個情境在測什麼」。
+  const scenarioHints = {
+    lake: '強降雨、湖面水位與灌溉同時發生，預期建立 Incident 並提出可執行建議。',
+    hvac: '空調、用電與人流交叉比對，預期只提出調查建議，不宣稱設備故障。',
+    rainOnly: '只有強降雨、水位正常，預期不建立 Incident。',
+    legitHvac: '高溫加高人流可合理解釋高負載，預期不建立 Incident。',
+  };
+
   function selectScenario(key) {
     selectedScenario = key;
-    document
-      .querySelectorAll('.scenario-option')
-      .forEach((btn) => btn.classList.toggle('active', btn.dataset.scenario === key));
+    const select = $('#scenarioSelect');
+    if (select.value !== key) select.value = key;
+    $('#scenarioHint').textContent = scenarioHints[key] || '';
     renderScenarioBrief(key);
   }
-  document
-    .querySelectorAll('.scenario-option')
-    .forEach((btn) => btn.addEventListener('click', () => selectScenario(btn.dataset.scenario)));
+  $('#scenarioSelect').addEventListener('change', (e) => selectScenario(e.target.value));
   $('#runBtn').addEventListener('click', () => runScenario(selectedScenario));
 
   if (!storage.persistent) {

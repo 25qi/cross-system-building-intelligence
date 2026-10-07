@@ -61,6 +61,36 @@ python3 -m http.server 4178
 ≤1000px 時 2.5D 場景的設備標籤會自動收合為只顯示設備代碼（數值改由上方 HUD 與
 左側設備脈絡面板呈現），避免標籤互相重疊。驗證完整版面請用 ≥1400px 寬度。
 
+## 版面結構
+
+固定視窗儀表板（`height:100dvh; overflow:hidden`），三欄絕對定位：
+
+| 欄位 | 內容 | 角色 |
+|---|---|---|
+| 左 `.context-left` | 設備脈絡 Context Inspector | AI 查詢快照 vs 目前狀態 |
+| 中 `.twin-scene` | 2.5D 場景 + 上方 HUD 讀數 | Building Context 的空間呈現 |
+| 右 `.context-right` | 情境選擇 → 事件證據 → AI 建議與人工審核 | 因果鏈 |
+
+右欄刻意由上而下排成一條因果鏈，表達「證據與建議是執行情境後才產生的」：
+
+```
+情境選擇（輸入，無左側色條）
+   ↓ 執行後產生
+事件證據（事實，灰色左側色條 #8fa3ba）
+AI 建議與人工審核（推論與決策，藍色左側色條 var(--accent)）
+```
+
+左側色條不是裝飾，是把「Observation 是 source of truth、AI 只新增 inference」
+這個主張畫進介面。修改配色時請保留兩者的區別。
+
+兩個與空間有關的約束，改版時容易踩到：
+
+- `.scenario-picker` 設 `max-height: 50%` 且可捲動。展開「情境背景與展示目標」時
+  這塊會長到 500px 以上，不限高會把下方的證據與建議壓到看不見。
+- `#actionBox` 在 `PROPOSED` 期間透過 `.decision-panel.awaiting-review` 變成
+  `position: sticky`，確保核准／拒絕永遠在可視範圍內。核准後 class 移除，
+  才不會蓋住 `#executionBox` 與 `#feedbackBox`。
+
 ## 核心架構
 
 9 階段 pipeline，對應畫面下方流程列與 `flowSteps` 陣列：
@@ -104,6 +134,7 @@ localStorage key：`csbi-demo-v21`。所有讀寫都經過 `storage` 抽象層
 | `querySnapshot()` | 取出「AI 當時查詢到的狀態」，與目前狀態分開呈現 |
 | `resetScenarioState()` | 每次執行前把設備狀態還原為 buildingModel 初始值，並撤掉上一輪 Action Service 寫回的 Observation |
 | `storage` | localStorage 可用性探測與記憶體 fallback |
+| `selectScenario()` | 同步 `#scenarioSelect` 選取值、情境提示與背景說明 |
 
 ### Event rules
 
@@ -150,3 +181,6 @@ localStorage key：`csbi-demo-v21`。所有讀寫都經過 `storage` 抽象層
   Observation。清除判定靠 `raw_payload.source === 'action_service'`，不是靠 ID。
 - `.scene-device` 的寬度在 `max-height: 650px` 斷點仍為固定值（短視窗但寬螢幕時
   標籤不需收合），修改 RWD 時注意不要和 ≤1000px 的收合規則互相覆寫。
+- 情境選擇是 `<select id="scenarioSelect">`，用 `<optgroup>` 分成「應建立 Incident」
+  與「反例 · 應保持安靜」兩組。分組不只是排版：它讓「這個 demo 也驗證何時該保持安靜」
+  這個重點在收合成下拉後仍然看得見，新增情境時請歸入正確分組。
