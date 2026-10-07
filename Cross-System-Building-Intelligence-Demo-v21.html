@@ -1,42 +1,1536 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>跨系統建築智慧整合 — v21</title><style>
-:root{--bg:#f5f7fa;--panel:#fff;--ink:#202b3d;--muted:#778397;--line:#e1e7ef;--accent:#365de2;--soft:#eff3ff;--ok:#177245;--warn:#9a6700;--bad:#b42318;--code:#192335}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 'Segoe UI','Microsoft JhengHei',sans-serif}button{font:inherit;cursor:pointer}button:disabled{cursor:wait;opacity:.55}button:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:3px solid #7294ff;outline-offset:3px}h1,h2,h3,p{margin:0}h1{font-size:25px;letter-spacing:-.7px}h2{font-size:18px}h3{font-size:13px}.wrap{max-width:1760px;margin:auto;padding:24px 28px 35px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.kicker{font-size:10px;letter-spacing:.13em;color:var(--muted);font-weight:700;text-transform:uppercase}.top p{font-size:12px;color:var(--muted);margin-top:4px}.badge,.section-tag{border:1px solid var(--line);background:white;border-radius:20px;padding:5px 10px;font-size:11px;color:var(--muted);white-space:nowrap}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#2a987d;margin-right:7px}.muted,.small{color:var(--muted)}.small{font-size:11px}.scenario-bar{display:flex;gap:12px;align-items:stretch;margin-bottom:10px}.scenario-options{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;flex:1}.scenario-option{border:1px solid var(--line);background:white;border-radius:9px;padding:8px 12px;text-align:left;font-size:12px;color:var(--ink);font-weight:650}.scenario-option span{display:block;font-size:10px;color:var(--muted);font-weight:400}.scenario-option.active{background:#eef3ff;border-color:#9dafee;color:#294bbd}.primary,.secondary,.danger{border-radius:8px;padding:9px 15px;font-weight:650;font-size:12px}.primary{background:var(--accent);color:#fff;border:1px solid var(--accent)}.secondary{border:1px solid var(--line);background:#fff}.danger{background:#fff;border:1px solid var(--line);color:#8f4848}.scenario-details{margin:0 0 14px;font-size:12px}.scenario-details summary{color:var(--muted);cursor:pointer}.scenario-brief{background:white;border:1px solid var(--line);border-radius:9px;padding:12px 16px;margin-top:8px}.scenario-brief .title{font-weight:700;margin-bottom:5px}.scenario-brief .body{color:#516074}.scenario-brief .goal{font-size:11px;color:var(--muted);margin-top:7px}
-.processing{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:18px}.processing-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}.processing-head h2{font-size:13px}.processing-head span{font-size:10px;color:var(--muted)}.flow{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:7px}.flow-node{display:block;position:relative;min-width:0}.flow-node:not(:last-child):after{content:'›';position:absolute;right:-6px;top:7px;color:#acb8cb;z-index:1}.step{width:100%;border:1px solid #e6eaf1;background:#f8fafc;color:#8a96a8;border-radius:7px;font-size:10px;padding:8px 3px;white-space:nowrap}.step:before{content:attr(data-number);font-weight:700;margin-right:4px}.step.done{color:#44618e;background:#f0f4fb}.step.active,.step.selected{background:#edf2ff;border-color:#9aafec;color:#3458ce}.step.done:before{content:'✓'}.flow-description,.flow-connector{display:none}.flow-status{font-size:11px;color:var(--muted);margin-top:8px}.flow-details{margin-top:7px;font-size:11px}.flow-details summary{cursor:pointer;color:#6b7c99}.demo-main{padding-top:10px}.card{border-top:1px solid var(--line);padding:10px 0;background:#fff}.card h2{font-size:14px;margin:3px 0 7px}#overview .card{display:none}#overview .card.revealed{display:block}.block-note{font-size:10px;color:var(--muted);margin-top:8px}.run-placeholder{padding:10px;color:var(--muted);font-size:12px}.metric{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #eef1f5;padding:5px 0;font-size:11px}.metric span{color:var(--muted)}.event,.incident,.evidence{background:#f5f7fb;border-radius:7px;padding:8px 10px;font-size:12px;margin:6px 0}.incident{border-left:3px solid var(--accent)}.incident.none{border-color:#b8c3d2}.event .sub{font-size:10px;color:var(--muted)}.tool{padding:7px 0;border-bottom:1px solid #edf1f5;font:11px/1.6 Consolas,monospace;overflow-wrap:anywhere}.empty{padding:18px 0;color:var(--muted);font-size:12px}.pill{display:inline-block;font-size:10px;padding:2px 6px;border-radius:5px;background:#eef3ff;color:#3458bf}.pill.ok{color:#177245;background:#edf8f1}.pill.bad,.pill.warn{background:#eef3ff;color:#3458bf}.pane{display:block}
-.decision-shell{border:1px solid var(--line);border-radius:13px;background:#fff;padding:17px}.decision-formula{display:flex;align-items:center;gap:12px;padding-bottom:13px;margin-bottom:12px;border-bottom:1px solid var(--line);font-size:11px;color:#72839b}.decision-source b{color:#526887;font-size:11px}.decision-source span{margin-left:8px;font-size:10px}.decision-arrow{color:#8c9db6}.decision-grid{display:grid;grid-template-columns:1fr .95fr 1.25fr;gap:0}.decision-card{padding:0 17px;border-right:1px solid var(--line);min-width:0}.decision-card:first-child{padding-left:0}.decision-card:last-child{padding-right:0;border:0}.decision-card h3{font-size:12px;margin-bottom:10px}.context-chip{display:inline-block;background:#eef3ff;color:#395ab2;border:1px solid #d5e0fc;padding:3px 7px;border-radius:5px;font-size:10px;margin-bottom:5px}.context-entry{margin-bottom:10px;border-bottom:1px solid #edf1f6;padding-bottom:7px}.action{background:#f3f6ff;border:1px solid #dbe4ff;border-radius:8px;padding:10px;margin-top:8px;font-size:12px}.actionbuttons{display:flex;gap:8px;margin-top:10px}.success{background:#f0f8f4;border:1px solid #d0e8db;border-radius:8px;padding:10px;font-size:11px;margin-top:8px}.review-label{margin-top:14px;padding-top:10px;border-top:1px dashed #dce3ef;font-size:10px;color:#7e8da4}.audit-line{display:flex;flex-wrap:wrap;gap:7px;font-size:10px;color:#7d8aa0;margin-top:17px;padding-top:13px;border-top:1px solid var(--line)}.audit-item{border:1px solid #e3e9f2;background:#fafcff;border-radius:5px;padding:4px 6px;max-width:100%;overflow-wrap:anywhere}.audit-arrow{align-self:center}.records{margin-top:12px;font-size:11px;color:#6d7f97}.records summary{cursor:pointer}.records-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:12px}.table{width:100%;border-collapse:collapse;font-size:10px}.table th,.table td{text-align:left;padding:6px;border-bottom:1px solid #e7ecf3}.foot{font-size:10px;color:#8995a6;display:flex;justify-content:space-between}.zone-count{font-size:10px;color:#99a5b5;margin-top:15px}
+:root {
+  --bg: #f5f7fa;
+  --panel: #fff;
+  --ink: #202b3d;
+  --muted: #778397;
+  --line: #e1e7ef;
+  --accent: #365de2;
+  --soft: #eff3ff;
+  --ok: #177245;
+  --warn: #9a6700;
+  --bad: #b42318;
+  --code: #192335;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font:
+    14px/1.55 "Segoe UI",
+    "Microsoft JhengHei",
+    sans-serif;
+}
+button {
+  font: inherit;
+  cursor: pointer;
+}
+button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+button:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #7294ff;
+  outline-offset: 3px;
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+h1 {
+  font-size: 25px;
+  letter-spacing: -0.7px;
+}
+h2 {
+  font-size: 18px;
+}
+h3 {
+  font-size: 13px;
+}
+.wrap {
+  max-width: 1760px;
+  margin: auto;
+  padding: 24px 28px 35px;
+}
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.kicker {
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  color: var(--muted);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.top p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.badge,
+.section-tag {
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2a987d;
+  margin-right: 7px;
+}
+.muted,
+.small {
+  color: var(--muted);
+}
+.small {
+  font-size: 11px;
+}
+.scenario-bar {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  margin-bottom: 10px;
+}
+.scenario-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  flex: 1;
+}
+.scenario-option {
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 9px;
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 12px;
+  color: var(--ink);
+  font-weight: 650;
+}
+.scenario-option span {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.scenario-option.active {
+  background: #eef3ff;
+  border-color: #9dafee;
+  color: #294bbd;
+}
+.primary,
+.secondary,
+.danger {
+  border-radius: 8px;
+  padding: 9px 15px;
+  font-weight: 650;
+  font-size: 12px;
+}
+.primary {
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+}
+.secondary {
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.danger {
+  background: #fff;
+  border: 1px solid var(--line);
+  color: #8f4848;
+}
+.scenario-details {
+  margin: 0 0 14px;
+  font-size: 12px;
+}
+.scenario-details summary {
+  color: var(--muted);
+  cursor: pointer;
+}
+.scenario-brief {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 12px 16px;
+  margin-top: 8px;
+}
+.scenario-brief .title {
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+.scenario-brief .body {
+  color: #516074;
+}
+.scenario-brief .goal {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 7px;
+}
+.processing {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 18px;
+}
+.processing-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 9px;
+}
+.processing-head h2 {
+  font-size: 13px;
+}
+.processing-head span {
+  font-size: 10px;
+  color: var(--muted);
+}
+.flow {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: 7px;
+}
+.flow-node {
+  display: block;
+  position: relative;
+  min-width: 0;
+}
+.flow-node:not(:last-child):after {
+  content: "›";
+  position: absolute;
+  right: -6px;
+  top: 7px;
+  color: #acb8cb;
+  z-index: 1;
+}
+.step {
+  width: 100%;
+  border: 1px solid #e6eaf1;
+  background: #f8fafc;
+  color: #8a96a8;
+  border-radius: 7px;
+  font-size: 10px;
+  padding: 8px 3px;
+  white-space: nowrap;
+}
+.step:before {
+  content: attr(data-number);
+  font-weight: 700;
+  margin-right: 4px;
+}
+.step.done {
+  color: #44618e;
+  background: #f0f4fb;
+}
+.step.active,
+.step.selected {
+  background: #edf2ff;
+  border-color: #9aafec;
+  color: #3458ce;
+}
+.step.done:before {
+  content: "✓";
+}
+.flow-description,
+.flow-connector {
+  display: none;
+}
+.flow-status {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.flow-details {
+  margin-top: 7px;
+  font-size: 11px;
+}
+.flow-details summary {
+  cursor: pointer;
+  color: #6b7c99;
+}
+.demo-main {
+  padding-top: 10px;
+}
+.card {
+  border-top: 1px solid var(--line);
+  padding: 10px 0;
+  background: #fff;
+}
+.card h2 {
+  font-size: 14px;
+  margin: 3px 0 7px;
+}
+#overview .card {
+  display: none;
+}
+#overview .card.revealed {
+  display: block;
+}
+.block-note {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.run-placeholder {
+  padding: 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.metric {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid #eef1f5;
+  padding: 5px 0;
+  font-size: 11px;
+}
+.metric span {
+  color: var(--muted);
+}
+.event,
+.incident,
+.evidence {
+  background: #f5f7fb;
+  border-radius: 7px;
+  padding: 8px 10px;
+  font-size: 12px;
+  margin: 6px 0;
+}
+.incident {
+  border-left: 3px solid var(--accent);
+}
+.incident.none {
+  border-color: #b8c3d2;
+}
+.event .sub {
+  font-size: 10px;
+  color: var(--muted);
+}
+.tool {
+  padding: 7px 0;
+  border-bottom: 1px solid #edf1f5;
+  font:
+    11px/1.6 Consolas,
+    monospace;
+  overflow-wrap: anywhere;
+}
+.empty {
+  padding: 18px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.pill {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: #eef3ff;
+  color: #3458bf;
+}
+.pill.ok {
+  color: #177245;
+  background: #edf8f1;
+}
+.pill.bad,
+.pill.warn {
+  background: #eef3ff;
+  color: #3458bf;
+}
+.pane {
+  display: block;
+}
+.decision-shell {
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #fff;
+  padding: 17px;
+}
+.decision-formula {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 13px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  color: #72839b;
+}
+.decision-source b {
+  color: #526887;
+  font-size: 11px;
+}
+.decision-source span {
+  margin-left: 8px;
+  font-size: 10px;
+}
+.decision-arrow {
+  color: #8c9db6;
+}
+.decision-grid {
+  display: grid;
+  grid-template-columns: 1fr 0.95fr 1.25fr;
+  gap: 0;
+}
+.decision-card {
+  padding: 0 17px;
+  border-right: 1px solid var(--line);
+  min-width: 0;
+}
+.decision-card:first-child {
+  padding-left: 0;
+}
+.decision-card:last-child {
+  padding-right: 0;
+  border: 0;
+}
+.decision-card h3 {
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+.context-chip {
+  display: inline-block;
+  background: #eef3ff;
+  color: #395ab2;
+  border: 1px solid #d5e0fc;
+  padding: 3px 7px;
+  border-radius: 5px;
+  font-size: 10px;
+  margin-bottom: 5px;
+}
+.context-entry {
+  margin-bottom: 10px;
+  border-bottom: 1px solid #edf1f6;
+  padding-bottom: 7px;
+}
+.action {
+  background: #f3f6ff;
+  border: 1px solid #dbe4ff;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 8px;
+  font-size: 12px;
+}
+.actionbuttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.success {
+  background: #f0f8f4;
+  border: 1px solid #d0e8db;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 11px;
+  margin-top: 8px;
+}
+.review-label {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px dashed #dce3ef;
+  font-size: 10px;
+  color: #7e8da4;
+}
+.audit-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  font-size: 10px;
+  color: #7d8aa0;
+  margin-top: 17px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+}
+.audit-item {
+  border: 1px solid #e3e9f2;
+  background: #fafcff;
+  border-radius: 5px;
+  padding: 4px 6px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.audit-arrow {
+  align-self: center;
+}
+.records {
+  margin-top: 12px;
+  font-size: 11px;
+  color: #6d7f97;
+}
+.records summary {
+  cursor: pointer;
+}
+.records-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 12px;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+.table th,
+.table td {
+  text-align: left;
+  padding: 6px;
+  border-bottom: 1px solid #e7ecf3;
+}
+.foot {
+  font-size: 10px;
+  color: #8995a6;
+  display: flex;
+  justify-content: space-between;
+}
+.zone-count {
+  font-size: 10px;
+  color: #99a5b5;
+  margin-top: 15px;
+}
 /* One viewport, one building world, contextual panels with their own scroll. */
-:root{--left:clamp(220px,19vw,270px);--right:clamp(260px,23vw,330px);--gap:12px}
-html,body{width:100%;height:100%;overflow:hidden}body{height:100vh;height:100dvh;overscroll-behavior:none;font-size:13px}
-.wrap{width:100%;max-width:none;height:100vh;height:100dvh;margin:0;padding:10px 12px;display:flex;flex-direction:column;min-height:0;overflow:hidden;gap:6px}
-.top{flex:none;margin:0;min-height:32px;gap:12px}.top h1{font-size:21px;line-height:1.2;letter-spacing:-.5px}.top .kicker,.top p{display:none}.top-actions{display:flex;align-items:center;gap:10px}.badge{font-size:11px;padding:5px 10px}.prd-link{display:inline-flex;gap:8px;align-items:center;text-decoration:none;color:#536b8b;background:white;padding:6px 12px;font-size:12px;white-space:nowrap}.prd-link:hover{background:#eef3fc}.prd-link:focus-visible{outline:3px solid #7294ff;outline-offset:3px}
-.scenario-bar{flex:none;margin:0;gap:8px}.scenario-options{gap:6px}.scenario-option{padding:6px 10px;font-size:12px;line-height:1.35}.scenario-option span{font-size:10px}.scenario-bar .primary{padding:7px 14px;font-size:12px}.scenario-details{position:relative;flex:none;margin:0;font-size:11px;line-height:16px}.scenario-details summary{width:max-content;cursor:pointer}.scenario-brief{position:absolute;top:100%;left:0;right:0;z-index:50;max-height:65vh;overflow:auto;overscroll-behavior:contain;box-shadow:0 8px 24px #405c8d25;margin-top:6px}
-.building-workspace{flex:1;min-height:0;display:flex;flex-direction:column;position:relative;isolation:isolate;border:1px solid #d9e3ee;border-radius:14px;background:#eef3f8;overflow:hidden}
-.workspace-body{position:relative;flex:1;min-height:0;overflow:hidden;background:radial-gradient(ellipse at 48% 58%,#e0eaf3 0%,#f4f7fa 75%)}
-.context-left,.context-right{position:absolute;top:var(--gap);bottom:var(--gap);z-index:3;min-height:0;overflow:hidden;border:1px solid #dce5ef;border-radius:11px;background:#fffffff2;box-shadow:0 6px 18px #54769b0c;display:flex;flex-direction:column}
-.context-left{left:var(--gap);width:var(--left)}.context-right{right:var(--gap);width:var(--right)}
-.inspector-panel{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:12px 14px;scrollbar-width:thin}.inspector-panel>h3{font-size:13px;margin-bottom:12px}.sidebar-title{font-size:10px;font-weight:400;color:#899ab1;margin-left:5px}.small{font-size:11px;overflow-wrap:anywhere}.detail-row{display:grid;grid-template-columns:75px minmax(0,1fr);gap:8px;padding:7px 0;border-bottom:1px solid #edf1f6;font-size:12px}.detail-row>span{color:var(--muted)}.detail-row b{font-weight:600;overflow-wrap:anywhere}.cap-list{display:flex;flex-wrap:wrap;gap:4px}.cap{font-size:10px;background:#f0f4fb;color:#506687;border-radius:4px;padding:2px 5px}.relation-mini{font-size:11px;color:#64758d;margin-top:10px;padding:8px;background:#f6f8fb;border-radius:7px;overflow-wrap:anywhere}.snapshot-note{font-size:11px;background:#edf3ff;color:#3458bf;padding:8px;border-radius:7px;margin-bottom:10px;overflow-wrap:anywhere}.context-read-list{margin-top:10px;font-size:11px}.context-read-list summary{cursor:pointer}.context-entry{font-size:11px}.context-chip{font-size:10px}
-.incident-context{flex:0 1 auto;min-height:0;max-height:30%;padding:12px 14px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;border-bottom:1px solid var(--line)}.incident-context h3{font-size:13px;margin-bottom:6px}.incident-context .empty{padding:5px 0}.incident-context .small{font-size:11px}.incident-context .evidence{font-size:11px}
-.decision-panel{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:12px 14px}.decision-panel h3{font-size:13px;margin-bottom:7px}.decision-inputs{font-size:10px;color:#7c8da7}.decision-panel .empty{padding:9px 0}.decision-panel .evidence,.decision-panel .action{font-size:12px}.review-label{margin-top:10px;padding-top:8px;font-size:10px}.actionbuttons{gap:6px}.actionbuttons button{padding:6px 10px;font-size:12px}
-.twin-scene{position:absolute;inset:0 calc(var(--right) + 2*var(--gap)) 0 calc(var(--left) + 2*var(--gap));z-index:1;min-width:0;overflow:hidden}
-.world-readings{position:absolute;top:var(--gap);left:calc(var(--left) + 2*var(--gap));right:calc(var(--right) + 2*var(--gap));display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;z-index:3;pointer-events:none}.world-reading{padding:6px 10px;background:#fffffff0;border:1px solid #dfe7f1;border-radius:8px;min-width:0}.hud-label{display:block;font-size:10px;color:#8293ac}.world-reading strong{display:block;font-size:18px;line-height:1.3;color:#354e71;white-space:nowrap}.world-reading small{display:none}
-.scene-top{position:absolute;top:68px;left:4px;right:4px;display:flex;align-items:center;justify-content:space-between;gap:8px;z-index:3;pointer-events:none}.scene-top strong{font-size:11px;color:#627b98}.scene-top small{display:none}.context-live-banner{visibility:hidden;background:#e5edffde;border:1px solid #cedcf9;border-radius:20px;padding:3px 7px;font-size:10px;color:#4869bc;max-width:60%}.context-live-banner.active{visibility:visible}
-.scene-stage{position:absolute;inset:91px 0 22px;display:flex;align-items:center;justify-content:center;min-height:0;overflow:visible}.scene-canvas{position:relative;flex:none;width:100%;height:100%;min-width:0;max-width:100%;max-height:100%}.scene-canvas svg{display:block;width:100%;height:100%;overflow:visible;pointer-events:none}.device-labels{position:absolute;inset:0;pointer-events:none}
-.scene-device{position:absolute;pointer-events:auto;width:116px;min-height:38px;padding:5px 7px;text-align:left;background:#fffffff5;border:1px solid #c4d5e5;border-radius:7px;box-shadow:0 3px 8px #6d8bad20;cursor:pointer;line-height:1.3;z-index:2;transition:border-color .15s,box-shadow .15s}.scene-device .name{display:block;font-size:11px;font-weight:700;color:#294666;white-space:nowrap}.scene-device .reading{display:block;font-size:11px;color:#617a98;margin-top:2px;white-space:nowrap}.scene-device:hover{border-color:#557cce;z-index:4}.scene-device.selected{border-color:#365de2;box-shadow:0 0 0 2px #365de235,0 4px 12px #6d8bad22}.scene-device.context-used{background:#eff4ff;border-color:#819ff0}.scene-device:focus-visible{outline:3px solid #7294ff;outline-offset:3px}
-.device-W01{left:3%;top:16%}.device-LS01{left:20%;top:44%}.device-DP01{left:2%;bottom:8%}.device-IRR01{left:50%;bottom:0;transform:translateX(-50%)}.device-AHU03{left:56%;top:0}.device-OCC03{right:0;top:46%}.device-EM01{right:2%;bottom:6%}
-.scene-marker .pin{fill:#6f8dab;stroke:white;stroke-width:3}.scene-marker .pin-ring{fill:none;stroke:#fff9;stroke-width:5}.scene-marker.selected .pin-ring{stroke:#8eaff0}.scene-marker.context-used .pin{fill:#365de2}.query-route{stroke:#365de2;stroke-width:2;stroke-dasharray:6 5;fill:none;opacity:0}.query-route.used{opacity:.65}.zone-text{font:700 14px 'Segoe UI',sans-serif;letter-spacing:1px;fill:#547594}.zone-sub{font:12px 'Microsoft JhengHei',sans-serif;fill:#718fa7}
-.scene-bottom{position:absolute;bottom:3px;left:4px;right:4px;display:flex;justify-content:space-between;font-size:10px;color:#798ea8;pointer-events:none}.legend-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#365de2;margin-right:5px}.scene-bottom span:last-child{display:none}
-.workspace-toolbar{position:relative;flex:none;padding:7px 10px;background:#fffffff5;border-top:1px solid #dce5ef;z-index:5;min-height:0}.toolbar-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:12px}.toolbar-top strong{font-size:11px}.toolbar-top .section-tag{font-size:9px;padding:1px 6px}.flow{gap:5px}.step{padding:5px 3px;font-size:10px;line-height:1.3;min-height:25px}.flow-node:not(:last-child):after{top:2px;right:-5px}.flow-description{display:none}.toolbar-status{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px}.toolbar-status .flow-status{font-size:10px;margin:0;line-height:14px}.flow-details{margin:0;font-size:10px;flex:none}.flow-details summary{cursor:pointer;color:#6b7c99;min-height:18px}
-.flow-details:not([open])>.demo-main{display:none}.flow-details .demo-main{position:absolute;bottom:calc(100% + 6px);left:10px;right:10px;height:min(380px,calc(100dvh - 170px));max-height:calc(100dvh - 170px);padding:0;display:flex;flex-direction:column;min-height:0;background:white;border:1px solid #ccd9e9;border-radius:10px;box-shadow:0 -6px 28px #405c8d30;z-index:20;overflow:hidden}.flow-panel-head{flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:#f7f9fc;border-bottom:1px solid var(--line);font-size:12px}.flow-panel-head button{padding:5px 12px;font-size:12px}.flow-panel-content{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:12px 16px}.card{padding:6px 0;border:0}.card h2{font-size:15px}.tool{font-size:12px}.metric{font-size:12px}.block-note{font-size:11px}.run-placeholder{font-size:12px}
-.workspace-footer{position:relative;flex:none;padding:3px 10px 5px;background:#f5f8fb;z-index:6;font-size:10px}.workspace-footer summary{cursor:pointer;font-size:10px}.workspace-footer>details[open]{position:absolute;bottom:0;left:10px;right:10px;padding:12px;max-height:min(380px,65dvh);overflow:auto;overscroll-behavior:contain;background:white;border:1px solid #dce5ef;border-radius:10px;box-shadow:0 -6px 28px #405c8d25}.foot{flex:none;margin:0;font-size:9px;line-height:12px;display:flex;justify-content:space-between;gap:10px}.table{overflow-wrap:anywhere}.audit-line{margin-top:12px}.records-grid{gap:12px}
-@keyframes state-breathe{0%,100%{box-shadow:0 0 0 1px #94b0ec35,0 0 4px #5d87e20a;background-color:#f3f7ff}50%{box-shadow:0 0 0 3px #88a7e875,0 0 16px #6b92e636;background-color:#e8f0ff}}
-@keyframes device-breathe{0%,100%{stroke:#7199e0;stroke-width:5;stroke-opacity:.4}50%{stroke:#4676d3;stroke-width:11;stroke-opacity:.95}}
-.state-pulse{animation:state-breathe 1s ease-in-out 3;border-radius:7px}.scene-marker.state-pulse{animation:none}.scene-marker.state-pulse .pin-ring{animation:device-breathe 1s ease-in-out 3}.scene-marker.state-pulse .pin{fill:#4676d3}#selectedDeviceState.state-pulse{display:inline-block;padding:1px 5px;margin:-1px -5px}#recentDeviceObservations.state-pulse{padding:3px;margin:-3px}.step.state-pulse{border-color:#8ca9e1}.world-reading strong.state-pulse{padding:0 3px;margin:0 -3px}
-@media(prefers-reduced-motion:reduce){.state-pulse{animation:none;box-shadow:0 0 0 2px #91ace5;background-color:#eef4ff}.scene-marker.state-pulse{box-shadow:none;background:none}.scene-marker.state-pulse .pin-ring{animation:none;stroke:#4f7ed6;stroke-width:3}}
-@media(max-width:1200px){:root{--left:210px;--right:265px;--gap:10px}.sidebar-title{display:none}.inspector-panel,.incident-context,.decision-panel{padding:10px 11px}.detail-row{grid-template-columns:68px minmax(0,1fr);font-size:11px}.scene-device{width:108px}.top h1{font-size:20px}.toolbar-top .sidebar-title{display:inline}.scene-top{gap:5px}.context-live-banner{font-size:9px}}
-@media(max-height:650px){.wrap{gap:4px;padding:8px 10px}.top{min-height:28px}.scenario-option{padding:5px 9px}.scenario-option span{display:none}.scenario-bar .primary{padding:5px 12px}.scenario-details{font-size:10px;line-height:14px}.world-reading{padding:4px 8px}.world-reading strong{font-size:16px}.scene-top{top:57px}.scene-stage{inset:76px 0 19px}.scene-device{width:104px;min-height:34px;padding:4px 6px}.toolbar-top{display:none}.workspace-toolbar{padding:6px 9px}.workspace-footer{padding:2px 9px 4px}.inspector-panel>h3{margin-bottom:8px}.incident-context{max-height:28%}.context-live-banner{padding:2px 5px}}
-@media(max-width:950px){:root{--left:185px;--right:230px;--gap:8px}.top .badge{display:none}.world-reading{padding:4px 6px}.world-reading strong{font-size:15px}.hud-label{font-size:9px}.scene-device{width:104px}.decision-panel .evidence,.decision-panel .action{font-size:11px}.flow{overflow:auto;grid-template-columns:repeat(9,minmax(104px,1fr));scrollbar-width:thin}.toolbar-status .flow-status{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.context-live-banner{max-width:65%;font-size:9px}.scene-top strong{font-size:10px}.foot>span:last-child{display:none}}
-@media(max-width:720px){:root{--left:165px;--right:200px}.scenario-options{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}.scenario-option span{display:none}.scenario-bar .primary{padding:5px 9px}.inspector-panel,.incident-context,.decision-panel{padding:8px}.detail-row{grid-template-columns:1fr;gap:2px;padding:5px 0}.world-reading strong{font-size:13px}.scene-top strong{display:none}.scene-device{width:94px}.scene-device .name,.scene-device .reading{font-size:10px}.scene-bottom{font-size:9px}.top h1{font-size:18px}.prd-link{font-size:11px;padding:5px 8px}}
-@media(max-width:580px){.context-left,.context-right{top:52%;bottom:8px;width:calc(50% - 12px)}.twin-scene{inset:0 10px 48%}.world-readings{left:10px;right:10px;top:8px}.scene-top{top:53px}.scene-stage{inset:67px 0 15px}.scene-device{width:92px;min-height:30px;padding:3px 5px}.scene-device .reading{font-size:9px}.scene-device .name{font-size:10px}.context-right .incident-context{max-height:28%}.scene-bottom{display:none}.top h1{font-size:16px}.flow-details summary{font-size:9px}.records-grid{grid-template-columns:1fr}.scenario-details summary{font-size:10px}.foot{font-size:8px}.toolbar-status{gap:6px}.toolbar-status .flow-status{font-size:9px}}
+:root {
+  --left: clamp(220px, 19vw, 270px);
+  --right: clamp(260px, 23vw, 330px);
+  --gap: 12px;
+}
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  height: 100vh;
+  height: 100dvh;
+  overscroll-behavior: none;
+  font-size: 13px;
+}
+.wrap {
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  gap: 6px;
+}
+.top {
+  flex: none;
+  margin: 0;
+  min-height: 32px;
+  gap: 12px;
+}
+.top h1 {
+  font-size: 21px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+.top .kicker,
+.top p {
+  display: none;
+}
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.badge {
+  font-size: 11px;
+  padding: 5px 10px;
+}
+.prd-link {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  text-decoration: none;
+  color: #536b8b;
+  background: white;
+  padding: 6px 12px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.prd-link:hover {
+  background: #eef3fc;
+}
+.prd-link:focus-visible {
+  outline: 3px solid #7294ff;
+  outline-offset: 3px;
+}
+.scenario-bar {
+  flex: none;
+  margin: 0;
+  gap: 8px;
+}
+.scenario-options {
+  gap: 6px;
+}
+.scenario-option {
+  padding: 6px 10px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.scenario-option span {
+  font-size: 10px;
+}
+.scenario-bar .primary {
+  padding: 7px 14px;
+  font-size: 12px;
+}
+.scenario-details {
+  position: relative;
+  flex: none;
+  margin: 0;
+  font-size: 11px;
+  line-height: 16px;
+}
+.scenario-details summary {
+  width: max-content;
+  cursor: pointer;
+}
+.scenario-brief {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  max-height: 65vh;
+  overflow: auto;
+  overscroll-behavior: contain;
+  box-shadow: 0 8px 24px #405c8d25;
+  margin-top: 6px;
+}
+.building-workspace {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  isolation: isolate;
+  border: 1px solid #d9e3ee;
+  border-radius: 14px;
+  background: #eef3f8;
+  overflow: hidden;
+}
+.workspace-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 48% 58%, #e0eaf3 0%, #f4f7fa 75%);
+}
+.context-left,
+.context-right {
+  position: absolute;
+  top: var(--gap);
+  bottom: var(--gap);
+  z-index: 3;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid #dce5ef;
+  border-radius: 11px;
+  background: #fffffff2;
+  box-shadow: 0 6px 18px #54769b0c;
+  display: flex;
+  flex-direction: column;
+}
+.context-left {
+  left: var(--gap);
+  width: var(--left);
+}
+.context-right {
+  right: var(--gap);
+  width: var(--right);
+}
+.inspector-panel {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 12px 14px;
+  scrollbar-width: thin;
+}
+.inspector-panel > h3 {
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+.sidebar-title {
+  font-size: 10px;
+  font-weight: 400;
+  color: #899ab1;
+  margin-left: 5px;
+}
+.small {
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.detail-row {
+  display: grid;
+  grid-template-columns: 75px minmax(0, 1fr);
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid #edf1f6;
+  font-size: 12px;
+}
+.detail-row > span {
+  color: var(--muted);
+}
+.detail-row b {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.cap-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.cap {
+  font-size: 10px;
+  background: #f0f4fb;
+  color: #506687;
+  border-radius: 4px;
+  padding: 2px 5px;
+}
+.relation-mini {
+  font-size: 11px;
+  color: #64758d;
+  margin-top: 10px;
+  padding: 8px;
+  background: #f6f8fb;
+  border-radius: 7px;
+  overflow-wrap: anywhere;
+}
+.snapshot-note {
+  font-size: 11px;
+  background: #edf3ff;
+  color: #3458bf;
+  padding: 8px;
+  border-radius: 7px;
+  margin-bottom: 10px;
+  overflow-wrap: anywhere;
+}
+.context-read-list {
+  margin-top: 10px;
+  font-size: 11px;
+}
+.context-read-list summary {
+  cursor: pointer;
+}
+.context-entry {
+  font-size: 11px;
+}
+.context-chip {
+  font-size: 10px;
+}
+.incident-context {
+  flex: 0 1 auto;
+  min-height: 0;
+  max-height: 30%;
+  padding: 12px 14px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  border-bottom: 1px solid var(--line);
+}
+.incident-context h3 {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+.incident-context .empty {
+  padding: 5px 0;
+}
+.incident-context .small {
+  font-size: 11px;
+}
+.incident-context .evidence {
+  font-size: 11px;
+}
+.decision-panel {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding: 12px 14px;
+}
+.decision-panel h3 {
+  font-size: 13px;
+  margin-bottom: 7px;
+}
+.decision-inputs {
+  font-size: 10px;
+  color: #7c8da7;
+}
+.decision-panel .empty {
+  padding: 9px 0;
+}
+.decision-panel .evidence,
+.decision-panel .action {
+  font-size: 12px;
+}
+.review-label {
+  margin-top: 10px;
+  padding-top: 8px;
+  font-size: 10px;
+}
+.actionbuttons {
+  gap: 6px;
+}
+.actionbuttons button {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+.twin-scene {
+  position: absolute;
+  inset: 0 calc(var(--right) + 2 * var(--gap)) 0 calc(var(--left) + 2 * var(--gap));
+  z-index: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.world-readings {
+  position: absolute;
+  top: var(--gap);
+  left: calc(var(--left) + 2 * var(--gap));
+  right: calc(var(--right) + 2 * var(--gap));
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  z-index: 3;
+  pointer-events: none;
+}
+.world-reading {
+  padding: 6px 10px;
+  background: #fffffff0;
+  border: 1px solid #dfe7f1;
+  border-radius: 8px;
+  min-width: 0;
+}
+.hud-label {
+  display: block;
+  font-size: 10px;
+  color: #8293ac;
+}
+.world-reading strong {
+  display: block;
+  font-size: 18px;
+  line-height: 1.3;
+  color: #354e71;
+  white-space: nowrap;
+}
+.world-reading small {
+  display: none;
+}
+.scene-top {
+  position: absolute;
+  top: 68px;
+  left: 4px;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  z-index: 3;
+  pointer-events: none;
+}
+.scene-top strong {
+  font-size: 11px;
+  color: #627b98;
+}
+.scene-top small {
+  display: none;
+}
+.context-live-banner {
+  visibility: hidden;
+  background: #e5edffde;
+  border: 1px solid #cedcf9;
+  border-radius: 20px;
+  padding: 3px 7px;
+  font-size: 10px;
+  color: #4869bc;
+  max-width: 60%;
+}
+.context-live-banner.active {
+  visibility: visible;
+}
+.scene-stage {
+  position: absolute;
+  inset: 91px 0 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  overflow: visible;
+}
+.scene-canvas {
+  position: relative;
+  flex: none;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  max-width: 100%;
+  max-height: 100%;
+}
+.scene-canvas svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.device-labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.scene-device {
+  position: absolute;
+  pointer-events: auto;
+  width: 116px;
+  min-height: 38px;
+  padding: 5px 7px;
+  text-align: left;
+  background: #fffffff5;
+  border: 1px solid #c4d5e5;
+  border-radius: 7px;
+  box-shadow: 0 3px 8px #6d8bad20;
+  cursor: pointer;
+  line-height: 1.3;
+  z-index: 2;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.scene-device .name {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #294666;
+  white-space: nowrap;
+}
+.scene-device .reading {
+  display: block;
+  font-size: 11px;
+  color: #617a98;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+.scene-device:hover {
+  border-color: #557cce;
+  z-index: 4;
+}
+.scene-device.selected {
+  border-color: #365de2;
+  box-shadow:
+    0 0 0 2px #365de235,
+    0 4px 12px #6d8bad22;
+}
+.scene-device.context-used {
+  background: #eff4ff;
+  border-color: #819ff0;
+}
+.scene-device:focus-visible {
+  outline: 3px solid #7294ff;
+  outline-offset: 3px;
+}
+.device-W01 {
+  left: 3%;
+  top: 16%;
+}
+.device-LS01 {
+  left: 20%;
+  top: 44%;
+}
+.device-DP01 {
+  left: 2%;
+  bottom: 8%;
+}
+.device-IRR01 {
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+}
+.device-AHU03 {
+  left: 56%;
+  top: 0;
+}
+.device-OCC03 {
+  right: 0;
+  top: 46%;
+}
+.device-EM01 {
+  right: 2%;
+  bottom: 6%;
+}
+.scene-marker .pin {
+  fill: #6f8dab;
+  stroke: white;
+  stroke-width: 3;
+}
+.scene-marker .pin-ring {
+  fill: none;
+  stroke: #fff9;
+  stroke-width: 5;
+}
+.scene-marker.selected .pin-ring {
+  stroke: #8eaff0;
+}
+.scene-marker.context-used .pin {
+  fill: #365de2;
+}
+.query-route {
+  stroke: #365de2;
+  stroke-width: 2;
+  stroke-dasharray: 6 5;
+  fill: none;
+  opacity: 0;
+}
+.query-route.used {
+  opacity: 0.65;
+}
+.zone-text {
+  font:
+    700 14px "Segoe UI",
+    sans-serif;
+  letter-spacing: 1px;
+  fill: #547594;
+}
+.zone-sub {
+  font:
+    12px "Microsoft JhengHei",
+    sans-serif;
+  fill: #718fa7;
+}
+.scene-bottom {
+  position: absolute;
+  bottom: 3px;
+  left: 4px;
+  right: 4px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #798ea8;
+  pointer-events: none;
+}
+.legend-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #365de2;
+  margin-right: 5px;
+}
+.scene-bottom span:last-child {
+  display: none;
+}
+.workspace-toolbar {
+  position: relative;
+  flex: none;
+  padding: 7px 10px;
+  background: #fffffff5;
+  border-top: 1px solid #dce5ef;
+  z-index: 5;
+  min-height: 0;
+}
+.toolbar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  gap: 12px;
+}
+.toolbar-top strong {
+  font-size: 11px;
+}
+.toolbar-top .section-tag {
+  font-size: 9px;
+  padding: 1px 6px;
+}
+.flow {
+  gap: 5px;
+}
+.step {
+  padding: 5px 3px;
+  font-size: 10px;
+  line-height: 1.3;
+  min-height: 25px;
+}
+.flow-node:not(:last-child):after {
+  top: 2px;
+  right: -5px;
+}
+.flow-description {
+  display: none;
+}
+.toolbar-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 4px;
+}
+.toolbar-status .flow-status {
+  font-size: 10px;
+  margin: 0;
+  line-height: 14px;
+}
+.flow-details {
+  margin: 0;
+  font-size: 10px;
+  flex: none;
+}
+.flow-details summary {
+  cursor: pointer;
+  color: #6b7c99;
+  min-height: 18px;
+}
+.flow-details:not([open]) > .demo-main {
+  display: none;
+}
+.flow-details .demo-main {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 10px;
+  right: 10px;
+  height: min(380px, calc(100dvh - 170px));
+  max-height: calc(100dvh - 170px);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: white;
+  border: 1px solid #ccd9e9;
+  border-radius: 10px;
+  box-shadow: 0 -6px 28px #405c8d30;
+  z-index: 20;
+  overflow: hidden;
+}
+.flow-panel-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #f7f9fc;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.flow-panel-head button {
+  padding: 5px 12px;
+  font-size: 12px;
+}
+.flow-panel-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 12px 16px;
+}
+.card {
+  padding: 6px 0;
+  border: 0;
+}
+.card h2 {
+  font-size: 15px;
+}
+.tool {
+  font-size: 12px;
+}
+.metric {
+  font-size: 12px;
+}
+.block-note {
+  font-size: 11px;
+}
+.run-placeholder {
+  font-size: 12px;
+}
+.workspace-footer {
+  position: relative;
+  flex: none;
+  padding: 3px 10px 5px;
+  background: #f5f8fb;
+  z-index: 6;
+  font-size: 10px;
+}
+.workspace-footer summary {
+  cursor: pointer;
+  font-size: 10px;
+}
+.workspace-footer > details[open] {
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+  right: 10px;
+  padding: 12px;
+  max-height: min(380px, 65dvh);
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: white;
+  border: 1px solid #dce5ef;
+  border-radius: 10px;
+  box-shadow: 0 -6px 28px #405c8d25;
+}
+.foot {
+  flex: none;
+  margin: 0;
+  font-size: 9px;
+  line-height: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.table {
+  overflow-wrap: anywhere;
+}
+.audit-line {
+  margin-top: 12px;
+}
+.records-grid {
+  gap: 12px;
+}
+@keyframes state-breathe {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px #94b0ec35,
+      0 0 4px #5d87e20a;
+    background-color: #f3f7ff;
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px #88a7e875,
+      0 0 16px #6b92e636;
+    background-color: #e8f0ff;
+  }
+}
+@keyframes device-breathe {
+  0%,
+  100% {
+    stroke: #7199e0;
+    stroke-width: 5;
+    stroke-opacity: 0.4;
+  }
+  50% {
+    stroke: #4676d3;
+    stroke-width: 11;
+    stroke-opacity: 0.95;
+  }
+}
+.state-pulse {
+  animation: state-breathe 1s ease-in-out 3;
+  border-radius: 7px;
+}
+.scene-marker.state-pulse {
+  animation: none;
+}
+.scene-marker.state-pulse .pin-ring {
+  animation: device-breathe 1s ease-in-out 3;
+}
+.scene-marker.state-pulse .pin {
+  fill: #4676d3;
+}
+#selectedDeviceState.state-pulse {
+  display: inline-block;
+  padding: 1px 5px;
+  margin: -1px -5px;
+}
+#recentDeviceObservations.state-pulse {
+  padding: 3px;
+  margin: -3px;
+}
+.step.state-pulse {
+  border-color: #8ca9e1;
+}
+.world-reading strong.state-pulse {
+  padding: 0 3px;
+  margin: 0 -3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .state-pulse {
+    animation: none;
+    box-shadow: 0 0 0 2px #91ace5;
+    background-color: #eef4ff;
+  }
+  .scene-marker.state-pulse {
+    box-shadow: none;
+    background: none;
+  }
+  .scene-marker.state-pulse .pin-ring {
+    animation: none;
+    stroke: #4f7ed6;
+    stroke-width: 3;
+  }
+}
+@media (max-width: 1200px) {
+  :root {
+    --left: 210px;
+    --right: 265px;
+    --gap: 10px;
+  }
+  .sidebar-title {
+    display: none;
+  }
+  .inspector-panel,
+  .incident-context,
+  .decision-panel {
+    padding: 10px 11px;
+  }
+  .detail-row {
+    grid-template-columns: 68px minmax(0, 1fr);
+    font-size: 11px;
+  }
+  .scene-device {
+    width: 108px;
+  }
+  .top h1 {
+    font-size: 20px;
+  }
+  .toolbar-top .sidebar-title {
+    display: inline;
+  }
+  .scene-top {
+    gap: 5px;
+  }
+  .context-live-banner {
+    font-size: 9px;
+  }
+}
+@media (max-height: 650px) {
+  .wrap {
+    gap: 4px;
+    padding: 8px 10px;
+  }
+  .top {
+    min-height: 28px;
+  }
+  .scenario-option {
+    padding: 5px 9px;
+  }
+  .scenario-option span {
+    display: none;
+  }
+  .scenario-bar .primary {
+    padding: 5px 12px;
+  }
+  .scenario-details {
+    font-size: 10px;
+    line-height: 14px;
+  }
+  .world-reading {
+    padding: 4px 8px;
+  }
+  .world-reading strong {
+    font-size: 16px;
+  }
+  .scene-top {
+    top: 57px;
+  }
+  .scene-stage {
+    inset: 76px 0 19px;
+  }
+  .scene-device {
+    width: 104px;
+    min-height: 34px;
+    padding: 4px 6px;
+  }
+  .toolbar-top {
+    display: none;
+  }
+  .workspace-toolbar {
+    padding: 6px 9px;
+  }
+  .workspace-footer {
+    padding: 2px 9px 4px;
+  }
+  .inspector-panel > h3 {
+    margin-bottom: 8px;
+  }
+  .incident-context {
+    max-height: 28%;
+  }
+  .context-live-banner {
+    padding: 2px 5px;
+  }
+}
+@media (max-width: 950px) {
+  :root {
+    --left: 185px;
+    --right: 230px;
+    --gap: 8px;
+  }
+  .top .badge {
+    display: none;
+  }
+  .world-reading {
+    padding: 4px 6px;
+  }
+  .world-reading strong {
+    font-size: 15px;
+  }
+  .hud-label {
+    font-size: 9px;
+  }
+  .scene-device {
+    width: 104px;
+  }
+  .decision-panel .evidence,
+  .decision-panel .action {
+    font-size: 11px;
+  }
+  .flow {
+    overflow: auto;
+    grid-template-columns: repeat(9, minmax(104px, 1fr));
+    scrollbar-width: thin;
+  }
+  .toolbar-status .flow-status {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .context-live-banner {
+    max-width: 65%;
+    font-size: 9px;
+  }
+  .scene-top strong {
+    font-size: 10px;
+  }
+  .foot > span:last-child {
+    display: none;
+  }
+}
+@media (max-width: 720px) {
+  :root {
+    --left: 165px;
+    --right: 200px;
+  }
+  .scenario-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+  .scenario-option span {
+    display: none;
+  }
+  .scenario-bar .primary {
+    padding: 5px 9px;
+  }
+  .inspector-panel,
+  .incident-context,
+  .decision-panel {
+    padding: 8px;
+  }
+  .detail-row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+    padding: 5px 0;
+  }
+  .world-reading strong {
+    font-size: 13px;
+  }
+  .scene-top strong {
+    display: none;
+  }
+  .scene-device {
+    width: 94px;
+  }
+  .scene-device .name,
+  .scene-device .reading {
+    font-size: 10px;
+  }
+  .scene-bottom {
+    font-size: 9px;
+  }
+  .top h1 {
+    font-size: 18px;
+  }
+  .prd-link {
+    font-size: 11px;
+    padding: 5px 8px;
+  }
+}
+@media (max-width: 580px) {
+  .context-left,
+  .context-right {
+    top: 52%;
+    bottom: 8px;
+    width: calc(50% - 12px);
+  }
+  .twin-scene {
+    inset: 0 10px 48%;
+  }
+  .world-readings {
+    left: 10px;
+    right: 10px;
+    top: 8px;
+  }
+  .scene-top {
+    top: 53px;
+  }
+  .scene-stage {
+    inset: 67px 0 15px;
+  }
+  .scene-device {
+    width: 92px;
+    min-height: 30px;
+    padding: 3px 5px;
+  }
+  .scene-device .reading {
+    font-size: 9px;
+  }
+  .scene-device .name {
+    font-size: 10px;
+  }
+  .context-right .incident-context {
+    max-height: 28%;
+  }
+  .scene-bottom {
+    display: none;
+  }
+  .top h1 {
+    font-size: 16px;
+  }
+  .flow-details summary {
+    font-size: 9px;
+  }
+  .records-grid {
+    grid-template-columns: 1fr;
+  }
+  .scenario-details summary {
+    font-size: 10px;
+  }
+  .foot {
+    font-size: 8px;
+  }
+  .toolbar-status {
+    gap: 6px;
+  }
+  .toolbar-status .flow-status {
+    font-size: 9px;
+  }
+}
 </style></head><body><div class="wrap">
 <header class="top"><div><div class="kicker">陞訊 · 面試 follow-up / concept prototype</div><h1>跨系統建築智慧整合</h1><p>以事件理解現場，以建築脈絡支持決策。</p></div><div class="top-actions"><a class="secondary prd-link" id="prdLink" target="_blank" rel="noopener" title="新分頁開啟完整專案 PRD">專案 PRD <span aria-hidden="true">↗</span></a><span class="badge"><span class="dot"></span>合成情境 · 本機模擬</span></div></header>
 <div class="scenario-bar"><div class="scenario-options" id="scenarioOptions">
@@ -129,574 +1623,1257 @@ html,body{width:100%;height:100%;overflow:hidden}body{height:100vh;height:100dvh
 <footer class="foot"><span>Observation 是 source of truth · AI 新增 inference · 操作需 human approval</span><span>Executable concept prototype · v21</span></footer></div><script>
 (() => {
   const STORE_KEY = 'csbi-demo-v12';
-  const $ = s => document.querySelector(s);
-  const $$ = s => [...document.querySelectorAll(s)];
-  const prdPageHtml = "\u003c!doctype html\u003e\u003chtml lang=\"zh-Hant\"\u003e\u003chead\u003e\u003cmeta charset=\"utf-8\"\u003e\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\"\u003e\u003ctitle\u003eCross-System Building Intelligence · 面試延伸 PRD v02\u003c/title\u003e\u003cstyle\u003e\n:root{color-scheme:light;--ink:#243249;--muted:#8290a5;--line:#e1e7ef;--blue:#4569bd}*{box-sizing:border-box}body{margin:0;background:#f6f8fb;color:var(--ink);font:15px/1.85 'Segoe UI','Microsoft JhengHei',sans-serif}.doc-header{max-width:1120px;margin:auto;padding:30px 24px 22px;border-bottom:1px solid var(--line)}.doc-header strong{font-size:13px;color:#567091}.doc-header span{display:block;font-size:11px;color:var(--muted);margin-top:4px}.doc-layout{display:grid;grid-template-columns:230px minmax(0,1fr);max-width:1120px;gap:35px;margin:auto;padding:28px 24px 70px}.doc-toc{position:sticky;top:24px;align-self:start;max-height:calc(100vh - 48px);overflow:auto;font-size:11px;padding-right:12px}.doc-toc h2{font-size:11px;letter-spacing:.08em;color:#8a98ab;margin:0 0 12px}.doc-toc a{display:block;text-decoration:none;color:#6f819b;padding:5px 0;line-height:1.5}.doc-toc a:hover{color:var(--blue)}article{background:white;border:1px solid var(--line);border-radius:12px;padding:32px 38px;min-width:0}h1{font-size:27px;line-height:1.3;letter-spacing:-.4px;margin:0 0 12px}h2{font-size:21px;line-height:1.5;margin:28px 0 14px;scroll-margin-top:24px}h3{font-size:16px;margin:22px 0 9px}h4{font-size:15px;margin:20px 0 8px}p{margin:10px 0 14px}ul{padding-left:23px;margin:8px 0 17px}li{padding-left:2px;margin:3px 0}code{font:12px/1.65 Consolas,'Courier New',monospace;background:#f0f4fa;padding:2px 5px;border-radius:4px;color:#4d6588}pre{background:#f3f6fa;border:1px solid #e5ebf3;border-radius:8px;padding:15px 18px;overflow:auto;margin:14px 0 20px}pre code{background:none;padding:0;color:#465d79;font-size:12px;white-space:pre}blockquote{margin:16px 0;border-left:3px solid #bdcfea;background:#f5f8fc;padding:10px 17px;color:#5f7593;border-radius:0 7px 7px 0;font-size:13px}blockquote p{margin:0}hr{border:0;border-top:1px solid #edf0f5;margin:28px 0}strong{font-weight:650}a:focus-visible{outline:2px solid #7b9beb;outline-offset:3px}.doc-footer{font-size:10px;color:#9aa7b8;padding-top:22px;border-top:1px solid var(--line);margin-top:32px}@media(max-width:800px){.doc-layout{display:block;padding:18px 14px 45px}.doc-toc{position:static;max-height:none;margin-bottom:18px;display:grid;grid-template-columns:1fr 1fr;gap:0 12px;font-size:10px}.doc-toc h2{grid-column:1/-1}article{padding:24px 20px}.doc-header{padding:22px 16px}h1{font-size:24px}h2{font-size:19px}}@media(max-width:450px){body{font-size:14px}.doc-toc{grid-template-columns:1fr}article{padding:20px 16px}pre{padding:12px}h1{font-size:22px}}\n\nhtml,body{height:100%;overflow:hidden}body{height:100vh;height:100dvh;display:flex;flex-direction:column}.doc-header{flex:0 0 auto;width:100%;padding-top:18px;padding-bottom:14px}.doc-layout{flex:1;min-height:0;width:100%;padding-top:18px;padding-bottom:18px;overflow:hidden}.doc-toc{position:static;max-height:none;min-height:0;height:100%;overflow:auto}article{min-height:0;height:100%;overflow:auto;overscroll-behavior:contain}.doc-toc{overscroll-behavior:contain}@media(max-width:800px){.doc-layout{display:flex;flex-direction:column;gap:14px}.doc-toc{flex:0 0 auto;height:auto;max-height:120px;overflow:auto;margin:0}article{flex:1;height:auto;min-height:0}.doc-header{padding:14px 16px}}\n\u003c/style\u003e\u003c/head\u003e\u003cbody\u003e\u003cheader class=\"doc-header\"\u003e\u003cstrong\u003eCross-System Building Intelligence / 專案 PRD\u003c/strong\u003e\u003cspan\u003eConcept Design + Executable Prototype · PRD v02 完整文件\u003c/span\u003e\u003c/header\u003e\u003cmain class=\"doc-layout\"\u003e\u003cnav class=\"doc-toc\" aria-label=\"文件章節目錄\"\u003e\u003ch2\u003e文件目錄\u003c/h2\u003e\u003ca href=\"#heading-3\"\u003e1. Executive Summary\u003c/a\u003e\u003ca href=\"#heading-4\"\u003e2. Background &amp; Problem\u003c/a\u003e\u003ca href=\"#heading-5\"\u003e3. Product Goal\u003c/a\u003e\u003ca href=\"#heading-10\"\u003e4. Target User\u003c/a\u003e\u003ca href=\"#heading-13\"\u003e5. Product Concept\u003c/a\u003e\u003ca href=\"#heading-17\"\u003e6. Core Flow\u003c/a\u003e\u003ca href=\"#heading-27\"\u003e7. Building Context / Structured Digital Twin\u003c/a\u003e\u003ca href=\"#heading-32\"\u003e8. Key Scenario A — Lake Risk\u003c/a\u003e\u003ca href=\"#heading-41\"\u003e9. Scenario B — HVAC / Energy / Occupancy\u003c/a\u003e\u003ca href=\"#heading-43\"\u003e10. Negative Scenarios\u003c/a\u003e\u003ca href=\"#heading-46\"\u003e11. AI Role &amp; Guardrails\u003c/a\u003e\u003ca href=\"#heading-50\"\u003e12. Persistence &amp; Auditability\u003c/a\u003e\u003ca href=\"#heading-57\"\u003e13. MVP Scope\u003c/a\u003e\u003ca href=\"#heading-60\"\u003e14. MVP Success Criteria\u003c/a\u003e\u003ca href=\"#heading-61\"\u003e15. Risks &amp; Assumptions\u003c/a\u003e\u003ca href=\"#heading-65\"\u003e16. Closing Note\u003c/a\u003e\u003c/nav\u003e\u003carticle\u003e\u003ch1 id=\"heading-1\"\u003eCross-System Building Intelligence\u003c/h1\u003e\u003ch2 id=\"heading-2\"\u003e面試延伸 PRD（Concept Design + Executable Prototype）\u003c/h2\u003e\u003cblockquote\u003e\u003cp\u003e本文件為面試後，基於公開智慧建築／智慧社區案例所做的概念驗證。\u003cbr\u003e內容用於展示跨系統後端設計、AI 應用邊界與可追蹤決策流程，不代表任何公司的實際 production architecture。\u003cbr\u003e本 Prototype 使用的 telemetry、threshold、device ID 與 scenario data 皆為 synthetic data。\u003c/p\u003e\u003c/blockquote\u003e\u003chr\u003e\u003ch2 id=\"heading-3\"\u003e1. Executive Summary\u003c/h2\u003e\u003cp\u003e智慧建築內通常同時存在多個彼此獨立的子系統，例如氣象、湖面監測、灌溉、排水、HVAC、能源與人流系統。這些系統各自能產生資料與警報，但對建築管理者而言，真正需要理解的往往不是「哪一個 sensor 超標」，而是：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003e多個分散事件是否其實共同描述同一個正在發生的問題？\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003cp\u003e本 Prototype 提出一個 \u003cstrong\u003eCross-System Building Intelligence\u003c/strong\u003e 概念：先由後端將不同來源的 telemetry 標準化為 Observation，再以 deterministic rule 產生 Event，透過跨系統 correlation 建立 Incident；AI 則在 Incident 已成立之後，查詢建築的 Structured Digital Twin / Building Context，取得相關設備、能力、關係、目前狀態與歷史資料，進一步形成 evidence-backed analysis 與 recommended action。\u003c/p\u003e\u003cp\u003e系統刻意將「事實」、「規則判定」、「AI 推論」與「人工確認」分層保存：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eObservation → Event → Incident → AI Analysis → Human Review → Action → New Observation\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e其中 Observation 是 source of truth。AI 可以補充解讀，但不能覆寫原始事實；AI 也不直接控制設備，任何動作需經人工核准後執行，操作後的新設備狀態再回到 Observation pipeline，形成可追蹤的閉環。\u003c/p\u003e\u003chr\u003e\u003ch2 id=\"heading-4\"\u003e2. Background &amp; Problem\u003c/h2\u003e\u003cp\u003e智慧建築的問題並不是缺少資料，而是資料通常分散在不同系統中。\u003c/p\u003e\u003cp\u003e例如同一個社區可能同時存在：\u003c/p\u003e\u003cul\u003e\u003cli\u003eWeather Station\u003c/li\u003e\u003cli\u003eLake Sensor\u003c/li\u003e\u003cli\u003eIrrigation Controller\u003c/li\u003e\u003cli\u003eDrainage Pump\u003c/li\u003e\u003cli\u003eHVAC\u003c/li\u003e\u003cli\u003eEnergy Meter\u003c/li\u003e\u003cli\u003eOccupancy Sensor\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e單一子系統可以知道自己的狀態，但不一定知道其他系統同時發生什麼。\u003c/p\u003e\u003cp\u003e因此管理者可能同時看到：\u003c/p\u003e\u003cul\u003e\u003cli\u003e強降雨警報\u003c/li\u003e\u003cli\u003e湖面水位升高\u003c/li\u003e\u003cli\u003e灌溉仍在執行\u003c/li\u003e\u003cli\u003e排水設備待機\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e若這些訊息分散在不同系統內，仍需要人自行判斷它們是否相關、是否需要處置，以及現場有哪些設備可以使用。\u003c/p\u003e\u003cp\u003e本 Prototype 想驗證的核心問題是：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003e能否把原本分散在不同 subsystem 的訊號整合成同一個 Incident，再結合 Building Context，讓 AI 產生可追溯、可人工審核的決策建議？\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003chr\u003e\u003ch2 id=\"heading-5\"\u003e3. Product Goal\u003c/h2\u003e\u003cp\u003e本 Prototype 主要驗證四件事。\u003c/p\u003e\u003ch3 id=\"heading-6\"\u003e3.1 Cross-System Understanding\u003c/h3\u003e\u003cp\u003e將不同來源的資料標準化後，以明確規則產生 Event，再透過時間、位置與語意關係，把多個 Event 關聯成同一個 Incident。\u003c/p\u003e\u003ch3 id=\"heading-7\"\u003e3.2 Building-Aware AI\u003c/h3\u003e\u003cp\u003eAI 不只看到：\u003c/p\u003e\u003cp\u003e\u003ccode\u003eHIGH_WATER_LEVEL\u003c/code\u003e\u003c/p\u003e\u003cp\u003e而能進一步查詢：\u003c/p\u003e\u003cul\u003e\u003cli\u003eIncident 發生在哪個 Zone\u003c/li\u003e\u003cli\u003e該區域有哪些設備\u003c/li\u003e\u003cli\u003e設備目前是什麼狀態\u003c/li\u003e\u003cli\u003e設備有哪些 capability\u003c/li\u003e\u003cli\u003e哪些設備彼此相關\u003c/li\u003e\u003cli\u003e最近有哪些 Observation\u003c/li\u003e\u003c/ul\u003e\u003ch3 id=\"heading-8\"\u003e3.3 Evidence-Backed Analysis\u003c/h3\u003e\u003cp\u003eAI 產生的結論需能回溯到實際 Observation / Event 與 Building Context，而不是只有自然語言敘述。\u003c/p\u003e\u003ch3 id=\"heading-9\"\u003e3.4 Human-in-the-loop Action\u003c/h3\u003e\u003cp\u003eAI recommendation 不直接等於 execution。\u003c/p\u003e\u003cp\u003e所有具體操作需經：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eAI Recommendation → Backend Validation → Human Approval → Action → New Observation\u003c/strong\u003e\u003c/p\u003e\u003chr\u003e\u003ch2 id=\"heading-10\"\u003e4. Target User\u003c/h2\u003e\u003ch3 id=\"heading-11\"\u003e主要使用者：Building Operator / Facility Manager\u003c/h3\u003e\u003cp\u003e他需要快速理解：\u003c/p\u003e\u003cul\u003e\u003cli\u003e現在發生什麼\u003c/li\u003e\u003cli\u003e哪些系統彼此相關\u003c/li\u003e\u003cli\u003eAI 為什麼做出這個判斷\u003c/li\u003e\u003cli\u003e現場有哪些設備可以操作\u003c/li\u003e\u003cli\u003e下一步應該檢查或處置什麼\u003c/li\u003e\u003c/ul\u003e\u003ch3 id=\"heading-12\"\u003e次要使用者：Building Engineer\u003c/h3\u003e\u003cp\u003e需要進一步確認：\u003c/p\u003e\u003cul\u003e\u003cli\u003eAI 使用了哪些 evidence\u003c/li\u003e\u003cli\u003e判定規則是什麼\u003c/li\u003e\u003cli\u003e哪些 device capability 支撐 recommendation\u003c/li\u003e\u003cli\u003e過去的操作與結果是否可追溯\u003c/li\u003e\u003c/ul\u003e\u003chr\u003e\u003ch2 id=\"heading-13\"\u003e5. Product Concept\u003c/h2\u003e\u003cp\u003e整體系統可以分成三個相互關聯，但角色不同的部分。\u003c/p\u003e\u003ch3 id=\"heading-14\"\u003eA. Incident Processing\u003c/h3\u003e\u003cp\u003e負責回答：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003e發生了什麼？\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003cp\u003e流程：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eTelemetry → Normalized Observation → Deterministic Event → Cross-System Incident\u003c/strong\u003e\u003c/p\u003e\u003ch3 id=\"heading-15\"\u003eB. Structured Digital Twin / Building Context\u003c/h3\u003e\u003cp\u003e負責回答：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003e現場有什麼？在哪裡？可以做什麼？目前狀態如何？\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003cp\u003e它不是事件資料流程中的一步，而是一個持續存在的 context layer。\u003c/p\u003e\u003cp\u003e結構：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eBuilding → Zone → Device → Capability → Relationship → Current State / History\u003c/strong\u003e\u003c/p\u003e\u003ch3 id=\"heading-16\"\u003eC. AI Decision &amp; Audit\u003c/h3\u003e\u003cp\u003eAI 同時取得：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eIncident Evidence + Building Context\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e再產生：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eStructured Analysis → Recommended Action → Human Review → Action Result\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e因此本 Prototype 的核心關係是：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eIncident 告訴 AI 發生了什麼；Building Context 告訴 AI 現場有什麼可以理解與操作；兩者一起才形成 recommendation。\u003c/strong\u003e\u003c/p\u003e\u003chr\u003e\u003ch2 id=\"heading-17\"\u003e6. Core Flow\u003c/h2\u003e\u003ch3 id=\"heading-18\"\u003eStep 1 — Telemetry Ingestion\u003c/h3\u003e\u003cp\u003e接收不同 subsystem 的原始 telemetry。\u003c/p\u003e\u003ch3 id=\"heading-19\"\u003eStep 2 — Normalized Observation\u003c/h3\u003e\u003cp\u003e將不同格式資料轉成統一 Observation schema。\u003c/p\u003e\u003cp\u003eObservation 是 source of truth，保存：\u003c/p\u003e\u003cul\u003e\u003cli\u003edevice\u003c/li\u003e\u003cli\u003ezone\u003c/li\u003e\u003cli\u003emetric\u003c/li\u003e\u003cli\u003evalue\u003c/li\u003e\u003cli\u003eobserved_at\u003c/li\u003e\u003cli\u003eraw payload\u003c/li\u003e\u003c/ul\u003e\u003ch3 id=\"heading-20\"\u003eStep 3 — Deterministic Event Detection\u003c/h3\u003e\u003cp\u003eRule Engine 根據明確門檻產生 Event。\u003c/p\u003e\u003cp\u003e例如：\u003c/p\u003e\u003cul\u003e\u003cli\u003erainfall &gt; threshold → \u003ccode\u003eHEAVY_RAINFALL\u003c/code\u003e\u003c/li\u003e\u003cli\u003elake water level &gt; threshold → \u003ccode\u003eHIGH_WATER_LEVEL\u003c/code\u003e\u003c/li\u003e\u003cli\u003eirrigation = RUNNING → \u003ccode\u003eIRRIGATION_ACTIVE\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003e\u003cp\u003eAI 不參與這一步。\u003c/p\u003e\u003ch3 id=\"heading-21\"\u003eStep 4 — Incident Correlation\u003c/h3\u003e\u003cp\u003eCorrelation Engine 根據：\u003c/p\u003e\u003cul\u003e\u003cli\u003eTemporal relation\u003c/li\u003e\u003cli\u003eSpatial relation\u003c/li\u003e\u003cli\u003eSemantic relation\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e將多個 Event 整合成 Incident。\u003c/p\u003e\u003ch3 id=\"heading-22\"\u003eStep 5 — AI Context Retrieval\u003c/h3\u003e\u003cp\u003eIncident 成立後，AI 使用 tools 查詢 Building Context，例如：\u003c/p\u003e\u003cul\u003e\u003cli\u003e\u003ccode\u003eget_devices_in_zone()\u003c/code\u003e\u003c/li\u003e\u003cli\u003e\u003ccode\u003eget_related_devices()\u003c/code\u003e\u003c/li\u003e\u003cli\u003e\u003ccode\u003eget_device_capabilities()\u003c/code\u003e\u003c/li\u003e\u003cli\u003e\u003ccode\u003eget_device_state()\u003c/code\u003e\u003c/li\u003e\u003cli\u003e\u003ccode\u003eget_recent_observations()\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003e\u003ch3 id=\"heading-23\"\u003eStep 6 — Structured AI Analysis\u003c/h3\u003e\u003cp\u003eAI 將 evidence 分成兩類：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003e事件證據\u003c/strong\u003e\u003c/p\u003e\u003cul\u003e\u003cli\u003eObservation\u003c/li\u003e\u003cli\u003eEvent\u003c/li\u003e\u003cli\u003eIncident\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e\u003cstrong\u003e建築脈絡\u003c/strong\u003e\u003c/p\u003e\u003cul\u003e\u003cli\u003eZone\u003c/li\u003e\u003cli\u003eDevice\u003c/li\u003e\u003cli\u003eCapability\u003c/li\u003e\u003cli\u003eRelationship\u003c/li\u003e\u003cli\u003eCurrent State\u003c/li\u003e\u003cli\u003eHistory\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e輸出：\u003c/p\u003e\u003cul\u003e\u003cli\u003esummary\u003c/li\u003e\u003cli\u003ehypotheses\u003c/li\u003e\u003cli\u003eevidence references\u003c/li\u003e\u003cli\u003erecommended actions\u003c/li\u003e\u003c/ul\u003e\u003ch3 id=\"heading-24\"\u003eStep 7 — Human Review\u003c/h3\u003e\u003cp\u003e管理者審核 AI recommendation：\u003c/p\u003e\u003cul\u003e\u003cli\u003eApprove\u003c/li\u003e\u003cli\u003eReject\u003c/li\u003e\u003cli\u003eNeed Investigation\u003c/li\u003e\u003c/ul\u003e\u003ch3 id=\"heading-25\"\u003eStep 8 — Action\u003c/h3\u003e\u003cp\u003e只有核准後才能進入 Action Service。\u003c/p\u003e\u003ch3 id=\"heading-26\"\u003eStep 9 — Feedback to Observation Pipeline\u003c/h3\u003e\u003cp\u003e設備狀態改變後，產生新的 Observation。\u003c/p\u003e\u003cp\u003e因此形成：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eObserve → Detect → Understand → Recommend → Approve → Act → Observe Again\u003c/strong\u003e\u003c/p\u003e\u003chr\u003e\u003ch2 id=\"heading-27\"\u003e7. Building Context / Structured Digital Twin\u003c/h2\u003e\u003cp\u003e本 Prototype 的 Digital Twin 不以 3D 模型本身為核心。\u003c/p\u003e\u003cp\u003e核心是建立一份 \u003cstrong\u003e可被後端與 AI 查詢的建築數位狀態模型\u003c/strong\u003e。\u003c/p\u003e\u003ch3 id=\"heading-28\"\u003e資產結構\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eBuilding\n├── Lake Zone\n│   ├── Weather Station W01\n│   ├── Lake Sensor LS01\n│   ├── Irrigation IRR01\n│   └── Drainage Pump DP01\n│\n└── Tower A\n    └── Floor 3\n        ├── AHU03\n        ├── OCC03\n        └── EM01\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\"heading-29\"\u003eDevice Capability\u003c/h3\u003e\u003cp\u003e例如：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eIRR01\n- START\n- STOP\n- GET_STATUS\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\"heading-30\"\u003eDevice Relationship\u003c/h3\u003e\u003cp\u003e例如：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eW01   → affects    → Lake Zone\nLS01  → monitors   → Lake Zone\nIRR01 → operates   → Lake Zone\nDP01  → controls   → Lake Water Level\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\"heading-31\"\u003eCurrent State / History\u003c/h3\u003e\u003cp\u003e例如：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eIRR01 state = RUNNING\nDP01 state  = STANDBY\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eAI 因此不需要「猜」現場有沒有排水設備，也不需要「猜」IRR01 能不能停止。\u003c/p\u003e\u003cp\u003eRecommendation 必須建立在實際 Building Context 上。\u003c/p\u003e\u003chr\u003e\u003ch2 id=\"heading-32\"\u003e8. Key Scenario A — Lake Risk\u003c/h2\u003e\u003ch3 id=\"heading-33\"\u003eInput\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eRainfall          38.2 mm/h\nLake Water Level  82 cm\nIRR01             RUNNING\nDP01              STANDBY\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\"heading-34\"\u003eDeterministic Events\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eHEAVY_RAINFALL\nHIGH_WATER_LEVEL\nIRRIGATION_ACTIVE\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\"heading-35\"\u003eIncident\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eWEATHER_RELATED_LAKE_RISK\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\"heading-36\"\u003eAI Context Retrieval\u003c/h3\u003e\u003cp\u003eAI 查詢：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eLake Zone devices\nIRR01 capability\nIRR01 current state\nDP01 current state\nRecent Observation history\u003c/code\u003e\u003c/pre\u003e\u003cp\u003e取得：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eIRR01 capability = STOP\nIRR01 state      = RUNNING\nDP01 state       = STANDBY\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\"heading-37\"\u003eStructured Analysis\u003c/h3\u003e\u003cp\u003e事件證據：\u003c/p\u003e\u003cul\u003e\u003cli\u003eRainfall = 38.2 mm/h\u003c/li\u003e\u003cli\u003eLake water level = 82 cm\u003c/li\u003e\u003cli\u003eIrrigation = RUNNING\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e建築脈絡：\u003c/p\u003e\u003cul\u003e\u003cli\u003eIRR01 位於 Lake Zone\u003c/li\u003e\u003cli\u003eIRR01 支援 STOP\u003c/li\u003e\u003cli\u003eIRR01 目前為 RUNNING\u003c/li\u003e\u003cli\u003eDP01 與 Lake water level control 有關\u003c/li\u003e\u003cli\u003eDP01 目前為 STANDBY\u003c/li\u003e\u003c/ul\u003e\u003ch3 id=\"heading-38\"\u003eRecommendation\u003c/h3\u003e\u003cp\u003e\u003cstrong\u003ePause IRR01 Irrigation\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e可執行依據：\u003c/p\u003e\u003cul\u003e\u003cli\u003e\u003ccode\u003eIRR01 capability = STOP\u003c/code\u003e\u003c/li\u003e\u003cli\u003e\u003ccode\u003eIRR01 current state = RUNNING\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003e\u003ch3 id=\"heading-39\"\u003eHuman Approval\u003c/h3\u003e\u003cp\u003e管理者核准後執行：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eIRR01\nRUNNING → STOPPED\u003c/code\u003e\u003c/pre\u003e\u003ch3 id=\"heading-40\"\u003eFeedback\u003c/h3\u003e\u003cp\u003e設備狀態變化產生：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eOBS-036\nIRR01.status = STOPPED\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eOBS-036 再回到 Observation pipeline。\u003c/p\u003e\u003chr\u003e\u003ch2 id=\"heading-41\"\u003e9. Scenario B — HVAC / Energy / Occupancy\u003c/h2\u003e\u003cp\u003e第二個情境用於驗證同一套架構是否可以跨 domain 使用。\u003c/p\u003e\u003ch3 id=\"heading-42\"\u003eInput\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eOutdoor temperature  27°C\nOccupancy            LOW\nAHU03 power          92 kW\nBuilding energy      186 kW\u003c/code\u003e\u003c/pre\u003e\u003cp\u003e系統將 HVAC、Energy、Occupancy 與 Weather 資料整合後，形成值得進一步調查的 Incident。\u003c/p\u003e\u003cp\u003eAI 可以提出：\u003c/p\u003e\u003cul\u003e\u003cli\u003e檢查 AHU schedule\u003c/li\u003e\u003cli\u003e檢查控制設定\u003c/li\u003e\u003cli\u003e檢視近期運轉趨勢\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e但不能直接宣稱：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003eAHU03 已故障。\u003c/p\u003e\u003c/blockquote\u003e\u003cp\u003e因為目前 evidence 只能支持「值得調查」，不足以支持「設備故障」這個事實判定。\u003c/p\u003e\u003chr\u003e\u003ch2 id=\"heading-43\"\u003e10. Negative Scenarios\u003c/h2\u003e\u003cp\u003ePrototype 不只驗證「何時應該產生 Incident」，也驗證「何時應該保持安靜」。\u003c/p\u003e\u003ch3 id=\"heading-44\"\u003eNegative C — Heavy Rain Only\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eRainfall = 38.2 mm/h\nLake water level = 58 cm\u003c/code\u003e\u003c/pre\u003e\u003cp\u003e預期：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003e不建立 Lake Risk Incident\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e因為只有單一強降雨訊號，沒有足夠的跨系統 evidence。\u003c/p\u003e\u003ch3 id=\"heading-45\"\u003eNegative D — Legitimate HVAC Load\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eOutdoor temperature = 35°C\nOccupancy = HIGH\nHVAC load = HIGH\u003c/code\u003e\u003c/pre\u003e\u003cp\u003e預期：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003e不直接判定 HVAC anomaly\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e因為高外溫與高 occupancy 可以合理解釋較高的 HVAC load。\u003c/p\u003e\u003chr\u003e\u003ch2 id=\"heading-46\"\u003e11. AI Role &amp; Guardrails\u003c/h2\u003e\u003ch3 id=\"heading-47\"\u003eAI 負責\u003c/h3\u003e\u003cul\u003e\u003cli\u003e理解 Incident\u003c/li\u003e\u003cli\u003e查詢 Building Context\u003c/li\u003e\u003cli\u003e整合跨系統 context\u003c/li\u003e\u003cli\u003e建立 hypothesis\u003c/li\u003e\u003cli\u003e引用 evidence\u003c/li\u003e\u003cli\u003e產生 recommendation\u003c/li\u003e\u003c/ul\u003e\u003ch3 id=\"heading-48\"\u003eAI 不負責\u003c/h3\u003e\u003cul\u003e\u003cli\u003e修改 Observation\u003c/li\u003e\u003cli\u003e直接 SQL database\u003c/li\u003e\u003cli\u003e自行建立不存在的設備\u003c/li\u003e\u003cli\u003e把 hypothesis 當成 verified fact\u003c/li\u003e\u003cli\u003e直接操作設備\u003c/li\u003e\u003cli\u003e用無校準依據的精準 confidence score 製造假精確\u003c/li\u003e\u003c/ul\u003e\u003ch3 id=\"heading-49\"\u003eDesign Principle\u003c/h3\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003eAI can enrich the source of truth, but cannot overwrite it.\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003chr\u003e\u003ch2 id=\"heading-50\"\u003e12. Persistence &amp; Auditability\u003c/h2\u003e\u003cp\u003e系統分層保存：\u003c/p\u003e\u003ch3 id=\"heading-51\"\u003eObservation\u003c/h3\u003e\u003cp\u003e原始事實。\u003c/p\u003e\u003ch3 id=\"heading-52\"\u003eEvent\u003c/h3\u003e\u003cp\u003edeterministic rule output。\u003c/p\u003e\u003ch3 id=\"heading-53\"\u003eIncident\u003c/h3\u003e\u003cp\u003ecross-system correlation result。\u003c/p\u003e\u003ch3 id=\"heading-54\"\u003eAnalysis\u003c/h3\u003e\u003cp\u003eAI inference，保留 evidence reference。\u003c/p\u003e\u003ch3 id=\"heading-55\"\u003eAction\u003c/h3\u003e\u003cp\u003e包含 recommendation、human approval、execution result。\u003c/p\u003e\u003ch3 id=\"heading-56\"\u003eFeedback\u003c/h3\u003e\u003cp\u003e保存人工確認與實際結果。\u003c/p\u003e\u003cp\u003e因此若 AI 判斷錯誤，系統仍可保留：\u003c/p\u003e\u003cul\u003e\u003cli\u003e當時的原始 Observation\u003c/li\u003e\u003cli\u003eRule Engine 產生的 Event\u003c/li\u003e\u003cli\u003e當時建立的 Incident\u003c/li\u003e\u003cli\u003eAI 當時使用的 evidence\u003c/li\u003e\u003cli\u003eAI recommendation\u003c/li\u003e\u003cli\u003eHuman decision\u003c/li\u003e\u003cli\u003eAction result\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e而不污染 source of truth。\u003c/p\u003e\u003chr\u003e\u003ch2 id=\"heading-57\"\u003e13. MVP Scope\u003c/h2\u003e\u003ch3 id=\"heading-58\"\u003eIn Scope\u003c/h3\u003e\u003cul\u003e\u003cli\u003eSynthetic telemetry\u003c/li\u003e\u003cli\u003eData normalization\u003c/li\u003e\u003cli\u003eObservation persistence\u003c/li\u003e\u003cli\u003eDeterministic event rules\u003c/li\u003e\u003cli\u003eCross-system incident correlation\u003c/li\u003e\u003cli\u003eStructured Building Context\u003c/li\u003e\u003cli\u003eAI tool retrieval\u003c/li\u003e\u003cli\u003eEvidence-backed structured analysis\u003c/li\u003e\u003cli\u003eHuman approval\u003c/li\u003e\u003cli\u003eAction execution\u003c/li\u003e\u003cli\u003eNew Observation feedback loop\u003c/li\u003e\u003cli\u003eScenario A\u003c/li\u003e\u003cli\u003eScenario B\u003c/li\u003e\u003cli\u003eTwo negative scenarios\u003c/li\u003e\u003c/ul\u003e\u003ch3 id=\"heading-59\"\u003eNon-Goals\u003c/h3\u003e\u003cp\u003e本 Prototype 不做：\u003c/p\u003e\u003cul\u003e\u003cli\u003e真實 IoT hardware integration\u003c/li\u003e\u003cli\u003e真實建築控制\u003c/li\u003e\u003cli\u003e完整 3D engine\u003c/li\u003e\u003cli\u003eNVIDIA Omniverse integration\u003c/li\u003e\u003cli\u003eDocument RAG\u003c/li\u003e\u003cli\u003eML model training\u003c/li\u003e\u003cli\u003eKafka / MQTT production infrastructure\u003c/li\u003e\u003cli\u003e完整 authentication / RBAC\u003c/li\u003e\u003cli\u003e大型 monitoring dashboard\u003c/li\u003e\u003cli\u003e完整 BIM / production Digital Twin\u003c/li\u003e\u003c/ul\u003e\u003chr\u003e\u003ch2 id=\"heading-60\"\u003e14. MVP Success Criteria\u003c/h2\u003e\u003cp\u003e本 Prototype 完成的標準不是功能數量，而是能完整展示一條 vertical slice：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003e3+ Subsystems\n↓\nTelemetry\n↓\nNormalized Observation\n↓\nDeterministic Events\n↓\nCross-System Incident\n↓\nAI retrieves Building Context\n↓\nEvidence-backed Analysis\n↓\nDevice-specific Recommendation\n↓\nHuman Approval\n↓\nAction\n↓\nNew Observation\u003c/code\u003e\u003c/pre\u003e\u003cp\u003e並額外展示：\u003c/p\u003e\u003cul\u003e\u003cli\u003e一個第二 domain scenario\u003c/li\u003e\u003cli\u003e兩個 negative scenarios\u003c/li\u003e\u003cli\u003eAI conclusion 可追溯至 evidence\u003c/li\u003e\u003cli\u003eBuilding Context 能實際支撐 recommendation\u003c/li\u003e\u003cli\u003eAction 後的新設備狀態能回到 pipeline\u003c/li\u003e\u003c/ul\u003e\u003chr\u003e\u003ch2 id=\"heading-61\"\u003e15. Risks &amp; Assumptions\u003c/h2\u003e\u003ch3 id=\"heading-62\"\u003eSynthetic Data\u003c/h3\u003e\u003cp\u003e本 Prototype 未取得真實智慧建築 telemetry，因此所有 scenario data、threshold 與 device identifier 皆為 synthetic。\u003c/p\u003e\u003ch3 id=\"heading-63\"\u003eDomain Assumption\u003c/h3\u003e\u003cp\u003ePrototype 以公開案例作為研究起點，用於驗證系統設計思路，不代表真實建築現場流程或任何公司的實際架構。\u003c/p\u003e\u003ch3 id=\"heading-64\"\u003eAI Limitation\u003c/h3\u003e\u003cp\u003eAI output 為 decision support，而非安全關鍵設備的自動控制依據。\u003c/p\u003e\u003cp\u003e在真實 production environment 中，仍需要：\u003c/p\u003e\u003cul\u003e\u003cli\u003edomain-specific validation\u003c/li\u003e\u003cli\u003edevice permission control\u003c/li\u003e\u003cli\u003esafety rules\u003c/li\u003e\u003cli\u003eoperator approval\u003c/li\u003e\u003cli\u003emonitoring and rollback mechanism\u003c/li\u003e\u003c/ul\u003e\u003chr\u003e\u003ch2 id=\"heading-65\"\u003e16. Closing Note\u003c/h2\u003e\u003cp\u003e這個 Prototype 的目的不是在短時間內重新打造一套完整智慧建築平台。\u003c/p\u003e\u003cp\u003e我更希望驗證的是：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003e面對一個原本陌生的智慧建築 domain，是否能快速理解問題、拆出資料層與系統邊界，建立可執行的 backend architecture，並判斷 AI 適合介入的位置與不應跨越的邊界。\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003cp\u003e因此，我將重點放在：\u003c/p\u003e\u003cul\u003e\u003cli\u003e跨系統資料整合\u003c/li\u003e\u003cli\u003eSource of Truth\u003c/li\u003e\u003cli\u003eStructured Digital Twin / Building Context\u003c/li\u003e\u003cli\u003eEvidence-backed AI reasoning\u003c/li\u003e\u003cli\u003eHuman-in-the-loop\u003c/li\u003e\u003cli\u003eAuditable feedback loop\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e而不是把 AI 當成單純的聊天介面，或讓模型直接取代原有的 deterministic system。\u003c/p\u003e\u003cfooter class=\"doc-footer\"\u003e來源：Cross-System-Building-Intelligence-Interview-PRD-v02.md\u003c/footer\u003e\u003c/article\u003e\u003c/main\u003e\u003c/body\u003e\u003c/html\u003e";
-  $('#prdLink').href=URL.createObjectURL(new Blob([prdPageHtml],{type:'text/html;charset=utf-8'}));
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => [...document.querySelectorAll(s)];
+  const prdPageHtml =
+    '\u003c!doctype html\u003e\u003chtml lang="zh-Hant"\u003e\u003chead\u003e\u003cmeta charset="utf-8"\u003e\u003cmeta name="viewport" content="width=device-width,initial-scale=1"\u003e\u003ctitle\u003eCross-System Building Intelligence · 面試延伸 PRD v02\u003c/title\u003e\u003cstyle\u003e\n:root{color-scheme:light;--ink:#243249;--muted:#8290a5;--line:#e1e7ef;--blue:#4569bd}*{box-sizing:border-box}body{margin:0;background:#f6f8fb;color:var(--ink);font:15px/1.85 \'Segoe UI\',\'Microsoft JhengHei\',sans-serif}.doc-header{max-width:1120px;margin:auto;padding:30px 24px 22px;border-bottom:1px solid var(--line)}.doc-header strong{font-size:13px;color:#567091}.doc-header span{display:block;font-size:11px;color:var(--muted);margin-top:4px}.doc-layout{display:grid;grid-template-columns:230px minmax(0,1fr);max-width:1120px;gap:35px;margin:auto;padding:28px 24px 70px}.doc-toc{position:sticky;top:24px;align-self:start;max-height:calc(100vh - 48px);overflow:auto;font-size:11px;padding-right:12px}.doc-toc h2{font-size:11px;letter-spacing:.08em;color:#8a98ab;margin:0 0 12px}.doc-toc a{display:block;text-decoration:none;color:#6f819b;padding:5px 0;line-height:1.5}.doc-toc a:hover{color:var(--blue)}article{background:white;border:1px solid var(--line);border-radius:12px;padding:32px 38px;min-width:0}h1{font-size:27px;line-height:1.3;letter-spacing:-.4px;margin:0 0 12px}h2{font-size:21px;line-height:1.5;margin:28px 0 14px;scroll-margin-top:24px}h3{font-size:16px;margin:22px 0 9px}h4{font-size:15px;margin:20px 0 8px}p{margin:10px 0 14px}ul{padding-left:23px;margin:8px 0 17px}li{padding-left:2px;margin:3px 0}code{font:12px/1.65 Consolas,\'Courier New\',monospace;background:#f0f4fa;padding:2px 5px;border-radius:4px;color:#4d6588}pre{background:#f3f6fa;border:1px solid #e5ebf3;border-radius:8px;padding:15px 18px;overflow:auto;margin:14px 0 20px}pre code{background:none;padding:0;color:#465d79;font-size:12px;white-space:pre}blockquote{margin:16px 0;border-left:3px solid #bdcfea;background:#f5f8fc;padding:10px 17px;color:#5f7593;border-radius:0 7px 7px 0;font-size:13px}blockquote p{margin:0}hr{border:0;border-top:1px solid #edf0f5;margin:28px 0}strong{font-weight:650}a:focus-visible{outline:2px solid #7b9beb;outline-offset:3px}.doc-footer{font-size:10px;color:#9aa7b8;padding-top:22px;border-top:1px solid var(--line);margin-top:32px}@media(max-width:800px){.doc-layout{display:block;padding:18px 14px 45px}.doc-toc{position:static;max-height:none;margin-bottom:18px;display:grid;grid-template-columns:1fr 1fr;gap:0 12px;font-size:10px}.doc-toc h2{grid-column:1/-1}article{padding:24px 20px}.doc-header{padding:22px 16px}h1{font-size:24px}h2{font-size:19px}}@media(max-width:450px){body{font-size:14px}.doc-toc{grid-template-columns:1fr}article{padding:20px 16px}pre{padding:12px}h1{font-size:22px}}\n\nhtml,body{height:100%;overflow:hidden}body{height:100vh;height:100dvh;display:flex;flex-direction:column}.doc-header{flex:0 0 auto;width:100%;padding-top:18px;padding-bottom:14px}.doc-layout{flex:1;min-height:0;width:100%;padding-top:18px;padding-bottom:18px;overflow:hidden}.doc-toc{position:static;max-height:none;min-height:0;height:100%;overflow:auto}article{min-height:0;height:100%;overflow:auto;overscroll-behavior:contain}.doc-toc{overscroll-behavior:contain}@media(max-width:800px){.doc-layout{display:flex;flex-direction:column;gap:14px}.doc-toc{flex:0 0 auto;height:auto;max-height:120px;overflow:auto;margin:0}article{flex:1;height:auto;min-height:0}.doc-header{padding:14px 16px}}\n\u003c/style\u003e\u003c/head\u003e\u003cbody\u003e\u003cheader class="doc-header"\u003e\u003cstrong\u003eCross-System Building Intelligence / 專案 PRD\u003c/strong\u003e\u003cspan\u003eConcept Design + Executable Prototype · PRD v02 完整文件\u003c/span\u003e\u003c/header\u003e\u003cmain class="doc-layout"\u003e\u003cnav class="doc-toc" aria-label="文件章節目錄"\u003e\u003ch2\u003e文件目錄\u003c/h2\u003e\u003ca href="#heading-3"\u003e1. Executive Summary\u003c/a\u003e\u003ca href="#heading-4"\u003e2. Background &amp; Problem\u003c/a\u003e\u003ca href="#heading-5"\u003e3. Product Goal\u003c/a\u003e\u003ca href="#heading-10"\u003e4. Target User\u003c/a\u003e\u003ca href="#heading-13"\u003e5. Product Concept\u003c/a\u003e\u003ca href="#heading-17"\u003e6. Core Flow\u003c/a\u003e\u003ca href="#heading-27"\u003e7. Building Context / Structured Digital Twin\u003c/a\u003e\u003ca href="#heading-32"\u003e8. Key Scenario A — Lake Risk\u003c/a\u003e\u003ca href="#heading-41"\u003e9. Scenario B — HVAC / Energy / Occupancy\u003c/a\u003e\u003ca href="#heading-43"\u003e10. Negative Scenarios\u003c/a\u003e\u003ca href="#heading-46"\u003e11. AI Role &amp; Guardrails\u003c/a\u003e\u003ca href="#heading-50"\u003e12. Persistence &amp; Auditability\u003c/a\u003e\u003ca href="#heading-57"\u003e13. MVP Scope\u003c/a\u003e\u003ca href="#heading-60"\u003e14. MVP Success Criteria\u003c/a\u003e\u003ca href="#heading-61"\u003e15. Risks &amp; Assumptions\u003c/a\u003e\u003ca href="#heading-65"\u003e16. Closing Note\u003c/a\u003e\u003c/nav\u003e\u003carticle\u003e\u003ch1 id="heading-1"\u003eCross-System Building Intelligence\u003c/h1\u003e\u003ch2 id="heading-2"\u003e面試延伸 PRD（Concept Design + Executable Prototype）\u003c/h2\u003e\u003cblockquote\u003e\u003cp\u003e本文件為面試後，基於公開智慧建築／智慧社區案例所做的概念驗證。\u003cbr\u003e內容用於展示跨系統後端設計、AI 應用邊界與可追蹤決策流程，不代表任何公司的實際 production architecture。\u003cbr\u003e本 Prototype 使用的 telemetry、threshold、device ID 與 scenario data 皆為 synthetic data。\u003c/p\u003e\u003c/blockquote\u003e\u003chr\u003e\u003ch2 id="heading-3"\u003e1. Executive Summary\u003c/h2\u003e\u003cp\u003e智慧建築內通常同時存在多個彼此獨立的子系統，例如氣象、湖面監測、灌溉、排水、HVAC、能源與人流系統。這些系統各自能產生資料與警報，但對建築管理者而言，真正需要理解的往往不是「哪一個 sensor 超標」，而是：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003e多個分散事件是否其實共同描述同一個正在發生的問題？\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003cp\u003e本 Prototype 提出一個 \u003cstrong\u003eCross-System Building Intelligence\u003c/strong\u003e 概念：先由後端將不同來源的 telemetry 標準化為 Observation，再以 deterministic rule 產生 Event，透過跨系統 correlation 建立 Incident；AI 則在 Incident 已成立之後，查詢建築的 Structured Digital Twin / Building Context，取得相關設備、能力、關係、目前狀態與歷史資料，進一步形成 evidence-backed analysis 與 recommended action。\u003c/p\u003e\u003cp\u003e系統刻意將「事實」、「規則判定」、「AI 推論」與「人工確認」分層保存：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eObservation → Event → Incident → AI Analysis → Human Review → Action → New Observation\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e其中 Observation 是 source of truth。AI 可以補充解讀，但不能覆寫原始事實；AI 也不直接控制設備，任何動作需經人工核准後執行，操作後的新設備狀態再回到 Observation pipeline，形成可追蹤的閉環。\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-4"\u003e2. Background &amp; Problem\u003c/h2\u003e\u003cp\u003e智慧建築的問題並不是缺少資料，而是資料通常分散在不同系統中。\u003c/p\u003e\u003cp\u003e例如同一個社區可能同時存在：\u003c/p\u003e\u003cul\u003e\u003cli\u003eWeather Station\u003c/li\u003e\u003cli\u003eLake Sensor\u003c/li\u003e\u003cli\u003eIrrigation Controller\u003c/li\u003e\u003cli\u003eDrainage Pump\u003c/li\u003e\u003cli\u003eHVAC\u003c/li\u003e\u003cli\u003eEnergy Meter\u003c/li\u003e\u003cli\u003eOccupancy Sensor\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e單一子系統可以知道自己的狀態，但不一定知道其他系統同時發生什麼。\u003c/p\u003e\u003cp\u003e因此管理者可能同時看到：\u003c/p\u003e\u003cul\u003e\u003cli\u003e強降雨警報\u003c/li\u003e\u003cli\u003e湖面水位升高\u003c/li\u003e\u003cli\u003e灌溉仍在執行\u003c/li\u003e\u003cli\u003e排水設備待機\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e若這些訊息分散在不同系統內，仍需要人自行判斷它們是否相關、是否需要處置，以及現場有哪些設備可以使用。\u003c/p\u003e\u003cp\u003e本 Prototype 想驗證的核心問題是：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003e能否把原本分散在不同 subsystem 的訊號整合成同一個 Incident，再結合 Building Context，讓 AI 產生可追溯、可人工審核的決策建議？\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003chr\u003e\u003ch2 id="heading-5"\u003e3. Product Goal\u003c/h2\u003e\u003cp\u003e本 Prototype 主要驗證四件事。\u003c/p\u003e\u003ch3 id="heading-6"\u003e3.1 Cross-System Understanding\u003c/h3\u003e\u003cp\u003e將不同來源的資料標準化後，以明確規則產生 Event，再透過時間、位置與語意關係，把多個 Event 關聯成同一個 Incident。\u003c/p\u003e\u003ch3 id="heading-7"\u003e3.2 Building-Aware AI\u003c/h3\u003e\u003cp\u003eAI 不只看到：\u003c/p\u003e\u003cp\u003e\u003ccode\u003eHIGH_WATER_LEVEL\u003c/code\u003e\u003c/p\u003e\u003cp\u003e而能進一步查詢：\u003c/p\u003e\u003cul\u003e\u003cli\u003eIncident 發生在哪個 Zone\u003c/li\u003e\u003cli\u003e該區域有哪些設備\u003c/li\u003e\u003cli\u003e設備目前是什麼狀態\u003c/li\u003e\u003cli\u003e設備有哪些 capability\u003c/li\u003e\u003cli\u003e哪些設備彼此相關\u003c/li\u003e\u003cli\u003e最近有哪些 Observation\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-8"\u003e3.3 Evidence-Backed Analysis\u003c/h3\u003e\u003cp\u003eAI 產生的結論需能回溯到實際 Observation / Event 與 Building Context，而不是只有自然語言敘述。\u003c/p\u003e\u003ch3 id="heading-9"\u003e3.4 Human-in-the-loop Action\u003c/h3\u003e\u003cp\u003eAI recommendation 不直接等於 execution。\u003c/p\u003e\u003cp\u003e所有具體操作需經：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eAI Recommendation → Backend Validation → Human Approval → Action → New Observation\u003c/strong\u003e\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-10"\u003e4. Target User\u003c/h2\u003e\u003ch3 id="heading-11"\u003e主要使用者：Building Operator / Facility Manager\u003c/h3\u003e\u003cp\u003e他需要快速理解：\u003c/p\u003e\u003cul\u003e\u003cli\u003e現在發生什麼\u003c/li\u003e\u003cli\u003e哪些系統彼此相關\u003c/li\u003e\u003cli\u003eAI 為什麼做出這個判斷\u003c/li\u003e\u003cli\u003e現場有哪些設備可以操作\u003c/li\u003e\u003cli\u003e下一步應該檢查或處置什麼\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-12"\u003e次要使用者：Building Engineer\u003c/h3\u003e\u003cp\u003e需要進一步確認：\u003c/p\u003e\u003cul\u003e\u003cli\u003eAI 使用了哪些 evidence\u003c/li\u003e\u003cli\u003e判定規則是什麼\u003c/li\u003e\u003cli\u003e哪些 device capability 支撐 recommendation\u003c/li\u003e\u003cli\u003e過去的操作與結果是否可追溯\u003c/li\u003e\u003c/ul\u003e\u003chr\u003e\u003ch2 id="heading-13"\u003e5. Product Concept\u003c/h2\u003e\u003cp\u003e整體系統可以分成三個相互關聯，但角色不同的部分。\u003c/p\u003e\u003ch3 id="heading-14"\u003eA. Incident Processing\u003c/h3\u003e\u003cp\u003e負責回答：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003e發生了什麼？\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003cp\u003e流程：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eTelemetry → Normalized Observation → Deterministic Event → Cross-System Incident\u003c/strong\u003e\u003c/p\u003e\u003ch3 id="heading-15"\u003eB. Structured Digital Twin / Building Context\u003c/h3\u003e\u003cp\u003e負責回答：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003e現場有什麼？在哪裡？可以做什麼？目前狀態如何？\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003cp\u003e它不是事件資料流程中的一步，而是一個持續存在的 context layer。\u003c/p\u003e\u003cp\u003e結構：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eBuilding → Zone → Device → Capability → Relationship → Current State / History\u003c/strong\u003e\u003c/p\u003e\u003ch3 id="heading-16"\u003eC. AI Decision &amp; Audit\u003c/h3\u003e\u003cp\u003eAI 同時取得：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eIncident Evidence + Building Context\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e再產生：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eStructured Analysis → Recommended Action → Human Review → Action Result\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e因此本 Prototype 的核心關係是：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eIncident 告訴 AI 發生了什麼；Building Context 告訴 AI 現場有什麼可以理解與操作；兩者一起才形成 recommendation。\u003c/strong\u003e\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-17"\u003e6. Core Flow\u003c/h2\u003e\u003ch3 id="heading-18"\u003eStep 1 — Telemetry Ingestion\u003c/h3\u003e\u003cp\u003e接收不同 subsystem 的原始 telemetry。\u003c/p\u003e\u003ch3 id="heading-19"\u003eStep 2 — Normalized Observation\u003c/h3\u003e\u003cp\u003e將不同格式資料轉成統一 Observation schema。\u003c/p\u003e\u003cp\u003eObservation 是 source of truth，保存：\u003c/p\u003e\u003cul\u003e\u003cli\u003edevice\u003c/li\u003e\u003cli\u003ezone\u003c/li\u003e\u003cli\u003emetric\u003c/li\u003e\u003cli\u003evalue\u003c/li\u003e\u003cli\u003eobserved_at\u003c/li\u003e\u003cli\u003eraw payload\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-20"\u003eStep 3 — Deterministic Event Detection\u003c/h3\u003e\u003cp\u003eRule Engine 根據明確門檻產生 Event。\u003c/p\u003e\u003cp\u003e例如：\u003c/p\u003e\u003cul\u003e\u003cli\u003erainfall &gt; threshold → \u003ccode\u003eHEAVY_RAINFALL\u003c/code\u003e\u003c/li\u003e\u003cli\u003elake water level &gt; threshold → \u003ccode\u003eHIGH_WATER_LEVEL\u003c/code\u003e\u003c/li\u003e\u003cli\u003eirrigation = RUNNING → \u003ccode\u003eIRRIGATION_ACTIVE\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003e\u003cp\u003eAI 不參與這一步。\u003c/p\u003e\u003ch3 id="heading-21"\u003eStep 4 — Incident Correlation\u003c/h3\u003e\u003cp\u003eCorrelation Engine 根據：\u003c/p\u003e\u003cul\u003e\u003cli\u003eTemporal relation\u003c/li\u003e\u003cli\u003eSpatial relation\u003c/li\u003e\u003cli\u003eSemantic relation\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e將多個 Event 整合成 Incident。\u003c/p\u003e\u003ch3 id="heading-22"\u003eStep 5 — AI Context Retrieval\u003c/h3\u003e\u003cp\u003eIncident 成立後，AI 使用 tools 查詢 Building Context，例如：\u003c/p\u003e\u003cul\u003e\u003cli\u003e\u003ccode\u003eget_devices_in_zone()\u003c/code\u003e\u003c/li\u003e\u003cli\u003e\u003ccode\u003eget_related_devices()\u003c/code\u003e\u003c/li\u003e\u003cli\u003e\u003ccode\u003eget_device_capabilities()\u003c/code\u003e\u003c/li\u003e\u003cli\u003e\u003ccode\u003eget_device_state()\u003c/code\u003e\u003c/li\u003e\u003cli\u003e\u003ccode\u003eget_recent_observations()\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-23"\u003eStep 6 — Structured AI Analysis\u003c/h3\u003e\u003cp\u003eAI 將 evidence 分成兩類：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003e事件證據\u003c/strong\u003e\u003c/p\u003e\u003cul\u003e\u003cli\u003eObservation\u003c/li\u003e\u003cli\u003eEvent\u003c/li\u003e\u003cli\u003eIncident\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e\u003cstrong\u003e建築脈絡\u003c/strong\u003e\u003c/p\u003e\u003cul\u003e\u003cli\u003eZone\u003c/li\u003e\u003cli\u003eDevice\u003c/li\u003e\u003cli\u003eCapability\u003c/li\u003e\u003cli\u003eRelationship\u003c/li\u003e\u003cli\u003eCurrent State\u003c/li\u003e\u003cli\u003eHistory\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e輸出：\u003c/p\u003e\u003cul\u003e\u003cli\u003esummary\u003c/li\u003e\u003cli\u003ehypotheses\u003c/li\u003e\u003cli\u003eevidence references\u003c/li\u003e\u003cli\u003erecommended actions\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-24"\u003eStep 7 — Human Review\u003c/h3\u003e\u003cp\u003e管理者審核 AI recommendation：\u003c/p\u003e\u003cul\u003e\u003cli\u003eApprove\u003c/li\u003e\u003cli\u003eReject\u003c/li\u003e\u003cli\u003eNeed Investigation\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-25"\u003eStep 8 — Action\u003c/h3\u003e\u003cp\u003e只有核准後才能進入 Action Service。\u003c/p\u003e\u003ch3 id="heading-26"\u003eStep 9 — Feedback to Observation Pipeline\u003c/h3\u003e\u003cp\u003e設備狀態改變後，產生新的 Observation。\u003c/p\u003e\u003cp\u003e因此形成：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eObserve → Detect → Understand → Recommend → Approve → Act → Observe Again\u003c/strong\u003e\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-27"\u003e7. Building Context / Structured Digital Twin\u003c/h2\u003e\u003cp\u003e本 Prototype 的 Digital Twin 不以 3D 模型本身為核心。\u003c/p\u003e\u003cp\u003e核心是建立一份 \u003cstrong\u003e可被後端與 AI 查詢的建築數位狀態模型\u003c/strong\u003e。\u003c/p\u003e\u003ch3 id="heading-28"\u003e資產結構\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eBuilding\n├── Lake Zone\n│   ├── Weather Station W01\n│   ├── Lake Sensor LS01\n│   ├── Irrigation IRR01\n│   └── Drainage Pump DP01\n│\n└── Tower A\n    └── Floor 3\n        ├── AHU03\n        ├── OCC03\n        └── EM01\u003c/code\u003e\u003c/pre\u003e\u003ch3 id="heading-29"\u003eDevice Capability\u003c/h3\u003e\u003cp\u003e例如：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eIRR01\n- START\n- STOP\n- GET_STATUS\u003c/code\u003e\u003c/pre\u003e\u003ch3 id="heading-30"\u003eDevice Relationship\u003c/h3\u003e\u003cp\u003e例如：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eW01   → affects    → Lake Zone\nLS01  → monitors   → Lake Zone\nIRR01 → operates   → Lake Zone\nDP01  → controls   → Lake Water Level\u003c/code\u003e\u003c/pre\u003e\u003ch3 id="heading-31"\u003eCurrent State / History\u003c/h3\u003e\u003cp\u003e例如：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eIRR01 state = RUNNING\nDP01 state  = STANDBY\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eAI 因此不需要「猜」現場有沒有排水設備，也不需要「猜」IRR01 能不能停止。\u003c/p\u003e\u003cp\u003eRecommendation 必須建立在實際 Building Context 上。\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-32"\u003e8. Key Scenario A — Lake Risk\u003c/h2\u003e\u003ch3 id="heading-33"\u003eInput\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eRainfall          38.2 mm/h\nLake Water Level  82 cm\nIRR01             RUNNING\nDP01              STANDBY\u003c/code\u003e\u003c/pre\u003e\u003ch3 id="heading-34"\u003eDeterministic Events\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eHEAVY_RAINFALL\nHIGH_WATER_LEVEL\nIRRIGATION_ACTIVE\u003c/code\u003e\u003c/pre\u003e\u003ch3 id="heading-35"\u003eIncident\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eWEATHER_RELATED_LAKE_RISK\u003c/code\u003e\u003c/pre\u003e\u003ch3 id="heading-36"\u003eAI Context Retrieval\u003c/h3\u003e\u003cp\u003eAI 查詢：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eLake Zone devices\nIRR01 capability\nIRR01 current state\nDP01 current state\nRecent Observation history\u003c/code\u003e\u003c/pre\u003e\u003cp\u003e取得：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eIRR01 capability = STOP\nIRR01 state      = RUNNING\nDP01 state       = STANDBY\u003c/code\u003e\u003c/pre\u003e\u003ch3 id="heading-37"\u003eStructured Analysis\u003c/h3\u003e\u003cp\u003e事件證據：\u003c/p\u003e\u003cul\u003e\u003cli\u003eRainfall = 38.2 mm/h\u003c/li\u003e\u003cli\u003eLake water level = 82 cm\u003c/li\u003e\u003cli\u003eIrrigation = RUNNING\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e建築脈絡：\u003c/p\u003e\u003cul\u003e\u003cli\u003eIRR01 位於 Lake Zone\u003c/li\u003e\u003cli\u003eIRR01 支援 STOP\u003c/li\u003e\u003cli\u003eIRR01 目前為 RUNNING\u003c/li\u003e\u003cli\u003eDP01 與 Lake water level control 有關\u003c/li\u003e\u003cli\u003eDP01 目前為 STANDBY\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-38"\u003eRecommendation\u003c/h3\u003e\u003cp\u003e\u003cstrong\u003ePause IRR01 Irrigation\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e可執行依據：\u003c/p\u003e\u003cul\u003e\u003cli\u003e\u003ccode\u003eIRR01 capability = STOP\u003c/code\u003e\u003c/li\u003e\u003cli\u003e\u003ccode\u003eIRR01 current state = RUNNING\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-39"\u003eHuman Approval\u003c/h3\u003e\u003cp\u003e管理者核准後執行：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eIRR01\nRUNNING → STOPPED\u003c/code\u003e\u003c/pre\u003e\u003ch3 id="heading-40"\u003eFeedback\u003c/h3\u003e\u003cp\u003e設備狀態變化產生：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eOBS-036\nIRR01.status = STOPPED\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eOBS-036 再回到 Observation pipeline。\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-41"\u003e9. Scenario B — HVAC / Energy / Occupancy\u003c/h2\u003e\u003cp\u003e第二個情境用於驗證同一套架構是否可以跨 domain 使用。\u003c/p\u003e\u003ch3 id="heading-42"\u003eInput\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eOutdoor temperature  27°C\nOccupancy            LOW\nAHU03 power          92 kW\nBuilding energy      186 kW\u003c/code\u003e\u003c/pre\u003e\u003cp\u003e系統將 HVAC、Energy、Occupancy 與 Weather 資料整合後，形成值得進一步調查的 Incident。\u003c/p\u003e\u003cp\u003eAI 可以提出：\u003c/p\u003e\u003cul\u003e\u003cli\u003e檢查 AHU schedule\u003c/li\u003e\u003cli\u003e檢查控制設定\u003c/li\u003e\u003cli\u003e檢視近期運轉趨勢\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e但不能直接宣稱：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003eAHU03 已故障。\u003c/p\u003e\u003c/blockquote\u003e\u003cp\u003e因為目前 evidence 只能支持「值得調查」，不足以支持「設備故障」這個事實判定。\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-43"\u003e10. Negative Scenarios\u003c/h2\u003e\u003cp\u003ePrototype 不只驗證「何時應該產生 Incident」，也驗證「何時應該保持安靜」。\u003c/p\u003e\u003ch3 id="heading-44"\u003eNegative C — Heavy Rain Only\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eRainfall = 38.2 mm/h\nLake water level = 58 cm\u003c/code\u003e\u003c/pre\u003e\u003cp\u003e預期：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003e不建立 Lake Risk Incident\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e因為只有單一強降雨訊號，沒有足夠的跨系統 evidence。\u003c/p\u003e\u003ch3 id="heading-45"\u003eNegative D — Legitimate HVAC Load\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eOutdoor temperature = 35°C\nOccupancy = HIGH\nHVAC load = HIGH\u003c/code\u003e\u003c/pre\u003e\u003cp\u003e預期：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003e不直接判定 HVAC anomaly\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e因為高外溫與高 occupancy 可以合理解釋較高的 HVAC load。\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-46"\u003e11. AI Role &amp; Guardrails\u003c/h2\u003e\u003ch3 id="heading-47"\u003eAI 負責\u003c/h3\u003e\u003cul\u003e\u003cli\u003e理解 Incident\u003c/li\u003e\u003cli\u003e查詢 Building Context\u003c/li\u003e\u003cli\u003e整合跨系統 context\u003c/li\u003e\u003cli\u003e建立 hypothesis\u003c/li\u003e\u003cli\u003e引用 evidence\u003c/li\u003e\u003cli\u003e產生 recommendation\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-48"\u003eAI 不負責\u003c/h3\u003e\u003cul\u003e\u003cli\u003e修改 Observation\u003c/li\u003e\u003cli\u003e直接 SQL database\u003c/li\u003e\u003cli\u003e自行建立不存在的設備\u003c/li\u003e\u003cli\u003e把 hypothesis 當成 verified fact\u003c/li\u003e\u003cli\u003e直接操作設備\u003c/li\u003e\u003cli\u003e用無校準依據的精準 confidence score 製造假精確\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-49"\u003eDesign Principle\u003c/h3\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003eAI can enrich the source of truth, but cannot overwrite it.\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003chr\u003e\u003ch2 id="heading-50"\u003e12. Persistence &amp; Auditability\u003c/h2\u003e\u003cp\u003e系統分層保存：\u003c/p\u003e\u003ch3 id="heading-51"\u003eObservation\u003c/h3\u003e\u003cp\u003e原始事實。\u003c/p\u003e\u003ch3 id="heading-52"\u003eEvent\u003c/h3\u003e\u003cp\u003edeterministic rule output。\u003c/p\u003e\u003ch3 id="heading-53"\u003eIncident\u003c/h3\u003e\u003cp\u003ecross-system correlation result。\u003c/p\u003e\u003ch3 id="heading-54"\u003eAnalysis\u003c/h3\u003e\u003cp\u003eAI inference，保留 evidence reference。\u003c/p\u003e\u003ch3 id="heading-55"\u003eAction\u003c/h3\u003e\u003cp\u003e包含 recommendation、human approval、execution result。\u003c/p\u003e\u003ch3 id="heading-56"\u003eFeedback\u003c/h3\u003e\u003cp\u003e保存人工確認與實際結果。\u003c/p\u003e\u003cp\u003e因此若 AI 判斷錯誤，系統仍可保留：\u003c/p\u003e\u003cul\u003e\u003cli\u003e當時的原始 Observation\u003c/li\u003e\u003cli\u003eRule Engine 產生的 Event\u003c/li\u003e\u003cli\u003e當時建立的 Incident\u003c/li\u003e\u003cli\u003eAI 當時使用的 evidence\u003c/li\u003e\u003cli\u003eAI recommendation\u003c/li\u003e\u003cli\u003eHuman decision\u003c/li\u003e\u003cli\u003eAction result\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e而不污染 source of truth。\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-57"\u003e13. MVP Scope\u003c/h2\u003e\u003ch3 id="heading-58"\u003eIn Scope\u003c/h3\u003e\u003cul\u003e\u003cli\u003eSynthetic telemetry\u003c/li\u003e\u003cli\u003eData normalization\u003c/li\u003e\u003cli\u003eObservation persistence\u003c/li\u003e\u003cli\u003eDeterministic event rules\u003c/li\u003e\u003cli\u003eCross-system incident correlation\u003c/li\u003e\u003cli\u003eStructured Building Context\u003c/li\u003e\u003cli\u003eAI tool retrieval\u003c/li\u003e\u003cli\u003eEvidence-backed structured analysis\u003c/li\u003e\u003cli\u003eHuman approval\u003c/li\u003e\u003cli\u003eAction execution\u003c/li\u003e\u003cli\u003eNew Observation feedback loop\u003c/li\u003e\u003cli\u003eScenario A\u003c/li\u003e\u003cli\u003eScenario B\u003c/li\u003e\u003cli\u003eTwo negative scenarios\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-59"\u003eNon-Goals\u003c/h3\u003e\u003cp\u003e本 Prototype 不做：\u003c/p\u003e\u003cul\u003e\u003cli\u003e真實 IoT hardware integration\u003c/li\u003e\u003cli\u003e真實建築控制\u003c/li\u003e\u003cli\u003e完整 3D engine\u003c/li\u003e\u003cli\u003eNVIDIA Omniverse integration\u003c/li\u003e\u003cli\u003eDocument RAG\u003c/li\u003e\u003cli\u003eML model training\u003c/li\u003e\u003cli\u003eKafka / MQTT production infrastructure\u003c/li\u003e\u003cli\u003e完整 authentication / RBAC\u003c/li\u003e\u003cli\u003e大型 monitoring dashboard\u003c/li\u003e\u003cli\u003e完整 BIM / production Digital Twin\u003c/li\u003e\u003c/ul\u003e\u003chr\u003e\u003ch2 id="heading-60"\u003e14. MVP Success Criteria\u003c/h2\u003e\u003cp\u003e本 Prototype 完成的標準不是功能數量，而是能完整展示一條 vertical slice：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003e3+ Subsystems\n↓\nTelemetry\n↓\nNormalized Observation\n↓\nDeterministic Events\n↓\nCross-System Incident\n↓\nAI retrieves Building Context\n↓\nEvidence-backed Analysis\n↓\nDevice-specific Recommendation\n↓\nHuman Approval\n↓\nAction\n↓\nNew Observation\u003c/code\u003e\u003c/pre\u003e\u003cp\u003e並額外展示：\u003c/p\u003e\u003cul\u003e\u003cli\u003e一個第二 domain scenario\u003c/li\u003e\u003cli\u003e兩個 negative scenarios\u003c/li\u003e\u003cli\u003eAI conclusion 可追溯至 evidence\u003c/li\u003e\u003cli\u003eBuilding Context 能實際支撐 recommendation\u003c/li\u003e\u003cli\u003eAction 後的新設備狀態能回到 pipeline\u003c/li\u003e\u003c/ul\u003e\u003chr\u003e\u003ch2 id="heading-61"\u003e15. Risks &amp; Assumptions\u003c/h2\u003e\u003ch3 id="heading-62"\u003eSynthetic Data\u003c/h3\u003e\u003cp\u003e本 Prototype 未取得真實智慧建築 telemetry，因此所有 scenario data、threshold 與 device identifier 皆為 synthetic。\u003c/p\u003e\u003ch3 id="heading-63"\u003eDomain Assumption\u003c/h3\u003e\u003cp\u003ePrototype 以公開案例作為研究起點，用於驗證系統設計思路，不代表真實建築現場流程或任何公司的實際架構。\u003c/p\u003e\u003ch3 id="heading-64"\u003eAI Limitation\u003c/h3\u003e\u003cp\u003eAI output 為 decision support，而非安全關鍵設備的自動控制依據。\u003c/p\u003e\u003cp\u003e在真實 production environment 中，仍需要：\u003c/p\u003e\u003cul\u003e\u003cli\u003edomain-specific validation\u003c/li\u003e\u003cli\u003edevice permission control\u003c/li\u003e\u003cli\u003esafety rules\u003c/li\u003e\u003cli\u003eoperator approval\u003c/li\u003e\u003cli\u003emonitoring and rollback mechanism\u003c/li\u003e\u003c/ul\u003e\u003chr\u003e\u003ch2 id="heading-65"\u003e16. Closing Note\u003c/h2\u003e\u003cp\u003e這個 Prototype 的目的不是在短時間內重新打造一套完整智慧建築平台。\u003c/p\u003e\u003cp\u003e我更希望驗證的是：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003e面對一個原本陌生的智慧建築 domain，是否能快速理解問題、拆出資料層與系統邊界，建立可執行的 backend architecture，並判斷 AI 適合介入的位置與不應跨越的邊界。\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003cp\u003e因此，我將重點放在：\u003c/p\u003e\u003cul\u003e\u003cli\u003e跨系統資料整合\u003c/li\u003e\u003cli\u003eSource of Truth\u003c/li\u003e\u003cli\u003eStructured Digital Twin / Building Context\u003c/li\u003e\u003cli\u003eEvidence-backed AI reasoning\u003c/li\u003e\u003cli\u003eHuman-in-the-loop\u003c/li\u003e\u003cli\u003eAuditable feedback loop\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e而不是把 AI 當成單純的聊天介面，或讓模型直接取代原有的 deterministic system。\u003c/p\u003e\u003cfooter class="doc-footer"\u003e來源：Cross-System-Building-Intelligence-Interview-PRD-v02.md\u003c/footer\u003e\u003c/article\u003e\u003c/main\u003e\u003c/body\u003e\u003c/html\u003e';
+  $('#prdLink').href = URL.createObjectURL(new Blob([prdPageHtml], { type: 'text/html;charset=utf-8' }));
 
-
-  const pulseTimers=new WeakMap();
-  function pulseNodes(nodes){
-    [...new Set(nodes.filter(Boolean))].forEach(node=>{
-      const previous=pulseTimers.get(node);if(previous)clearTimeout(previous);
+  const pulseTimers = new WeakMap();
+  function pulseNodes(nodes) {
+    [...new Set(nodes.filter(Boolean))].forEach((node) => {
+      const previous = pulseTimers.get(node);
+      if (previous) clearTimeout(previous);
       node.classList.remove('state-pulse');
-      if(typeof node.getBoundingClientRect==='function')node.getBoundingClientRect();
+      if (typeof node.getBoundingClientRect === 'function') node.getBoundingClientRect();
       node.classList.add('state-pulse');
-      const timer=setTimeout(()=>{node.classList.remove('state-pulse');pulseTimers.delete(node);},3000);
-      pulseTimers.set(node,timer);
+      const timer = setTimeout(() => {
+        node.classList.remove('state-pulse');
+        pulseTimers.delete(node);
+      }, 3000);
+      pulseTimers.set(node, timer);
     });
   }
-  function pulseDevices(deviceIds){
-    const ids=new Set(deviceIds);
-    const nodes=$$('.scene-device, .scene-marker').filter(n=>ids.has(n.dataset.device));
-    [0,1,2].forEach(i=>{const reading=$('#hudValue-'+i);if(reading&&ids.has(reading.dataset.device))nodes.push(reading);});
-    if(ids.has(selectedTwinDevice))nodes.push($('#selectedDeviceState'),$('#recentDeviceObservations'));
+  function pulseDevices(deviceIds) {
+    const ids = new Set(deviceIds);
+    const nodes = $$('.scene-device, .scene-marker').filter((n) => ids.has(n.dataset.device));
+    [0, 1, 2].forEach((i) => {
+      const reading = $('#hudValue-' + i);
+      if (reading && ids.has(reading.dataset.device)) nodes.push(reading);
+    });
+    if (ids.has(selectedTwinDevice)) nodes.push($('#selectedDeviceState'), $('#recentDeviceObservations'));
     pulseNodes(nodes);
   }
 
   const buildingModel = {
-    building: { id:'BLDG-01', name:'宏道智慧社區', description:'Synthetic building context inspired by public smart-community scenarios.' },
+    building: {
+      id: 'BLDG-01',
+      name: '宏道智慧社區',
+      description: 'Synthetic building context inspired by public smart-community scenarios.',
+    },
     zones: [
-      {id:'OUTDOOR',name:'戶外／湖區',parent:null},
-      {id:'TOWER-A',name:'A 棟',parent:null},
-      {id:'TOWER-A-L3',name:'A 棟 · 三樓',parent:'TOWER-A'}
+      { id: 'OUTDOOR', name: '戶外／湖區', parent: null },
+      { id: 'TOWER-A', name: 'A 棟', parent: null },
+      { id: 'TOWER-A-L3', name: 'A 棟 · 三樓', parent: 'TOWER-A' },
     ],
     devices: [
-      {id:'W01',name:'氣象站',system:'weather',type:'weather_station',zone:'OUTDOOR',capabilities:['READ_RAINFALL','READ_TEMPERATURE'],state:'ONLINE'},
-      {id:'LS01',name:'湖面感測器',system:'lake',type:'lake_sensor',zone:'OUTDOOR',capabilities:['READ_WATER_LEVEL','READ_TURBIDITY'],state:'ONLINE'},
-      {id:'IRR01',name:'灌溉控制器',system:'irrigation',type:'irrigation_controller',zone:'OUTDOOR',capabilities:['START','STOP','GET_STATUS'],state:'RUNNING'},
-      {id:'DP01',name:'排水泵',system:'drainage',type:'drainage_pump',zone:'OUTDOOR',capabilities:['START','STOP','GET_STATUS'],state:'STANDBY'},
-      {id:'AHU03',name:'AHU-03',system:'hvac',type:'air_handling_unit',zone:'TOWER-A-L3',capabilities:['GET_STATUS','READ_POWER','READ_SCHEDULE'],state:'RUNNING'},
-      {id:'EM01',name:'總電表',system:'energy',type:'energy_meter',zone:'TOWER-A',capabilities:['READ_POWER'],state:'ONLINE'},
-      {id:'OCC03',name:'三樓人流感測器',system:'occupancy',type:'occupancy_sensor',zone:'TOWER-A-L3',capabilities:['READ_OCCUPANCY'],state:'ONLINE'}
+      {
+        id: 'W01',
+        name: '氣象站',
+        system: 'weather',
+        type: 'weather_station',
+        zone: 'OUTDOOR',
+        capabilities: ['READ_RAINFALL', 'READ_TEMPERATURE'],
+        state: 'ONLINE',
+      },
+      {
+        id: 'LS01',
+        name: '湖面感測器',
+        system: 'lake',
+        type: 'lake_sensor',
+        zone: 'OUTDOOR',
+        capabilities: ['READ_WATER_LEVEL', 'READ_TURBIDITY'],
+        state: 'ONLINE',
+      },
+      {
+        id: 'IRR01',
+        name: '灌溉控制器',
+        system: 'irrigation',
+        type: 'irrigation_controller',
+        zone: 'OUTDOOR',
+        capabilities: ['START', 'STOP', 'GET_STATUS'],
+        state: 'RUNNING',
+      },
+      {
+        id: 'DP01',
+        name: '排水泵',
+        system: 'drainage',
+        type: 'drainage_pump',
+        zone: 'OUTDOOR',
+        capabilities: ['START', 'STOP', 'GET_STATUS'],
+        state: 'STANDBY',
+      },
+      {
+        id: 'AHU03',
+        name: 'AHU-03',
+        system: 'hvac',
+        type: 'air_handling_unit',
+        zone: 'TOWER-A-L3',
+        capabilities: ['GET_STATUS', 'READ_POWER', 'READ_SCHEDULE'],
+        state: 'RUNNING',
+      },
+      {
+        id: 'EM01',
+        name: '總電表',
+        system: 'energy',
+        type: 'energy_meter',
+        zone: 'TOWER-A',
+        capabilities: ['READ_POWER'],
+        state: 'ONLINE',
+      },
+      {
+        id: 'OCC03',
+        name: '三樓人流感測器',
+        system: 'occupancy',
+        type: 'occupancy_sensor',
+        zone: 'TOWER-A-L3',
+        capabilities: ['READ_OCCUPANCY'],
+        state: 'ONLINE',
+      },
     ],
     relationships: [
-      ['W01','influences','IRR01'],['W01','affects','OUTDOOR'],['LS01','monitors','OUTDOOR'],['DP01','controls','lake_water_level'],
-      ['AHU03','serves','TOWER-A-L3'],['EM01','measures','TOWER-A'],['OCC03','describes','TOWER-A-L3']
-    ]
+      ['W01', 'influences', 'IRR01'],
+      ['W01', 'affects', 'OUTDOOR'],
+      ['LS01', 'monitors', 'OUTDOOR'],
+      ['DP01', 'controls', 'lake_water_level'],
+      ['AHU03', 'serves', 'TOWER-A-L3'],
+      ['EM01', 'measures', 'TOWER-A'],
+      ['OCC03', 'describes', 'TOWER-A-L3'],
+    ],
   };
 
   const scenarios = {
     lake: {
-      name:'情境 A · 強降雨、湖面水位與灌溉',
-      payloads:[
-        {source_event_id:'SRC-W-001',device_id:'W01',zone_id:'OUTDOOR',system:'weather',metric:'rainfall',value:38.2,unit:'mm/h',observed_at:'2026-10-07T15:18:00+08:00'},
-        {source_event_id:'SRC-L-001',device_id:'LS01',zone_id:'OUTDOOR',system:'lake',metric:'water_level',value:82,unit:'cm',observed_at:'2026-10-07T15:19:00+08:00'},
-        {source_event_id:'SRC-I-001',device_id:'IRR01',zone_id:'OUTDOOR',system:'irrigation',metric:'status',value:'RUNNING',unit:null,observed_at:'2026-10-07T15:19:10+08:00'},
-        {source_event_id:'SRC-D-001',device_id:'DP01',zone_id:'OUTDOOR',system:'drainage',metric:'status',value:'STANDBY',unit:null,observed_at:'2026-10-07T15:19:15+08:00'}
-      ]
+      name: '情境 A · 強降雨、湖面水位與灌溉',
+      payloads: [
+        {
+          source_event_id: 'SRC-W-001',
+          device_id: 'W01',
+          zone_id: 'OUTDOOR',
+          system: 'weather',
+          metric: 'rainfall',
+          value: 38.2,
+          unit: 'mm/h',
+          observed_at: '2026-10-07T15:18:00+08:00',
+        },
+        {
+          source_event_id: 'SRC-L-001',
+          device_id: 'LS01',
+          zone_id: 'OUTDOOR',
+          system: 'lake',
+          metric: 'water_level',
+          value: 82,
+          unit: 'cm',
+          observed_at: '2026-10-07T15:19:00+08:00',
+        },
+        {
+          source_event_id: 'SRC-I-001',
+          device_id: 'IRR01',
+          zone_id: 'OUTDOOR',
+          system: 'irrigation',
+          metric: 'status',
+          value: 'RUNNING',
+          unit: null,
+          observed_at: '2026-10-07T15:19:10+08:00',
+        },
+        {
+          source_event_id: 'SRC-D-001',
+          device_id: 'DP01',
+          zone_id: 'OUTDOOR',
+          system: 'drainage',
+          metric: 'status',
+          value: 'STANDBY',
+          unit: null,
+          observed_at: '2026-10-07T15:19:15+08:00',
+        },
+      ],
     },
     hvac: {
-      name:'情境 B · 空調、用電與人流',
-      payloads:[
-        {source_event_id:'SRC-W-002',device_id:'W01',zone_id:'OUTDOOR',system:'weather',metric:'temperature',value:27,unit:'°C',observed_at:'2026-10-07T14:00:00+08:00'},
-        {source_event_id:'SRC-O-001',device_id:'OCC03',zone_id:'TOWER-A-L3',system:'occupancy',metric:'level',value:'LOW',unit:null,observed_at:'2026-10-07T14:00:03+08:00'},
-        {source_event_id:'SRC-H-001',device_id:'AHU03',zone_id:'TOWER-A-L3',system:'hvac',metric:'power',value:92,unit:'kW',observed_at:'2026-10-07T14:00:05+08:00'},
-        {source_event_id:'SRC-E-001',device_id:'EM01',zone_id:'TOWER-A',system:'energy',metric:'power',value:186,unit:'kW',observed_at:'2026-10-07T14:00:08+08:00'}
-      ]
+      name: '情境 B · 空調、用電與人流',
+      payloads: [
+        {
+          source_event_id: 'SRC-W-002',
+          device_id: 'W01',
+          zone_id: 'OUTDOOR',
+          system: 'weather',
+          metric: 'temperature',
+          value: 27,
+          unit: '°C',
+          observed_at: '2026-10-07T14:00:00+08:00',
+        },
+        {
+          source_event_id: 'SRC-O-001',
+          device_id: 'OCC03',
+          zone_id: 'TOWER-A-L3',
+          system: 'occupancy',
+          metric: 'level',
+          value: 'LOW',
+          unit: null,
+          observed_at: '2026-10-07T14:00:03+08:00',
+        },
+        {
+          source_event_id: 'SRC-H-001',
+          device_id: 'AHU03',
+          zone_id: 'TOWER-A-L3',
+          system: 'hvac',
+          metric: 'power',
+          value: 92,
+          unit: 'kW',
+          observed_at: '2026-10-07T14:00:05+08:00',
+        },
+        {
+          source_event_id: 'SRC-E-001',
+          device_id: 'EM01',
+          zone_id: 'TOWER-A',
+          system: 'energy',
+          metric: 'power',
+          value: 186,
+          unit: 'kW',
+          observed_at: '2026-10-07T14:00:08+08:00',
+        },
+      ],
     },
     rainOnly: {
-      name:'反例 C · 僅有強降雨',
-      payloads:[
-        {source_event_id:'SRC-W-003',device_id:'W01',zone_id:'OUTDOOR',system:'weather',metric:'rainfall',value:38.2,unit:'mm/h',observed_at:'2026-10-07T16:00:00+08:00'},
-        {source_event_id:'SRC-L-003',device_id:'LS01',zone_id:'OUTDOOR',system:'lake',metric:'water_level',value:58,unit:'cm',observed_at:'2026-10-07T16:00:15+08:00'}
-      ]
+      name: '反例 C · 僅有強降雨',
+      payloads: [
+        {
+          source_event_id: 'SRC-W-003',
+          device_id: 'W01',
+          zone_id: 'OUTDOOR',
+          system: 'weather',
+          metric: 'rainfall',
+          value: 38.2,
+          unit: 'mm/h',
+          observed_at: '2026-10-07T16:00:00+08:00',
+        },
+        {
+          source_event_id: 'SRC-L-003',
+          device_id: 'LS01',
+          zone_id: 'OUTDOOR',
+          system: 'lake',
+          metric: 'water_level',
+          value: 58,
+          unit: 'cm',
+          observed_at: '2026-10-07T16:00:15+08:00',
+        },
+      ],
     },
     legitHvac: {
-      name:'反例 D · 合理的空調高負載',
-      payloads:[
-        {source_event_id:'SRC-W-004',device_id:'W01',zone_id:'OUTDOOR',system:'weather',metric:'temperature',value:35,unit:'°C',observed_at:'2026-10-07T13:00:00+08:00'},
-        {source_event_id:'SRC-O-004',device_id:'OCC03',zone_id:'TOWER-A-L3',system:'occupancy',metric:'level',value:'HIGH',unit:null,observed_at:'2026-10-07T13:00:02+08:00'},
-        {source_event_id:'SRC-H-004',device_id:'AHU03',zone_id:'TOWER-A-L3',system:'hvac',metric:'power',value:94,unit:'kW',observed_at:'2026-10-07T13:00:04+08:00'},
-        {source_event_id:'SRC-E-004',device_id:'EM01',zone_id:'TOWER-A',system:'energy',metric:'power',value:189,unit:'kW',observed_at:'2026-10-07T13:00:06+08:00'}
-      ]
-    }
+      name: '反例 D · 合理的空調高負載',
+      payloads: [
+        {
+          source_event_id: 'SRC-W-004',
+          device_id: 'W01',
+          zone_id: 'OUTDOOR',
+          system: 'weather',
+          metric: 'temperature',
+          value: 35,
+          unit: '°C',
+          observed_at: '2026-10-07T13:00:00+08:00',
+        },
+        {
+          source_event_id: 'SRC-O-004',
+          device_id: 'OCC03',
+          zone_id: 'TOWER-A-L3',
+          system: 'occupancy',
+          metric: 'level',
+          value: 'HIGH',
+          unit: null,
+          observed_at: '2026-10-07T13:00:02+08:00',
+        },
+        {
+          source_event_id: 'SRC-H-004',
+          device_id: 'AHU03',
+          zone_id: 'TOWER-A-L3',
+          system: 'hvac',
+          metric: 'power',
+          value: 94,
+          unit: 'kW',
+          observed_at: '2026-10-07T13:00:04+08:00',
+        },
+        {
+          source_event_id: 'SRC-E-004',
+          device_id: 'EM01',
+          zone_id: 'TOWER-A',
+          system: 'energy',
+          metric: 'power',
+          value: 189,
+          unit: 'kW',
+          observed_at: '2026-10-07T13:00:06+08:00',
+        },
+      ],
+    },
   };
 
   const scenarioBriefs = {
     lake: {
-      title:'情境描述 · 情境 A — 強降雨、湖面水位與灌溉',
-      body:'智慧社區的戶外湖區正遭遇強降雨。氣象站量到 <b>38.2 mm/h</b>，湖面水位升至 <b>82 cm</b>；同一時間，灌溉控制器 <b>IRR01 仍為 RUNNING</b>，排水泵 <b>DP01 為 STANDBY</b>。管理者面對的不是單一警報，而是多個原本分散在不同系統中的訊號。此展示示範後端如何保留原始 Observation、產生 依規則判定的 Event、建立跨系統 Incident，再讓 AI 透過 Building Context 查詢工具查詢設備與狀態後提出有證據依據的建議。',
-      goal:'<b>展示目標：</b>人工核准 IRR01 STOP 後，新的設備狀態會成為一筆新 Observation 回到資料處理流程，形成可稽核的回饋循環。'
+      title: '情境描述 · 情境 A — 強降雨、湖面水位與灌溉',
+      body: '智慧社區的戶外湖區正遭遇強降雨。氣象站量到 <b>38.2 mm/h</b>，湖面水位升至 <b>82 cm</b>；同一時間，灌溉控制器 <b>IRR01 仍為 RUNNING</b>，排水泵 <b>DP01 為 STANDBY</b>。管理者面對的不是單一警報，而是多個原本分散在不同系統中的訊號。此展示示範後端如何保留原始 Observation、產生 依規則判定的 Event、建立跨系統 Incident，再讓 AI 透過 Building Context 查詢工具查詢設備與狀態後提出有證據依據的建議。',
+      goal: '<b>展示目標：</b>人工核准 IRR01 STOP 後，新的設備狀態會成為一筆新 Observation 回到資料處理流程，形成可稽核的回饋循環。',
     },
     hvac: {
-      title:'情境描述 · 情境 B — 空調、用電與人流',
-      body:'大樓三樓目前人流偏低，室外溫度僅 <b>27°C</b>，但 AHU-03 用電達 <b>92 kW</b>，整棟建築用電為 <b>186 kW</b>。系統需要結合人流、氣象、空調與用電資料，判斷高能耗是否值得進一步調查，而不是只因單一數值偏高就直接宣告設備故障。',
-      goal:'<b>展示目標：</b>驗證同一套 跨系統架構 能跨領域使用，並維持「AI 提出推論假設，不把推論當成已驗證事實」的邊界。'
+      title: '情境描述 · 情境 B — 空調、用電與人流',
+      body: '大樓三樓目前人流偏低，室外溫度僅 <b>27°C</b>，但 AHU-03 用電達 <b>92 kW</b>，整棟建築用電為 <b>186 kW</b>。系統需要結合人流、氣象、空調與用電資料，判斷高能耗是否值得進一步調查，而不是只因單一數值偏高就直接宣告設備故障。',
+      goal: '<b>展示目標：</b>驗證同一套 跨系統架構 能跨領域使用，並維持「AI 提出推論假設，不把推論當成已驗證事實」的邊界。',
     },
     rainOnly: {
-      title:'情境描述 · 反例 C — 僅有強降雨',
-      body:'系統偵測到 <b>38.2 mm/h</b> 的強降雨，但湖面水位仍為正常的 <b>58 cm</b>。這個案例刻意提供部分訊號，測試 關聯判定機制 是否會因為「看到大雨」就過度建立 湖區風險 Incident。',
-      goal:'<b>展示目標：</b>系統應保持克制；證據不足時不建立跨系統 Incident。'
+      title: '情境描述 · 反例 C — 僅有強降雨',
+      body: '系統偵測到 <b>38.2 mm/h</b> 的強降雨，但湖面水位仍為正常的 <b>58 cm</b>。這個案例刻意提供部分訊號，測試 關聯判定機制 是否會因為「看到大雨」就過度建立 湖區風險 Incident。',
+      goal: '<b>展示目標：</b>系統應保持克制；證據不足時不建立跨系統 Incident。',
     },
     legitHvac: {
-      title:'情境描述 · 反例 D — 合理的空調高負載',
-      body:'AHU 用電與建築總用電都偏高，但同時室外溫度為 <b>35°C</b>、人流為 <b>HIGH</b>。高 空調負載 在這些條件 下可能合理，因此不應只看功率門檻就產生異常結論。',
-      goal:'<b>展示目標：</b>驗證系統能利用建築脈絡降低誤報，而不是「數值高 = 異常」。'
-    }
+      title: '情境描述 · 反例 D — 合理的空調高負載',
+      body: 'AHU 用電與建築總用電都偏高，但同時室外溫度為 <b>35°C</b>、人流為 <b>HIGH</b>。高 空調負載 在這些條件 下可能合理，因此不應只看功率門檻就產生異常結論。',
+      goal: '<b>展示目標：</b>驗證系統能利用建築脈絡降低誤報，而不是「數值高 = 異常」。',
+    },
   };
 
-  function renderScenarioBrief(key){
-    const b=scenarioBriefs[key] || scenarioBriefs.lake;
-    const el=$('#scenarioBrief');
-    if(!el) return;
-    el.innerHTML=`<div class="title">${b.title}</div><div class="body">${b.body}</div><div class="goal">${b.goal}</div>`;
+  function renderScenarioBrief(key) {
+    const b = scenarioBriefs[key] || scenarioBriefs.lake;
+    const el = $('#scenarioBrief');
+    if (!el) return;
+    el.innerHTML = `<div class="title">${b.title}</div><div class="body">${b.body}</div><div class="goal">${b.goal}</div>`;
   }
 
-  const initialState = () => ({observations:[],events:[],incidents:[],analyses:[],actions:[],deviceStates:{IRR01:'RUNNING',DP01:'STANDBY',AHU03:'RUNNING'}});
+  const initialState = () => ({
+    observations: [],
+    events: [],
+    incidents: [],
+    analyses: [],
+    actions: [],
+    deviceStates: { IRR01: 'RUNNING', DP01: 'STANDBY', AHU03: 'RUNNING' },
+  });
   let state = load();
-  let currentRun = {raw:[],obs:[],events:[],incident:null,tools:[],analysis:null,action:null};
+  let currentRun = { raw: [], obs: [], events: [], incident: null, tools: [], analysis: null, action: null };
 
-  function load(){ try{return JSON.parse(localStorage.getItem(STORE_KEY)) || initialState()}catch{return initialState()} }
-  function save(){ localStorage.setItem(STORE_KEY,JSON.stringify(state)); renderStore(); renderContext(); }
-  function uid(prefix){ return prefix+'-'+String(Date.now()).slice(-6)+'-'+Math.floor(Math.random()*900+100); }
-  function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-  const flowDescriptions={"telemetry": "步驟 1：接收各子系統的原始遙測資料。", "observation": "步驟 2：正規化資料，保存 Observation。", "event": "步驟 3：依門檻與規則判定 Event。", "incident": "步驟 4：將符合關聯條件的 Event 整合為 Incident。", "tools": "步驟 5：AI 依 Incident 查詢 Structured Digital Twin 的設備、能力、狀態與近期紀錄。", "analysis": "步驟 6：整理證據，產生結構化 AI 分析。", "review": "步驟 7：等待人工審核，請核准或拒絕建議操作。", "action": "步驟 8：人工核准後，處理操作並記錄結果。", "loop": "步驟 9：新增 Observation，將設備狀態回傳至資料流程。"};
-  const flowSteps=['telemetry','observation','event','incident','tools','analysis','review','action','loop'];
-  let runToken=0, busy=false;
-  let selectedScenario='lake';
-
-  function setBusy(value){
-    busy=value; $('#runBtn').disabled=value;
-    $$('.scenario-option').forEach(btn=>btn.disabled=value);
-    $('#runBtn').textContent=value?'處理中…':'執行情境';
-    ['#approveAction','#rejectAction'].forEach(id=>{const btn=$(id);if(btn)btn.disabled=value;});
-  }
-  function setStep(name,message){
-    const idx=flowSteps.indexOf(name);
-    if(idx>=7)$('#flowDescription-review').textContent='步驟 7：管理者已核准建議操作。';
-    if(name==='loop')$('#flowDescription-action').textContent='步驟 8：操作執行成功，IRR01 已由 RUNNING 更新為 STOPPED。';
-    $$('.flow-node').forEach(el=>el.classList.add('visible'));
-    $$('.step').forEach((el,i)=>{
-      el.classList.add('visible');
-      el.classList.toggle('done',i<idx);
-      el.classList.toggle('active',i===idx);
-    });
-    $$('#overview [data-stage]').forEach(el=>el.classList.toggle('revealed',el.dataset.stage===name));
-    $('#runPlaceholder').hidden=true;
-    if(message){
-      $('#flowStatus').textContent=message;
-      const description=$('#flowDescription-'+name);
-      if(description)description.textContent=message;
+  function load() {
+    try {
+      return JSON.parse(localStorage.getItem(STORE_KEY)) || initialState();
+    } catch {
+      return initialState();
     }
-    if(name==='tools')updateTwinUsage(true);
-    if(['analysis','review','action','loop'].includes(name))updateTwinUsage(false);
-    renderDecision();
-
   }
-  function clearSteps(){
-    $$('.flow-node').forEach(el=>el.classList.remove('visible'));
-    Object.entries(flowDescriptions).forEach(([name,text])=>{const el=$('#flowDescription-'+name);if(el)el.textContent=text;});
-    $$('.step').forEach(el=>['visible','done','active','selected'].forEach(c=>el.classList.remove(c)));
-    $$('#overview [data-stage]').forEach(el=>el.classList.remove('revealed'));
-    $('#runPlaceholder').hidden=false;
-    $('#flowStatus').textContent='執行情境後，處理結果將一次顯示；建議操作仍需人工審核。';
+  function save() {
+    localStorage.setItem(STORE_KEY, JSON.stringify(state));
+    renderStore();
+    renderContext();
+  }
+  function uid(prefix) {
+    return prefix + '-' + String(Date.now()).slice(-6) + '-' + Math.floor(Math.random() * 900 + 100);
+  }
+  function esc(v) {
+    return String(v ?? '').replace(
+      /[&<>"']/g,
+      (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m],
+    );
+  }
+  const flowDescriptions = {
+    telemetry: '步驟 1：接收各子系統的原始遙測資料。',
+    observation: '步驟 2：正規化資料，保存 Observation。',
+    event: '步驟 3：依門檻與規則判定 Event。',
+    incident: '步驟 4：將符合關聯條件的 Event 整合為 Incident。',
+    tools: '步驟 5：AI 依 Incident 查詢 Structured Digital Twin 的設備、能力、狀態與近期紀錄。',
+    analysis: '步驟 6：整理證據，產生結構化 AI 分析。',
+    review: '步驟 7：等待人工審核，請核准或拒絕建議操作。',
+    action: '步驟 8：人工核准後，處理操作並記錄結果。',
+    loop: '步驟 9：新增 Observation，將設備狀態回傳至資料流程。',
+  };
+  const flowSteps = [
+    'telemetry',
+    'observation',
+    'event',
+    'incident',
+    'tools',
+    'analysis',
+    'review',
+    'action',
+    'loop',
+  ];
+  let runToken = 0,
+    busy = false;
+  let selectedScenario = 'lake';
+
+  function setBusy(value) {
+    busy = value;
+    $('#runBtn').disabled = value;
+    $$('.scenario-option').forEach((btn) => (btn.disabled = value));
+    $('#runBtn').textContent = value ? '處理中…' : '執行情境';
+    ['#approveAction', '#rejectAction'].forEach((id) => {
+      const btn = $(id);
+      if (btn) btn.disabled = value;
+    });
+  }
+  function setStep(name, message) {
+    const idx = flowSteps.indexOf(name);
+    if (idx >= 7) $('#flowDescription-review').textContent = '步驟 7：管理者已核准建議操作。';
+    if (name === 'loop')
+      $('#flowDescription-action').textContent = '步驟 8：操作執行成功，IRR01 已由 RUNNING 更新為 STOPPED。';
+    $$('.flow-node').forEach((el) => el.classList.add('visible'));
+    $$('.step').forEach((el, i) => {
+      el.classList.add('visible');
+      el.classList.toggle('done', i < idx);
+      el.classList.toggle('active', i === idx);
+    });
+    $$('#overview [data-stage]').forEach((el) => el.classList.toggle('revealed', el.dataset.stage === name));
+    $('#runPlaceholder').hidden = true;
+    if (message) {
+      $('#flowStatus').textContent = message;
+      const description = $('#flowDescription-' + name);
+      if (description) description.textContent = message;
+    }
+    if (name === 'tools') updateTwinUsage(true);
+    if (['analysis', 'review', 'action', 'loop'].includes(name)) updateTwinUsage(false);
+    renderDecision();
+  }
+  function clearSteps() {
+    $$('.flow-node').forEach((el) => el.classList.remove('visible'));
+    Object.entries(flowDescriptions).forEach(([name, text]) => {
+      const el = $('#flowDescription-' + name);
+      if (el) el.textContent = text;
+    });
+    $$('.step').forEach((el) =>
+      ['visible', 'done', 'active', 'selected'].forEach((c) => el.classList.remove(c)),
+    );
+    $$('#overview [data-stage]').forEach((el) => el.classList.remove('revealed'));
+    $('#runPlaceholder').hidden = false;
+    $('#flowStatus').textContent = '執行情境後，處理結果將一次顯示；建議操作仍需人工審核。';
     updateTwinUsage(false);
     renderDecision();
   }
-  async function showStage(name,message,token){
-    if(token!==runToken)return false;
-    renderCurrent();setStep(name,message);
+  async function showStage(name, message, token) {
+    if (token !== runToken) return false;
+    renderCurrent();
+    setStep(name, message);
 
-    return token===runToken;
+    return token === runToken;
   }
-  function showOverview(){ /* v12 is a single-page block layout */ }
+  function showOverview() {
+    /* v12 is a single-page block layout */
+  }
 
-  function normalize(payload){
+  function normalize(payload) {
     return {
-      id: uid('OBS'), source_event_id:payload.source_event_id, device_id:payload.device_id, system:payload.system, zone_id:payload.zone_id,
-      metric:payload.metric, value_numeric:typeof payload.value==='number'?payload.value:null, value_text:typeof payload.value==='number'?null:String(payload.value),
-      unit:payload.unit || null, observed_at:payload.observed_at, received_at:new Date().toISOString(), raw_payload:payload
+      id: uid('OBS'),
+      source_event_id: payload.source_event_id,
+      device_id: payload.device_id,
+      system: payload.system,
+      zone_id: payload.zone_id,
+      metric: payload.metric,
+      value_numeric: typeof payload.value === 'number' ? payload.value : null,
+      value_text: typeof payload.value === 'number' ? null : String(payload.value),
+      unit: payload.unit || null,
+      observed_at: payload.observed_at,
+      received_at: new Date().toISOString(),
+      raw_payload: payload,
     };
   }
 
-  function ingest(payload){
-    if(state.observations.some(o=>o.source_event_id===payload.source_event_id)) return state.observations.find(o=>o.source_event_id===payload.source_event_id);
-    const obs=normalize(payload); state.observations.push(obs); return obs;
+  function ingest(payload) {
+    if (state.observations.some((o) => o.source_event_id === payload.source_event_id))
+      return state.observations.find((o) => o.source_event_id === payload.source_event_id);
+    const obs = normalize(payload);
+    state.observations.push(obs);
+    return obs;
   }
 
-  function latest(observations, system, metric){
-    return observations.filter(o=>o.system===system && o.metric===metric).sort((a,b)=>new Date(b.observed_at)-new Date(a.observed_at))[0];
+  function latest(observations, system, metric) {
+    return observations
+      .filter((o) => o.system === system && o.metric === metric)
+      .sort((a, b) => new Date(b.observed_at) - new Date(a.observed_at))[0];
   }
 
-  function detectEvents(obsBatch){
-    const out=[];
-    for(const o of obsBatch){
-      let e=null;
-      if(o.system==='weather'&&o.metric==='rainfall'&&o.value_numeric>30) e={type:'HEAVY_RAINFALL',severity:'warning',rule:'RULE-W01'};
-      if(o.system==='lake'&&o.metric==='water_level'&&o.value_numeric>80) e={type:'HIGH_WATER_LEVEL',severity:'warning',rule:'RULE-L01'};
-      if(o.system==='irrigation'&&o.metric==='status'&&o.value_text==='RUNNING') e={type:'IRRIGATION_ACTIVE',severity:'info',rule:'RULE-I01'};
-      if(o.system==='hvac'&&o.metric==='power'&&o.value_numeric>85) e={type:'HVAC_HIGH_CONSUMPTION',severity:'warning',rule:'RULE-H01'};
-      if(o.system==='energy'&&o.metric==='power'&&o.value_numeric>170) e={type:'BUILDING_ENERGY_HIGH',severity:'warning',rule:'RULE-E01'};
-      if(e){
-        const event={id:uid('EVT'),event_type:e.type,severity:e.severity,source_observation_id:o.id,device_id:o.device_id,zone_id:o.zone_id,rule_id:e.rule,started_at:o.observed_at,status:'ACTIVE'};
-        state.events.push(event); out.push(event);
+  function detectEvents(obsBatch) {
+    const out = [];
+    for (const o of obsBatch) {
+      let e = null;
+      if (o.system === 'weather' && o.metric === 'rainfall' && o.value_numeric > 30)
+        e = { type: 'HEAVY_RAINFALL', severity: 'warning', rule: 'RULE-W01' };
+      if (o.system === 'lake' && o.metric === 'water_level' && o.value_numeric > 80)
+        e = { type: 'HIGH_WATER_LEVEL', severity: 'warning', rule: 'RULE-L01' };
+      if (o.system === 'irrigation' && o.metric === 'status' && o.value_text === 'RUNNING')
+        e = { type: 'IRRIGATION_ACTIVE', severity: 'info', rule: 'RULE-I01' };
+      if (o.system === 'hvac' && o.metric === 'power' && o.value_numeric > 85)
+        e = { type: 'HVAC_HIGH_CONSUMPTION', severity: 'warning', rule: 'RULE-H01' };
+      if (o.system === 'energy' && o.metric === 'power' && o.value_numeric > 170)
+        e = { type: 'BUILDING_ENERGY_HIGH', severity: 'warning', rule: 'RULE-E01' };
+      if (e) {
+        const event = {
+          id: uid('EVT'),
+          event_type: e.type,
+          severity: e.severity,
+          source_observation_id: o.id,
+          device_id: o.device_id,
+          zone_id: o.zone_id,
+          rule_id: e.rule,
+          started_at: o.observed_at,
+          status: 'ACTIVE',
+        };
+        state.events.push(event);
+        out.push(event);
       }
     }
     return out;
   }
 
-  function correlate(obsBatch,eventBatch){
-    const types=new Set(eventBatch.map(e=>e.event_type));
-    const rain=types.has('HEAVY_RAINFALL'), lake=types.has('HIGH_WATER_LEVEL');
-    if(rain && lake){
-      const inc={id:uid('INC'),incident_type:'WEATHER_RELATED_LAKE_RISK',title:'降雨相關湖區風險',severity:'MEDIUM',zone_id:'OUTDOOR',status:'OPEN',created_at:new Date().toISOString(),event_ids:eventBatch.filter(e=>['HEAVY_RAINFALL','HIGH_WATER_LEVEL','IRRIGATION_ACTIVE'].includes(e.event_type)).map(e=>e.id)};
-      state.incidents.push(inc); return inc;
+  function correlate(obsBatch, eventBatch) {
+    const types = new Set(eventBatch.map((e) => e.event_type));
+    const rain = types.has('HEAVY_RAINFALL'),
+      lake = types.has('HIGH_WATER_LEVEL');
+    if (rain && lake) {
+      const inc = {
+        id: uid('INC'),
+        incident_type: 'WEATHER_RELATED_LAKE_RISK',
+        title: '降雨相關湖區風險',
+        severity: 'MEDIUM',
+        zone_id: 'OUTDOOR',
+        status: 'OPEN',
+        created_at: new Date().toISOString(),
+        event_ids: eventBatch
+          .filter((e) => ['HEAVY_RAINFALL', 'HIGH_WATER_LEVEL', 'IRRIGATION_ACTIVE'].includes(e.event_type))
+          .map((e) => e.id),
+      };
+      state.incidents.push(inc);
+      return inc;
     }
-    const hv=types.has('HVAC_HIGH_CONSUMPTION'), en=types.has('BUILDING_ENERGY_HIGH');
-    if(hv && en){
-      const temp=latest(obsBatch,'weather','temperature');
-      const occ=latest(obsBatch,'occupancy','level');
-      const suspicious=temp && occ && temp.value_numeric<=30 && occ.value_text==='LOW';
-      if(suspicious){
-        const inc={id:uid('INC'),incident_type:'HVAC_ENERGY_EFFICIENCY_RISK',title:'空調與用電效率風險',severity:'MEDIUM',zone_id:'TOWER-A-L3',status:'OPEN',created_at:new Date().toISOString(),event_ids:eventBatch.filter(e=>['HVAC_HIGH_CONSUMPTION','BUILDING_ENERGY_HIGH'].includes(e.event_type)).map(e=>e.id)};
-        state.incidents.push(inc); return inc;
+    const hv = types.has('HVAC_HIGH_CONSUMPTION'),
+      en = types.has('BUILDING_ENERGY_HIGH');
+    if (hv && en) {
+      const temp = latest(obsBatch, 'weather', 'temperature');
+      const occ = latest(obsBatch, 'occupancy', 'level');
+      const suspicious = temp && occ && temp.value_numeric <= 30 && occ.value_text === 'LOW';
+      if (suspicious) {
+        const inc = {
+          id: uid('INC'),
+          incident_type: 'HVAC_ENERGY_EFFICIENCY_RISK',
+          title: '空調與用電效率風險',
+          severity: 'MEDIUM',
+          zone_id: 'TOWER-A-L3',
+          status: 'OPEN',
+          created_at: new Date().toISOString(),
+          event_ids: eventBatch
+            .filter((e) => ['HVAC_HIGH_CONSUMPTION', 'BUILDING_ENERGY_HIGH'].includes(e.event_type))
+            .map((e) => e.id),
+        };
+        state.incidents.push(inc);
+        return inc;
       }
     }
     return null;
   }
 
-  const tools={
-    get_incident_events(incident){ return state.events.filter(e=>incident.event_ids.includes(e.id)); },
-    get_devices_in_zone(zone){ return buildingModel.devices.filter(d=>d.zone===zone).map(d=>({...d,state:tools.get_device_state(d.id),relationships:buildingModel.relationships.filter(r=>r[0]===d.id||r[2]===d.id).map(r=>[...r])})); },
-    get_related_devices(deviceId){
-      const rel=buildingModel.relationships.filter(r=>r[0]===deviceId||r[2]===deviceId);
-      const ids=new Set(rel.flatMap(r=>[r[0],r[2]]).filter(x=>buildingModel.devices.some(d=>d.id===x)));
-      return buildingModel.devices.filter(d=>ids.has(d.id)).map(d=>({...d,state:tools.get_device_state(d.id),relationships:buildingModel.relationships.filter(r=>r[0]===d.id||r[2]===d.id).map(r=>[...r])}));
+  const tools = {
+    get_incident_events(incident) {
+      return state.events.filter((e) => incident.event_ids.includes(e.id));
     },
-    get_device_capabilities(deviceId){ return buildingModel.devices.find(d=>d.id===deviceId)?.capabilities || []; },
-    get_device_state(deviceId){ return state.deviceStates[deviceId] || buildingModel.devices.find(d=>d.id===deviceId)?.state || 'UNKNOWN'; },
-    get_recent_observations(deviceId){ return state.observations.filter(o=>o.device_id===deviceId).slice(-8); }
+    get_devices_in_zone(zone) {
+      return buildingModel.devices
+        .filter((d) => d.zone === zone)
+        .map((d) => ({
+          ...d,
+          state: tools.get_device_state(d.id),
+          relationships: buildingModel.relationships
+            .filter((r) => r[0] === d.id || r[2] === d.id)
+            .map((r) => [...r]),
+        }));
+    },
+    get_related_devices(deviceId) {
+      const rel = buildingModel.relationships.filter((r) => r[0] === deviceId || r[2] === deviceId);
+      const ids = new Set(
+        rel.flatMap((r) => [r[0], r[2]]).filter((x) => buildingModel.devices.some((d) => d.id === x)),
+      );
+      return buildingModel.devices
+        .filter((d) => ids.has(d.id))
+        .map((d) => ({
+          ...d,
+          state: tools.get_device_state(d.id),
+          relationships: buildingModel.relationships
+            .filter((r) => r[0] === d.id || r[2] === d.id)
+            .map((r) => [...r]),
+        }));
+    },
+    get_device_capabilities(deviceId) {
+      return buildingModel.devices.find((d) => d.id === deviceId)?.capabilities || [];
+    },
+    get_device_state(deviceId) {
+      return (
+        state.deviceStates[deviceId] ||
+        buildingModel.devices.find((d) => d.id === deviceId)?.state ||
+        'UNKNOWN'
+      );
+    },
+    get_recent_observations(deviceId) {
+      return state.observations.filter((o) => o.device_id === deviceId).slice(-8);
+    },
   };
 
-  function runAgent(incident){
-    const log=[];
-    const call=(name,args,res)=>{log.push({name,args,result:res});return res};
-    const evs=call('get_incident_events',{incident_id:incident.id},tools.get_incident_events(incident));
-    const devices=call('get_devices_in_zone',{zone_id:incident.zone_id},tools.get_devices_in_zone(incident.zone_id));
+  function runAgent(incident) {
+    const log = [];
+    const call = (name, args, res) => {
+      log.push({ name, args, result: res });
+      return res;
+    };
+    const evs = call(
+      'get_incident_events',
+      { incident_id: incident.id },
+      tools.get_incident_events(incident),
+    );
+    const devices = call(
+      'get_devices_in_zone',
+      { zone_id: incident.zone_id },
+      tools.get_devices_in_zone(incident.zone_id),
+    );
 
-    if(incident.incident_type==='WEATHER_RELATED_LAKE_RISK'){
-      const irrigation=devices.find(d=>d.id==='IRR01');
-      const drain=devices.find(d=>d.id==='DP01');
-      const irrState=call('get_device_state',{device_id:'IRR01'},tools.get_device_state('IRR01'));
-      const dpState=call('get_device_state',{device_id:'DP01'},tools.get_device_state('DP01'));
-      const related=call('get_related_devices',{device_id:'LS01'},tools.get_related_devices('LS01'));
-      const irrCaps=call('get_device_capabilities',{device_id:'IRR01'},tools.get_device_capabilities('IRR01'));
-      const irrHistory=call('get_recent_observations',{device_id:'IRR01'},tools.get_recent_observations('IRR01'));
-      const rainObs=currentRun.obs.filter(o=>o.device_id==='W01'&&o.metric==='rainfall').slice(-1)[0];
-      const lakeObs=currentRun.obs.filter(o=>o.device_id==='LS01'&&o.metric==='water_level').slice(-1)[0];
-      const irrigationObs=currentRun.obs.filter(o=>o.device_id==='IRR01'&&o.metric==='status').slice(-1)[0];
-      const evidence=[rainObs,lakeObs,irrigationObs].filter(Boolean);
-      const analysis={
-        id:uid('ANA'),incident_id:incident.id,version:1,
-        summary:'強降雨與目前湖面高水位在時間與區域上同時出現；灌溉系統仍為 RUNNING。建議先停止不必要的灌溉，持續監測湖面與排水設備狀態。',
-        hypotheses:[{description:'強降雨可能是湖面水位升高的原因之一。',evidence_ids:evidence.map(x=>x.id),evidence_strength:'HIGH'}],
-        recommended_actions: irrState==='RUNNING' && irrCaps.includes('STOP') ? [{target_device_id:'IRR01',action_type:'STOP',reason:'強降雨期間不需要持續灌溉，且湖區灌溉設備支援停止操作。'}] : [],
-        model:'building-aware-agent-v0.1',created_at:new Date().toISOString()
+    if (incident.incident_type === 'WEATHER_RELATED_LAKE_RISK') {
+      const irrigation = devices.find((d) => d.id === 'IRR01');
+      const drain = devices.find((d) => d.id === 'DP01');
+      const irrState = call('get_device_state', { device_id: 'IRR01' }, tools.get_device_state('IRR01'));
+      const dpState = call('get_device_state', { device_id: 'DP01' }, tools.get_device_state('DP01'));
+      const related = call('get_related_devices', { device_id: 'LS01' }, tools.get_related_devices('LS01'));
+      const irrCaps = call(
+        'get_device_capabilities',
+        { device_id: 'IRR01' },
+        tools.get_device_capabilities('IRR01'),
+      );
+      const irrHistory = call(
+        'get_recent_observations',
+        { device_id: 'IRR01' },
+        tools.get_recent_observations('IRR01'),
+      );
+      const rainObs = currentRun.obs
+        .filter((o) => o.device_id === 'W01' && o.metric === 'rainfall')
+        .slice(-1)[0];
+      const lakeObs = currentRun.obs
+        .filter((o) => o.device_id === 'LS01' && o.metric === 'water_level')
+        .slice(-1)[0];
+      const irrigationObs = currentRun.obs
+        .filter((o) => o.device_id === 'IRR01' && o.metric === 'status')
+        .slice(-1)[0];
+      const evidence = [rainObs, lakeObs, irrigationObs].filter(Boolean);
+      const analysis = {
+        id: uid('ANA'),
+        incident_id: incident.id,
+        version: 1,
+        summary:
+          '強降雨與目前湖面高水位在時間與區域上同時出現；灌溉系統仍為 RUNNING。建議先停止不必要的灌溉，持續監測湖面與排水設備狀態。',
+        hypotheses: [
+          {
+            description: '強降雨可能是湖面水位升高的原因之一。',
+            evidence_ids: evidence.map((x) => x.id),
+            evidence_strength: 'HIGH',
+          },
+        ],
+        recommended_actions:
+          irrState === 'RUNNING' && irrCaps.includes('STOP')
+            ? [
+                {
+                  target_device_id: 'IRR01',
+                  action_type: 'STOP',
+                  reason: '強降雨期間不需要持續灌溉，且湖區灌溉設備支援停止操作。',
+                },
+              ]
+            : [],
+        model: 'building-aware-agent-v0.1',
+        created_at: new Date().toISOString(),
       };
-      state.analyses.push(analysis); incident.status='ANALYZED'; return {log,analysis};
+      state.analyses.push(analysis);
+      incident.status = 'ANALYZED';
+      return { log, analysis };
     }
 
-    if(incident.incident_type==='HVAC_ENERGY_EFFICIENCY_RISK'){
-      const ahuRelated=call('get_related_devices',{device_id:'AHU03'},tools.get_related_devices('AHU03'));
-      const ahuState=call('get_device_state',{device_id:'AHU03'},tools.get_device_state('AHU03'));
-      const ahuCaps=call('get_device_capabilities',{device_id:'AHU03'},tools.get_device_capabilities('AHU03'));
-      const ahuHistory=call('get_recent_observations',{device_id:'AHU03'},tools.get_recent_observations('AHU03'));
-      const evObs=evs.map(e=>state.observations.find(o=>o.id===e.source_observation_id)).filter(Boolean);
-      const contextObs=currentRun.obs.filter(o=>['W01','OCC03'].includes(o.device_id));
-      const evidence=[...evObs,...contextObs];
-      const analysis={
-        id:uid('ANA'),incident_id:incident.id,version:1,
-        summary:'HVAC 與整棟用電同時偏高，而目前人流為 LOW、室外溫度僅 27°C。這些條件不足以直接證明設備故障，但值得檢查 AHU 排程、控制設定與設備效率。',
-        hypotheses:[{description:'相較於目前人流與室外條件，空調用電需求可能偏高。',evidence_ids:evidence.map(x=>x.id),evidence_strength:'MEDIUM'}],
-        recommended_actions:[{target_device_id:'AHU03',action_type:'INSPECT',reason:'檢查 AHU 排程與近期運轉趨勢，由管理者評估後續處置。'}],
-        model:'building-aware-agent-v0.1',created_at:new Date().toISOString()
+    if (incident.incident_type === 'HVAC_ENERGY_EFFICIENCY_RISK') {
+      const ahuRelated = call(
+        'get_related_devices',
+        { device_id: 'AHU03' },
+        tools.get_related_devices('AHU03'),
+      );
+      const ahuState = call('get_device_state', { device_id: 'AHU03' }, tools.get_device_state('AHU03'));
+      const ahuCaps = call(
+        'get_device_capabilities',
+        { device_id: 'AHU03' },
+        tools.get_device_capabilities('AHU03'),
+      );
+      const ahuHistory = call(
+        'get_recent_observations',
+        { device_id: 'AHU03' },
+        tools.get_recent_observations('AHU03'),
+      );
+      const evObs = evs
+        .map((e) => state.observations.find((o) => o.id === e.source_observation_id))
+        .filter(Boolean);
+      const contextObs = currentRun.obs.filter((o) => ['W01', 'OCC03'].includes(o.device_id));
+      const evidence = [...evObs, ...contextObs];
+      const analysis = {
+        id: uid('ANA'),
+        incident_id: incident.id,
+        version: 1,
+        summary:
+          'HVAC 與整棟用電同時偏高，而目前人流為 LOW、室外溫度僅 27°C。這些條件不足以直接證明設備故障，但值得檢查 AHU 排程、控制設定與設備效率。',
+        hypotheses: [
+          {
+            description: '相較於目前人流與室外條件，空調用電需求可能偏高。',
+            evidence_ids: evidence.map((x) => x.id),
+            evidence_strength: 'MEDIUM',
+          },
+        ],
+        recommended_actions: [
+          {
+            target_device_id: 'AHU03',
+            action_type: 'INSPECT',
+            reason: '檢查 AHU 排程與近期運轉趨勢，由管理者評估後續處置。',
+          },
+        ],
+        model: 'building-aware-agent-v0.1',
+        created_at: new Date().toISOString(),
       };
-      state.analyses.push(analysis); incident.status='ANALYZED'; return {log,analysis};
+      state.analyses.push(analysis);
+      incident.status = 'ANALYZED';
+      return { log, analysis };
     }
-    return {log,analysis:null};
+    return { log, analysis: null };
   }
 
-  function executeApprovedAction(action){
-    action.status='APPROVED'; action.approved_at=new Date().toISOString();
-    if(action.target_device_id==='IRR01' && action.action_type==='STOP'){
-      state.deviceStates.IRR01='STOPPED'; action.status='EXECUTED'; action.executed_at=new Date().toISOString(); action.execution_status='SUCCESS';
-      const obs={id:'OBS-036',source_event_id:'ACTION-'+action.id,device_id:'IRR01',system:'irrigation',zone_id:'OUTDOOR',metric:'status',value_numeric:null,value_text:'STOPPED',unit:null,observed_at:new Date().toISOString(),received_at:new Date().toISOString(),raw_payload:{source:'action_service',action_id:action.id,status:'STOPPED'}};
-      if(!state.observations.some(o=>o.id==='OBS-036')) state.observations.push(obs);
-      currentRun.obs.push(obs); currentRun.action=action;
-    }else{
-      action.status='APPROVED'; action.execution_status='NOT_EXECUTED_IN_MVP';
-      currentRun.action=action;
+  function executeApprovedAction(action) {
+    action.status = 'APPROVED';
+    action.approved_at = new Date().toISOString();
+    if (action.target_device_id === 'IRR01' && action.action_type === 'STOP') {
+      state.deviceStates.IRR01 = 'STOPPED';
+      action.status = 'EXECUTED';
+      action.executed_at = new Date().toISOString();
+      action.execution_status = 'SUCCESS';
+      const obs = {
+        id: 'OBS-036',
+        source_event_id: 'ACTION-' + action.id,
+        device_id: 'IRR01',
+        system: 'irrigation',
+        zone_id: 'OUTDOOR',
+        metric: 'status',
+        value_numeric: null,
+        value_text: 'STOPPED',
+        unit: null,
+        observed_at: new Date().toISOString(),
+        received_at: new Date().toISOString(),
+        raw_payload: { source: 'action_service', action_id: action.id, status: 'STOPPED' },
+      };
+      if (!state.observations.some((o) => o.id === 'OBS-036')) state.observations.push(obs);
+      currentRun.obs.push(obs);
+      currentRun.action = action;
+    } else {
+      action.status = 'APPROVED';
+      action.execution_status = 'NOT_EXECUTED_IN_MVP';
+      currentRun.action = action;
     }
-    save(); renderCurrent();
+    save();
+    renderCurrent();
   }
 
-  async function approveAction(action){
-    if(busy || action.status!=='PROPOSED')return;
-    const token=runToken;setBusy(true);showOverview();
-    $('#approveAction').disabled=true;$('#rejectAction').disabled=true;
-    if(!await showStage('action','步驟 8：已核准，正在處理操作…',token))return;
+  async function approveAction(action) {
+    if (busy || action.status !== 'PROPOSED') return;
+    const token = runToken;
+    setBusy(true);
+    showOverview();
+    $('#approveAction').disabled = true;
+    $('#rejectAction').disabled = true;
+    if (!(await showStage('action', '步驟 8：已核准，正在處理操作…', token))) return;
     executeApprovedAction(action);
-    if(action.status==='EXECUTED'){
-      await showStage('loop','步驟 9：新增 OBS-036，設備狀態已回到資料流程。',token);
-    }else{
-      setStep('action','檢查建議已核准，待管理者安排設備檢查。');
+    if (action.status === 'EXECUTED') {
+      await showStage('loop', '步驟 9：新增 OBS-036，設備狀態已回到資料流程。', token);
+    } else {
+      setStep('action', '檢查建議已核准，待管理者安排設備檢查。');
     }
-    if(token===runToken){
+    if (token === runToken) {
       setBusy(false);
-      pulseNodes([$('#actionBox'),$('#executionBox'),$('#auditLine'),$('#flowStatus')]);
-      if(action.status==='EXECUTED'){pulseDevices([action.target_device_id]);pulseNodes([$('#feedbackBox')]);}
-    }
-  }
-  function rejectAction(action){
-    if(busy || action.status!=='PROPOSED')return;
-    action.status='REJECTED';action.rejected_at=new Date().toISOString();save();renderCurrent();
-    setStep('review','操作已拒絕；流程結束，設備狀態維持原樣。');
-    pulseNodes([$('#actionBox'),$('#auditLine'),$('#flowStatus')]);
-  }
-
-  async function runScenario(key){
-    if(busy)return;
-    const token=++runToken;$('#demoLayout').hidden=false;setBusy(true);showOverview();
-    currentRun={raw:[],obs:[],events:[],incident:null,tools:[],analysis:null,action:null,scenario:key};clearSteps();
-    state.deviceStates.IRR01='RUNNING';state.deviceStates.DP01='STANDBY';
-    try{
-      const sc=scenarios[key];currentRun.raw=sc.payloads;
-      if(!await showStage('telemetry','步驟 1：接收各子系統的原始遙測資料。',token))return;
-      const obsBatch=sc.payloads.map(ingest);currentRun.obs=obsBatch;save();
-      if(!await showStage('observation','步驟 2：正規化資料，保存 Observation。',token))return;
-      const eventBatch=detectEvents(obsBatch);currentRun.events=eventBatch;save();
-      if(!await showStage('event','步驟 3：依門檻與規則判定 Event。',token))return;
-      const inc=correlate(obsBatch,eventBatch);currentRun.incident=inc;save();
-      if(!await showStage('incident',inc?'步驟 4：相關 Event 已整合為 Incident。':'未符合關聯條件；流程在此結束，不啟動 AI 分析。',token))return;
-      if(!inc)return;
-      const agent=runAgent(inc);currentRun.tools=agent.log;
-      if(!await showStage('tools','步驟 5：AI 依 Incident 查詢 Structured Digital Twin 的設備、能力、狀態與近期紀錄。',token))return;
-      currentRun.analysis=agent.analysis;save();
-      if(!await showStage('analysis','步驟 6：整理證據，產生結構化 AI 分析。',token))return;
-      const rec=agent.analysis?.recommended_actions?.[0];
-      if(rec){
-        const action={id:uid('ACT'),analysis_id:agent.analysis.id,incident_id:inc.id,target_device_id:rec.target_device_id,action_type:rec.action_type,reason:rec.reason,status:'PROPOSED',created_at:new Date().toISOString()};
-        state.actions.push(action);currentRun.action=action;save();
-        renderCurrent();setStep('review','步驟 7：等待人工審核，請核准或拒絕建議操作。');
+      pulseNodes([$('#actionBox'), $('#executionBox'), $('#auditLine'), $('#flowStatus')]);
+      if (action.status === 'EXECUTED') {
+        pulseDevices([action.target_device_id]);
+        pulseNodes([$('#feedbackBox')]);
       }
-    }catch(error){
-      if(token===runToken)$('#flowStatus').textContent='處理未完成，請再執行情境。';
-      console.error(error);
-    }finally{if(token===runToken){setBusy(false);pulseDevices(currentRun.obs.map(o=>o.device_id));pulseNodes([$('#decisionEvidence'),$('#decisionRecommendation'),$('#actionBox'),$('#flowStatus')]);}}
+    }
+  }
+  function rejectAction(action) {
+    if (busy || action.status !== 'PROPOSED') return;
+    action.status = 'REJECTED';
+    action.rejected_at = new Date().toISOString();
+    save();
+    renderCurrent();
+    setStep('review', '操作已拒絕；流程結束，設備狀態維持原樣。');
+    pulseNodes([$('#actionBox'), $('#auditLine'), $('#flowStatus')]);
   }
 
-  function renderCurrent(){
-    $('#rawTelemetry').innerHTML=currentRun.raw.length?currentRun.raw.map(p=>`<div class="metric"><b>${esc(p.device_id)} · ${esc(p.metric)}</b><span>${esc(p.value)} ${esc(p.unit||'')}</span></div>`).join(''):'<div class="empty">請執行情境以接收遙測資料。</div>';
-    $('#observations').innerHTML=currentRun.obs.length?currentRun.obs.map(o=>`<div class="metric"><b>${esc(o.id)} · ${esc(o.device_id)}.${esc(o.metric)}</b><span>${esc(o.value_numeric??o.value_text)} ${esc(o.unit||'')}</span></div>`).join(''):'<div class="empty">尚無 Observation 紀錄。</div>';
-    $('#events').innerHTML=currentRun.events.length?currentRun.events.map(e=>`<div class="event"><b>${esc(e.event_type)}</b> <span class="pill ${e.severity==='warning'?'warn':'info'}">${esc(e.severity)}</span><div class="sub">${esc(e.id)} · ${esc(e.rule_id)} · 來源 ${esc(e.source_observation_id)}</div></div>`).join(''):'<div class="empty">未產生規則判定 Event；部分反例情境預期會有此結果。</div>';
+  async function runScenario(key) {
+    if (busy) return;
+    const token = ++runToken;
+    $('#demoLayout').hidden = false;
+    setBusy(true);
+    showOverview();
+    currentRun = {
+      raw: [],
+      obs: [],
+      events: [],
+      incident: null,
+      tools: [],
+      analysis: null,
+      action: null,
+      scenario: key,
+    };
+    clearSteps();
+    state.deviceStates.IRR01 = 'RUNNING';
+    state.deviceStates.DP01 = 'STANDBY';
+    try {
+      const sc = scenarios[key];
+      currentRun.raw = sc.payloads;
+      if (!(await showStage('telemetry', '步驟 1：接收各子系統的原始遙測資料。', token))) return;
+      const obsBatch = sc.payloads.map(ingest);
+      currentRun.obs = obsBatch;
+      save();
+      if (!(await showStage('observation', '步驟 2：正規化資料，保存 Observation。', token))) return;
+      const eventBatch = detectEvents(obsBatch);
+      currentRun.events = eventBatch;
+      save();
+      if (!(await showStage('event', '步驟 3：依門檻與規則判定 Event。', token))) return;
+      const inc = correlate(obsBatch, eventBatch);
+      currentRun.incident = inc;
+      save();
+      if (
+        !(await showStage(
+          'incident',
+          inc ? '步驟 4：相關 Event 已整合為 Incident。' : '未符合關聯條件；流程在此結束，不啟動 AI 分析。',
+          token,
+        ))
+      )
+        return;
+      if (!inc) return;
+      const agent = runAgent(inc);
+      currentRun.tools = agent.log;
+      if (
+        !(await showStage(
+          'tools',
+          '步驟 5：AI 依 Incident 查詢 Structured Digital Twin 的設備、能力、狀態與近期紀錄。',
+          token,
+        ))
+      )
+        return;
+      currentRun.analysis = agent.analysis;
+      save();
+      if (!(await showStage('analysis', '步驟 6：整理證據，產生結構化 AI 分析。', token))) return;
+      const rec = agent.analysis?.recommended_actions?.[0];
+      if (rec) {
+        const action = {
+          id: uid('ACT'),
+          analysis_id: agent.analysis.id,
+          incident_id: inc.id,
+          target_device_id: rec.target_device_id,
+          action_type: rec.action_type,
+          reason: rec.reason,
+          status: 'PROPOSED',
+          created_at: new Date().toISOString(),
+        };
+        state.actions.push(action);
+        currentRun.action = action;
+        save();
+        renderCurrent();
+        setStep('review', '步驟 7：等待人工審核，請核准或拒絕建議操作。');
+      }
+    } catch (error) {
+      if (token === runToken) $('#flowStatus').textContent = '處理未完成，請再執行情境。';
+      console.error(error);
+    } finally {
+      if (token === runToken) {
+        setBusy(false);
+        pulseDevices(currentRun.obs.map((o) => o.device_id));
+        pulseNodes([$('#decisionEvidence'), $('#decisionRecommendation'), $('#actionBox'), $('#flowStatus')]);
+      }
+    }
+  }
 
-    if(currentRun.incident){
-      $('#incidentBox').innerHTML=`<div class="incident"><div><span class="pill bad">${esc(currentRun.incident.severity)}</span></div><h3 style="margin-top:8px">${esc(currentRun.incident.title)}</h3><div class="small">${esc(currentRun.incident.id)} · ${esc(currentRun.incident.incident_type)} · ${esc(currentRun.incident.zone_id)}</div><p>${currentRun.incident.event_ids.length} 個相關 Event 已依時間、位置與語意規則整合。</p></div>`;
-    }else{
-      $('#incidentBox').innerHTML=`<div class="incident none"><b>未建立 Incident。</b><p class="small">未符合跨系統關聯條件，因此不建立 Incident，也不啟動 AI 分析。</p></div>`;
+  function renderCurrent() {
+    $('#rawTelemetry').innerHTML = currentRun.raw.length
+      ? currentRun.raw
+          .map(
+            (p) =>
+              `<div class="metric"><b>${esc(p.device_id)} · ${esc(p.metric)}</b><span>${esc(p.value)} ${esc(p.unit || '')}</span></div>`,
+          )
+          .join('')
+      : '<div class="empty">請執行情境以接收遙測資料。</div>';
+    $('#observations').innerHTML = currentRun.obs.length
+      ? currentRun.obs
+          .map(
+            (o) =>
+              `<div class="metric"><b>${esc(o.id)} · ${esc(o.device_id)}.${esc(o.metric)}</b><span>${esc(o.value_numeric ?? o.value_text)} ${esc(o.unit || '')}</span></div>`,
+          )
+          .join('')
+      : '<div class="empty">尚無 Observation 紀錄。</div>';
+    $('#events').innerHTML = currentRun.events.length
+      ? currentRun.events
+          .map(
+            (e) =>
+              `<div class="event"><b>${esc(e.event_type)}</b> <span class="pill ${e.severity === 'warning' ? 'warn' : 'info'}">${esc(e.severity)}</span><div class="sub">${esc(e.id)} · ${esc(e.rule_id)} · 來源 ${esc(e.source_observation_id)}</div></div>`,
+          )
+          .join('')
+      : '<div class="empty">未產生規則判定 Event；部分反例情境預期會有此結果。</div>';
+
+    if (currentRun.incident) {
+      $('#incidentBox').innerHTML =
+        `<div class="incident"><div><span class="pill bad">${esc(currentRun.incident.severity)}</span></div><h3 style="margin-top:8px">${esc(currentRun.incident.title)}</h3><div class="small">${esc(currentRun.incident.id)} · ${esc(currentRun.incident.incident_type)} · ${esc(currentRun.incident.zone_id)}</div><p>${currentRun.incident.event_ids.length} 個相關 Event 已依時間、位置與語意規則整合。</p></div>`;
+    } else {
+      $('#incidentBox').innerHTML =
+        `<div class="incident none"><b>未建立 Incident。</b><p class="small">未符合跨系統關聯條件，因此不建立 Incident，也不啟動 AI 分析。</p></div>`;
     }
 
-    $('#toolLog').innerHTML=currentRun.tools.length?currentRun.tools.map(t=>`<div class="tool"><b>${esc(t.name)}</b>(${esc(JSON.stringify(t.args))})<br><span class="muted">→ ${esc(Array.isArray(t.result)?t.result.map(x=>x.id||x.name||x.event_type||x).join(', '):JSON.stringify(t.result))}</span></div>`).join(''):'<div class="empty">尚無工具查詢。</div>';
+    $('#toolLog').innerHTML = currentRun.tools.length
+      ? currentRun.tools
+          .map(
+            (t) =>
+              `<div class="tool"><b>${esc(t.name)}</b>(${esc(JSON.stringify(t.args))})<br><span class="muted">→ ${esc(Array.isArray(t.result) ? t.result.map((x) => x.id || x.name || x.event_type || x).join(', ') : JSON.stringify(t.result))}</span></div>`,
+          )
+          .join('')
+      : '<div class="empty">尚無工具查詢。</div>';
 
-    if(currentRun.analysis){
-      const a=currentRun.analysis; const h=a.hypotheses[0];
-      $('#analysisBox').innerHTML=`<p>${esc(a.summary)}</p><div style="margin-top:12px"><b>推論假設</b><div class="evidence">${esc(h.description)}</div><div class="small">證據強度： <b>${esc(h.evidence_strength)}</b></div></div><div style="margin-top:10px"><b>證據參照</b>${h.evidence_ids.map(id=>{const o=state.observations.find(x=>x.id===id);return `<div class="evidence">${esc(id)} · ${esc(o?.device_id)}.${esc(o?.metric)} = ${esc(o?.value_numeric??o?.value_text)} ${esc(o?.unit||'')}</div>`}).join('')}</div>`;
-    }else $('#analysisBox').innerHTML='<div class="empty">未建立 Incident，因此未進行 AI 分析。</div>';
+    if (currentRun.analysis) {
+      const a = currentRun.analysis;
+      const h = a.hypotheses[0];
+      $('#analysisBox').innerHTML =
+        `<p>${esc(a.summary)}</p><div style="margin-top:12px"><b>推論假設</b><div class="evidence">${esc(h.description)}</div><div class="small">證據強度： <b>${esc(h.evidence_strength)}</b></div></div><div style="margin-top:10px"><b>證據參照</b>${h.evidence_ids
+          .map((id) => {
+            const o = state.observations.find((x) => x.id === id);
+            return `<div class="evidence">${esc(id)} · ${esc(o?.device_id)}.${esc(o?.metric)} = ${esc(o?.value_numeric ?? o?.value_text)} ${esc(o?.unit || '')}</div>`;
+          })
+          .join('')}</div>`;
+    } else $('#analysisBox').innerHTML = '<div class="empty">未建立 Incident，因此未進行 AI 分析。</div>';
 
-    if(currentRun.action){
-      const a=currentRun.action;
-      let html=`<div class="action"><b>${esc(a.action_type)} · ${esc(a.target_device_id)}</b><p>${esc(a.reason)}</p><div class="small">狀態： <b>${esc(a.status)}</b></div>`;
-      if(a.status==='PROPOSED') html+=`<div class="actionbuttons"><button class="danger" id="rejectAction">拒絕</button><button class="primary" id="approveAction">核准操作</button></div>`;
-      html+='</div>';
-      if(a.status==='REJECTED') html+=`<div class="success" style="border-color:#f1c3be;background:#fff7f6"><b>管理者已拒絕此操作。</b><p class="small">未執行設備指令。</p></div>`;
-      $('#actionBox').innerHTML=html;
-      $('#approveAction')?.addEventListener('click',()=>approveAction(a));
-      if($('#approveAction'))$('#approveAction').disabled=busy;
-      if($('#rejectAction'))$('#rejectAction').disabled=busy;
-      $('#rejectAction')?.addEventListener('click',()=>rejectAction(a));
-    }else $('#actionBox').innerHTML='<div class="empty">尚無建議操作。</div>';
-    const action=currentRun.action;
-    $('#executionBox').innerHTML=action?.status==='EXECUTED'
-      ?'<div class="success"><b>操作執行成功</b><p>IRR01: RUNNING → STOPPED</p></div>'
-      :action?.status==='APPROVED'
-        ?'<p>檢查建議已核准，待管理者安排設備檢查。</p>'
-        :'';
-    const feedback=currentRun.obs.find(o=>o.id==='OBS-036');
-    $('#feedbackBox').innerHTML=feedback
-      ?'<div class="success"><b>新增 Observation：OBS-036</b><p>IRR01.status = STOPPED</p><p class="small">已新增至 Observation 資料儲存區，並回到相同的資料處理流程。</p></div>'
-      :'';
+    if (currentRun.action) {
+      const a = currentRun.action;
+      let html = `<div class="action"><b>${esc(a.action_type)} · ${esc(a.target_device_id)}</b><p>${esc(a.reason)}</p><div class="small">狀態： <b>${esc(a.status)}</b></div>`;
+      if (a.status === 'PROPOSED')
+        html += `<div class="actionbuttons"><button class="danger" id="rejectAction">拒絕</button><button class="primary" id="approveAction">核准操作</button></div>`;
+      html += '</div>';
+      if (a.status === 'REJECTED')
+        html += `<div class="success" style="border-color:#f1c3be;background:#fff7f6"><b>管理者已拒絕此操作。</b><p class="small">未執行設備指令。</p></div>`;
+      $('#actionBox').innerHTML = html;
+      $('#approveAction')?.addEventListener('click', () => approveAction(a));
+      if ($('#approveAction')) $('#approveAction').disabled = busy;
+      if ($('#rejectAction')) $('#rejectAction').disabled = busy;
+      $('#rejectAction')?.addEventListener('click', () => rejectAction(a));
+    } else $('#actionBox').innerHTML = '<div class="empty">尚無建議操作。</div>';
+    const action = currentRun.action;
+    $('#executionBox').innerHTML =
+      action?.status === 'EXECUTED'
+        ? '<div class="success"><b>操作執行成功</b><p>IRR01: RUNNING → STOPPED</p></div>'
+        : action?.status === 'APPROVED'
+          ? '<p>檢查建議已核准，待管理者安排設備檢查。</p>'
+          : '';
+    const feedback = currentRun.obs.find((o) => o.id === 'OBS-036');
+    $('#feedbackBox').innerHTML = feedback
+      ? '<div class="success"><b>新增 Observation：OBS-036</b><p>IRR01.status = STOPPED</p><p class="small">已新增至 Observation 資料儲存區，並回到相同的資料處理流程。</p></div>'
+      : '';
     renderDecision();
     renderContext();
   }
 
-  let selectedTwinDevice='IRR01';
-  const deviceName=id=>buildingModel.devices.find(d=>d.id===id)?.name||id;
-  const zoneName=id=>buildingModel.zones.find(z=>z.id===id)?.name||id;
-  const stateOf=id=>state.deviceStates[id]||buildingModel.devices.find(d=>d.id===id)?.state||'UNKNOWN';
+  let selectedTwinDevice = 'IRR01';
+  const deviceName = (id) => buildingModel.devices.find((d) => d.id === id)?.name || id;
+  const zoneName = (id) => buildingModel.zones.find((z) => z.id === id)?.name || id;
+  const stateOf = (id) =>
+    state.deviceStates[id] || buildingModel.devices.find((d) => d.id === id)?.state || 'UNKNOWN';
 
-  function relatedDeviceIds(deviceId){
-    const ids=new Set();
-    buildingModel.relationships.forEach(r=>{if(r[0]===deviceId && buildingModel.devices.some(d=>d.id===r[2]))ids.add(r[2]);if(r[2]===deviceId && buildingModel.devices.some(d=>d.id===r[0]))ids.add(r[0]);});
+  function relatedDeviceIds(deviceId) {
+    const ids = new Set();
+    buildingModel.relationships.forEach((r) => {
+      if (r[0] === deviceId && buildingModel.devices.some((d) => d.id === r[2])) ids.add(r[2]);
+      if (r[2] === deviceId && buildingModel.devices.some((d) => d.id === r[0])) ids.add(r[0]);
+    });
     return [...ids];
   }
 
-  function querySnapshot(deviceId){
-    let snapshot=null;
-    for(const t of currentRun.tools){
-      if(Array.isArray(t.result)){
-        const d=t.result.find(x=>x && typeof x==='object' && x.id===deviceId && x.capabilities);
-        if(d)snapshot={...d,capabilities:[...d.capabilities]};
+  function querySnapshot(deviceId) {
+    let snapshot = null;
+    for (const t of currentRun.tools) {
+      if (Array.isArray(t.result)) {
+        const d = t.result.find((x) => x && typeof x === 'object' && x.id === deviceId && x.capabilities);
+        if (d) snapshot = { ...d, capabilities: [...d.capabilities] };
       }
-      if(t.args?.device_id===deviceId){
-        if(t.name==='get_device_state')snapshot={...(snapshot||{id:deviceId}),state:t.result};
-        if(t.name==='get_device_capabilities')snapshot={...(snapshot||{id:deviceId}),capabilities:[...t.result]};
-        if(t.name==='get_recent_observations')snapshot={...(snapshot||{id:deviceId}),recentObservations:t.result.map(o=>({...o}))};
+      if (t.args?.device_id === deviceId) {
+        if (t.name === 'get_device_state') snapshot = { ...(snapshot || { id: deviceId }), state: t.result };
+        if (t.name === 'get_device_capabilities')
+          snapshot = { ...(snapshot || { id: deviceId }), capabilities: [...t.result] };
+        if (t.name === 'get_recent_observations')
+          snapshot = {
+            ...(snapshot || { id: deviceId }),
+            recentObservations: t.result.map((o) => ({ ...o })),
+          };
       }
     }
     return snapshot;
   }
-  function renderDeviceDetail(deviceId){
-    const d=buildingModel.devices.find(x=>x.id===deviceId);if(!d)return;
-    selectedTwinDevice=deviceId;
-    const snapshot=querySnapshot(deviceId);
-    const recent=state.observations.filter(o=>o.device_id===deviceId).slice(-3).reverse();
-    const rel=buildingModel.relationships.filter(r=>r[0]===deviceId||r[2]===deviceId);
-    const queried=snapshot?`<div class="snapshot-note"><b>AI 本次查詢快照</b><br>State: ${esc(snapshot.state||'未查詢')}<br>Zone: ${esc(zoneName(snapshot.zone||d.zone))}<br>Capabilities: ${esc(snapshot.capabilities?.join(', ')||'未查詢')}${snapshot.recentObservations?`<br>近期紀錄：${snapshot.recentObservations.slice(-2).map(o=>`${esc(o.id)} · ${esc(o.value_numeric??o.value_text)}`).join('<br>')}`:''}<br>保留建議產生時的脈絡，與目前狀態分開呈現。</div>`:'';
-    $('#deviceDetail').innerHTML=`${queried}<div><span class="pill info">${esc(d.id)}</span><h3 style="font-size:17px;margin:7px 0 2px">${esc(d.name)}</h3><div class="small">${esc(d.type)}</div></div>
+  function renderDeviceDetail(deviceId) {
+    const d = buildingModel.devices.find((x) => x.id === deviceId);
+    if (!d) return;
+    selectedTwinDevice = deviceId;
+    const snapshot = querySnapshot(deviceId);
+    const recent = state.observations
+      .filter((o) => o.device_id === deviceId)
+      .slice(-3)
+      .reverse();
+    const rel = buildingModel.relationships.filter((r) => r[0] === deviceId || r[2] === deviceId);
+    const queried = snapshot
+      ? `<div class="snapshot-note"><b>AI 本次查詢快照</b><br>State: ${esc(snapshot.state || '未查詢')}<br>Zone: ${esc(zoneName(snapshot.zone || d.zone))}<br>Capabilities: ${esc(snapshot.capabilities?.join(', ') || '未查詢')}${
+          snapshot.recentObservations
+            ? `<br>近期紀錄：${snapshot.recentObservations
+                .slice(-2)
+                .map((o) => `${esc(o.id)} · ${esc(o.value_numeric ?? o.value_text)}`)
+                .join('<br>')}`
+            : ''
+        }<br>保留建議產生時的脈絡，與目前狀態分開呈現。</div>`
+      : '';
+    $('#deviceDetail').innerHTML =
+      `${queried}<div><span class="pill info">${esc(d.id)}</span><h3 style="font-size:17px;margin:7px 0 2px">${esc(d.name)}</h3><div class="small">${esc(d.type)}</div></div>
       <div class="detail-row"><span>Zone</span><b>${esc(zoneName(d.zone))}</b></div>
       <div class="detail-row"><span>目前狀態</span><b id="selectedDeviceState">${esc(stateOf(d.id))}</b></div>
-      <div class="detail-row"><span>Capabilities</span><div class="cap-list">${d.capabilities.map(c=>`<span class="cap">${esc(c)}</span>`).join('')}</div></div>
-      <div class="detail-row"><span>近期事實</span><div id="recentDeviceObservations">${recent.length?recent.map(o=>`<div class="small">${esc(o.id)}<br>${esc(o.metric)} = <b>${esc(o.value_numeric??o.value_text)}</b> ${esc(o.unit||'')}</div>`).join(''):'<span class="small">尚無 Observation</span>'}</div></div>
-      <div class="relation-mini"><b>Relationships</b><br>${rel.length?rel.map(r=>`${esc(r[0])} → ${esc(r[1])} → ${esc(r[2])}`).join('<br>'):'尚無關係資料'}</div>`;
-    $$('.scene-device, .scene-marker').forEach(n=>{
-      const selected=n.dataset.device===deviceId;n.classList.toggle('selected',selected);
-      n.setAttribute('aria-pressed',String(selected));
+      <div class="detail-row"><span>Capabilities</span><div class="cap-list">${d.capabilities.map((c) => `<span class="cap">${esc(c)}</span>`).join('')}</div></div>
+      <div class="detail-row"><span>近期事實</span><div id="recentDeviceObservations">${recent.length ? recent.map((o) => `<div class="small">${esc(o.id)}<br>${esc(o.metric)} = <b>${esc(o.value_numeric ?? o.value_text)}</b> ${esc(o.unit || '')}</div>`).join('') : '<span class="small">尚無 Observation</span>'}</div></div>
+      <div class="relation-mini"><b>Relationships</b><br>${rel.length ? rel.map((r) => `${esc(r[0])} → ${esc(r[1])} → ${esc(r[2])}`).join('<br>') : '尚無關係資料'}</div>`;
+    $$('.scene-device, .scene-marker').forEach((n) => {
+      const selected = n.dataset.device === deviceId;
+      n.classList.toggle('selected', selected);
+      n.setAttribute('aria-pressed', String(selected));
     });
   }
-  function renderContext(){
-    $$('.scene-device').forEach(btn=>{
-      btn.onclick=()=>{renderDeviceDetail(btn.dataset.device);pulseDevices([btn.dataset.device]);};
-      btn.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();renderDeviceDetail(btn.dataset.device);pulseDevices([btn.dataset.device]);}};
-      const o=currentRun.obs.filter(o=>o.device_id===btn.dataset.device).slice(-1)[0];
-      $('#nodeReading-'+btn.dataset.device).textContent=o?`${o.value_numeric??o.value_text} ${o.unit||''}`.trim():'待接收 Observation';
+  function renderContext() {
+    $$('.scene-device').forEach((btn) => {
+      btn.onclick = () => {
+        renderDeviceDetail(btn.dataset.device);
+        pulseDevices([btn.dataset.device]);
+      };
+      btn.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          renderDeviceDetail(btn.dataset.device);
+          pulseDevices([btn.dataset.device]);
+        }
+      };
+      const o = currentRun.obs.filter((o) => o.device_id === btn.dataset.device).slice(-1)[0];
+      $('#nodeReading-' + btn.dataset.device).textContent = o
+        ? `${o.value_numeric ?? o.value_text} ${o.unit || ''}`.trim()
+        : '待接收 Observation';
     });
     renderDeviceDetail(selectedTwinDevice);
     updateTwinUsage(false);
     renderWorldReadings();
   }
 
-  function renderWorldReadings(){
-    const config=['hvac','legitHvac'].includes(currentRun.scenario)?[['室外溫度','W01','temperature'],['空調用電','AHU03','power'],['三樓人流','OCC03','level']]:[['降雨強度','W01','rainfall'],['湖面水位','LS01','water_level'],['灌溉狀態','IRR01','status']];
-    config.forEach(([label,device,metric],i)=>{
-      const observation=currentRun.obs.filter(o=>o.device_id===device&&o.metric===metric).slice(-1)[0];
-      $('#hudLabel-'+i).textContent=label;
-      $('#hudValue-'+i).dataset.device=device;
-      $('#hudValue-'+i).textContent=observation?`${observation.value_numeric??observation.value_text} ${observation.unit||''}`.trim():'—';
-      $('#hudSource-'+i).textContent=observation?`${device} · ${observation.id}`:`${device} · 待接收 Observation`;
+  function renderWorldReadings() {
+    const config = ['hvac', 'legitHvac'].includes(currentRun.scenario)
+      ? [
+          ['室外溫度', 'W01', 'temperature'],
+          ['空調用電', 'AHU03', 'power'],
+          ['三樓人流', 'OCC03', 'level'],
+        ]
+      : [
+          ['降雨強度', 'W01', 'rainfall'],
+          ['湖面水位', 'LS01', 'water_level'],
+          ['灌溉狀態', 'IRR01', 'status'],
+        ];
+    config.forEach(([label, device, metric], i) => {
+      const observation = currentRun.obs
+        .filter((o) => o.device_id === device && o.metric === metric)
+        .slice(-1)[0];
+      $('#hudLabel-' + i).textContent = label;
+      $('#hudValue-' + i).dataset.device = device;
+      $('#hudValue-' + i).textContent = observation
+        ? `${observation.value_numeric ?? observation.value_text} ${observation.unit || ''}`.trim()
+        : '—';
+      $('#hudSource-' + i).textContent = observation
+        ? `${device} · ${observation.id}`
+        : `${device} · 待接收 Observation`;
     });
   }
-  function contextDevicesFromTools(){
-    const ids=new Set();
-    currentRun.tools.forEach(t=>{
-      if(t.args?.device_id)ids.add(t.args.device_id);
-      if(Array.isArray(t.result))t.result.forEach(x=>{if(x && typeof x==='object'){const id=x.device_id||x.id;if(buildingModel.devices.some(d=>d.id===id))ids.add(id)}});
+  function contextDevicesFromTools() {
+    const ids = new Set();
+    currentRun.tools.forEach((t) => {
+      if (t.args?.device_id) ids.add(t.args.device_id);
+      if (Array.isArray(t.result))
+        t.result.forEach((x) => {
+          if (x && typeof x === 'object') {
+            const id = x.device_id || x.id;
+            if (buildingModel.devices.some((d) => d.id === id)) ids.add(id);
+          }
+        });
     });
     return [...ids];
   }
 
-  function updateTwinUsage(active=false){
-    const ids=contextDevicesFromTools();
-    $$('.scene-device, .scene-marker').forEach(n=>n.classList.toggle('context-used',ids.includes(n.dataset.device)));
-    $$('.query-route').forEach(n=>n.classList.toggle('used',ids.includes(n.dataset.route)));
-    const banner=$('#contextLiveBanner');
-    banner.textContent=ids.length?`${active?'AI 查詢':'本次分析引用'} · ${ids.length} 個設備`:'';
-    banner.classList.toggle('active',ids.length>0);
-    $('#twinUsageBadge').textContent=ids.length?`本次引用 ${ids.length} 個設備`:'尚未引用建築脈絡';
-    if(active && currentRun.incident)renderDeviceDetail(currentRun.incident.incident_type==='WEATHER_RELATED_LAKE_RISK'?'IRR01':'AHU03');
+  function updateTwinUsage(active = false) {
+    const ids = contextDevicesFromTools();
+    $$('.scene-device, .scene-marker').forEach((n) =>
+      n.classList.toggle('context-used', ids.includes(n.dataset.device)),
+    );
+    $$('.query-route').forEach((n) => n.classList.toggle('used', ids.includes(n.dataset.route)));
+    const banner = $('#contextLiveBanner');
+    banner.textContent = ids.length ? `${active ? 'AI 查詢' : '本次分析引用'} · ${ids.length} 個設備` : '';
+    banner.classList.toggle('active', ids.length > 0);
+    $('#twinUsageBadge').textContent = ids.length ? `本次引用 ${ids.length} 個設備` : '尚未引用建築脈絡';
+    if (active && currentRun.incident)
+      renderDeviceDetail(
+        currentRun.incident.incident_type === 'WEATHER_RELATED_LAKE_RISK' ? 'IRR01' : 'AHU03',
+      );
   }
-  function renderDecision(){
-    const obs=currentRun.obs.filter(o=>o.id!=='OBS-036');
-    const incident=currentRun.incident;
-    const reason=!obs.length?'執行情境後顯示原始事實與規則判定。':incident?`Incident：${incident.title}`:currentRun.scenario==='rainOnly'?'只有強降雨；水位 58 cm 未超過 80 cm。不建立 Incident，不啟動 AI。':'室外 35°C、人流 HIGH，空調高負載可能合理。不建立 Incident，不啟動 AI。';
-    $('#decisionEvidence').innerHTML=`<div class="small">${esc(reason)}</div>${obs.map(o=>{const event=currentRun.events.find(e=>e.source_observation_id===o.id);return `<div class="evidence"><b>${esc(o.device_id)}.${esc(o.metric)}</b> = ${esc(o.value_numeric??o.value_text)} ${esc(o.unit||'')}<div class="small">${esc(o.id)}${event?`<br>${esc(event.event_type)} · ${esc(event.rule_id)}`:'<br>Observation · 無對應 Event'}</div></div>`;}).join('')}`;
-    const ids=contextDevicesFromTools();
-    $('#decisionContext').innerHTML=ids.length?ids.map(id=>{
-      const d=buildingModel.devices.find(x=>x.id===id),snap=querySnapshot(id);
-      return `<div class="context-entry"><span class="context-chip">${esc(id)} · ${esc(snap?.state||'已讀取事件／紀錄')}</span><div class="small">Zone: ${esc(zoneName(snap?.zone||d.zone))}<br>Capability: ${esc(snap?.capabilities?.join(', ')||'未查詢設備能力')}${snap?.relationships?.length?`<br>Relationship: ${snap.relationships.map(r=>esc(r.join(' → '))).join('<br>')}`:''}</div></div>`;
-    }).join(''):'<div class="empty">建立 Incident 後，AI 引用的脈絡會與場景高亮對應。</div>';
-    if(currentRun.analysis){
-      const rec=currentRun.analysis.recommended_actions?.[0];
-      const snap=rec?querySnapshot(rec.target_device_id):null;
-      const basis=rec?(rec.action_type==='STOP'?`<div class="evidence"><b>可執行依據 · 查詢快照</b><br>${esc(rec.target_device_id)} capability 包含 <b>STOP</b><br>查詢時 state = <b>${esc(snap?.state)}</b><div class="small">目前 state = ${esc(stateOf(rec.target_device_id))}；人工核准前不送出控制指令。</div></div>`:`<div class="evidence"><b>檢查依據</b><br>${esc(rec.target_device_id)}：${esc(snap?.state)}<br>${esc(snap?.capabilities?.join(', '))}<div class="small">INSPECT 是管理者檢查任務；本原型不執行空調控制。</div></div>`):'';
-      $('#decisionRecommendation').innerHTML=`<p style="font-size:12px">${esc(currentRun.analysis.summary)}</p>${basis}<div class="small">Inference: ${esc(currentRun.analysis.hypotheses[0].description)}<br>證據強度：${esc(currentRun.analysis.hypotheses[0].evidence_strength)}</div>`;
-    }else $('#decisionRecommendation').innerHTML=`<div class="empty">${obs.length?'未啟動 AI；沒有建議操作。':'等待事件證據與建築脈絡。'}</div>`;
+  function renderDecision() {
+    const obs = currentRun.obs.filter((o) => o.id !== 'OBS-036');
+    const incident = currentRun.incident;
+    const reason = !obs.length
+      ? '執行情境後顯示原始事實與規則判定。'
+      : incident
+        ? `Incident：${incident.title}`
+        : currentRun.scenario === 'rainOnly'
+          ? '只有強降雨；水位 58 cm 未超過 80 cm。不建立 Incident，不啟動 AI。'
+          : '室外 35°C、人流 HIGH，空調高負載可能合理。不建立 Incident，不啟動 AI。';
+    $('#decisionEvidence').innerHTML = `<div class="small">${esc(reason)}</div>${obs
+      .map((o) => {
+        const event = currentRun.events.find((e) => e.source_observation_id === o.id);
+        return `<div class="evidence"><b>${esc(o.device_id)}.${esc(o.metric)}</b> = ${esc(o.value_numeric ?? o.value_text)} ${esc(o.unit || '')}<div class="small">${esc(o.id)}${event ? `<br>${esc(event.event_type)} · ${esc(event.rule_id)}` : '<br>Observation · 無對應 Event'}</div></div>`;
+      })
+      .join('')}`;
+    const ids = contextDevicesFromTools();
+    $('#decisionContext').innerHTML = ids.length
+      ? ids
+          .map((id) => {
+            const d = buildingModel.devices.find((x) => x.id === id),
+              snap = querySnapshot(id);
+            return `<div class="context-entry"><span class="context-chip">${esc(id)} · ${esc(snap?.state || '已讀取事件／紀錄')}</span><div class="small">Zone: ${esc(zoneName(snap?.zone || d.zone))}<br>Capability: ${esc(snap?.capabilities?.join(', ') || '未查詢設備能力')}${snap?.relationships?.length ? `<br>Relationship: ${snap.relationships.map((r) => esc(r.join(' → '))).join('<br>')}` : ''}</div></div>`;
+          })
+          .join('')
+      : '<div class="empty">建立 Incident 後，AI 引用的脈絡會與場景高亮對應。</div>';
+    if (currentRun.analysis) {
+      const rec = currentRun.analysis.recommended_actions?.[0];
+      const snap = rec ? querySnapshot(rec.target_device_id) : null;
+      const basis = rec
+        ? rec.action_type === 'STOP'
+          ? `<div class="evidence"><b>可執行依據 · 查詢快照</b><br>${esc(rec.target_device_id)} capability 包含 <b>STOP</b><br>查詢時 state = <b>${esc(snap?.state)}</b><div class="small">目前 state = ${esc(stateOf(rec.target_device_id))}；人工核准前不送出控制指令。</div></div>`
+          : `<div class="evidence"><b>檢查依據</b><br>${esc(rec.target_device_id)}：${esc(snap?.state)}<br>${esc(snap?.capabilities?.join(', '))}<div class="small">INSPECT 是管理者檢查任務；本原型不執行空調控制。</div></div>`
+        : '';
+      $('#decisionRecommendation').innerHTML =
+        `<p style="font-size:12px">${esc(currentRun.analysis.summary)}</p>${basis}<div class="small">Inference: ${esc(currentRun.analysis.hypotheses[0].description)}<br>證據強度：${esc(currentRun.analysis.hypotheses[0].evidence_strength)}</div>`;
+    } else
+      $('#decisionRecommendation').innerHTML =
+        `<div class="empty">${obs.length ? '未啟動 AI；沒有建議操作。' : '等待事件證據與建築脈絡。'}</div>`;
     renderAudit();
   }
-  function renderAudit(){
-    const facts=currentRun.obs.filter(o=>o.id!=='OBS-036');
-    const groups=[facts.map(o=>o.id).join(', '),currentRun.events.map(e=>e.id).join(', '),currentRun.incident?.id,currentRun.analysis?.id,currentRun.action?`${currentRun.action.id} · ${currentRun.action.status}`:null,currentRun.obs.find(o=>o.id==='OBS-036')?'OBS-036 · IRR01 STOPPED → Observation':null].filter(Boolean);
-    $('#auditLine').innerHTML=`<strong>Audit lineage</strong>${groups.length?groups.map(id=>`<span class="audit-item">${esc(id)}</span>`).join('<span class="audit-arrow">→</span>'):'<span>執行情境後記錄事實、推論、審核與處置關聯。</span>'}`;
+  function renderAudit() {
+    const facts = currentRun.obs.filter((o) => o.id !== 'OBS-036');
+    const groups = [
+      facts.map((o) => o.id).join(', '),
+      currentRun.events.map((e) => e.id).join(', '),
+      currentRun.incident?.id,
+      currentRun.analysis?.id,
+      currentRun.action ? `${currentRun.action.id} · ${currentRun.action.status}` : null,
+      currentRun.obs.find((o) => o.id === 'OBS-036') ? 'OBS-036 · IRR01 STOPPED → Observation' : null,
+    ].filter(Boolean);
+    $('#auditLine').innerHTML =
+      `<strong>Audit lineage</strong>${groups.length ? groups.map((id) => `<span class="audit-item">${esc(id)}</span>`).join('<span class="audit-arrow">→</span>') : '<span>執行情境後記錄事實、推論、審核與處置關聯。</span>'}`;
   }
 
-  function renderStore(){
-    if(!$('#obsStore') || !$('#derivedStore') || !$('#actionStore')) return;
-    const obs=state.observations.slice(-12).reverse();
-    $('#obsStore').innerHTML=obs.length?`<table class="table"><thead><tr><th>ID</th><th>設備代碼／資料項目</th><th>數值</th></tr></thead><tbody>${obs.map(o=>`<tr><td>${esc(o.id)}</td><td>${esc(o.device_id)}.${esc(o.metric)}</td><td>${esc(o.value_numeric??o.value_text)} ${esc(o.unit||'')}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">尚無已保存的 Observation。</div>';
-    const incs=state.incidents.slice(-5).reverse(), ans=state.analyses.slice(-5).reverse();
-    $('#derivedStore').innerHTML=`<h3>Incident 紀錄</h3>${incs.length?incs.map(i=>`<div class="evidence"><b>${esc(i.id)}</b> · ${esc(i.incident_type)} · ${esc(i.status)}</div>`).join(''):'<div class="empty">尚無紀錄，請執行可建立 Incident 的情境。</div>'}<h3 style="margin-top:14px">分析紀錄</h3>${ans.length?ans.map(a=>`<div class="evidence"><b>${esc(a.id)}</b> · 對應 Incident ${esc(a.incident_id)} · v${esc(a.version)}</div>`).join(''):'<div class="empty">尚無紀錄，請執行可建立 Incident 的情境。</div>'}`;
-    const acts=state.actions.slice(-8).reverse();
-    $('#actionStore').innerHTML=acts.length?acts.map(a=>`<div class="evidence"><b>${esc(a.id)}</b> · ${esc(a.action_type)} ${esc(a.target_device_id)} · <b>${esc(a.status)}</b></div>`).join(''):'<div class="empty">尚無操作進入審核或執行流程。</div>';
+  function renderStore() {
+    if (!$('#obsStore') || !$('#derivedStore') || !$('#actionStore')) return;
+    const obs = state.observations.slice(-12).reverse();
+    $('#obsStore').innerHTML = obs.length
+      ? `<table class="table"><thead><tr><th>ID</th><th>設備代碼／資料項目</th><th>數值</th></tr></thead><tbody>${obs.map((o) => `<tr><td>${esc(o.id)}</td><td>${esc(o.device_id)}.${esc(o.metric)}</td><td>${esc(o.value_numeric ?? o.value_text)} ${esc(o.unit || '')}</td></tr>`).join('')}</tbody></table>`
+      : '<div class="empty">尚無已保存的 Observation。</div>';
+    const incs = state.incidents.slice(-5).reverse(),
+      ans = state.analyses.slice(-5).reverse();
+    $('#derivedStore').innerHTML =
+      `<h3>Incident 紀錄</h3>${incs.length ? incs.map((i) => `<div class="evidence"><b>${esc(i.id)}</b> · ${esc(i.incident_type)} · ${esc(i.status)}</div>`).join('') : '<div class="empty">尚無紀錄，請執行可建立 Incident 的情境。</div>'}<h3 style="margin-top:14px">分析紀錄</h3>${ans.length ? ans.map((a) => `<div class="evidence"><b>${esc(a.id)}</b> · 對應 Incident ${esc(a.incident_id)} · v${esc(a.version)}</div>`).join('') : '<div class="empty">尚無紀錄，請執行可建立 Incident 的情境。</div>'}`;
+    const acts = state.actions.slice(-8).reverse();
+    $('#actionStore').innerHTML = acts.length
+      ? acts
+          .map(
+            (a) =>
+              `<div class="evidence"><b>${esc(a.id)}</b> · ${esc(a.action_type)} ${esc(a.target_device_id)} · <b>${esc(a.status)}</b></div>`,
+          )
+          .join('')
+      : '<div class="empty">尚無操作進入審核或執行流程。</div>';
   }
 
-
-  let selectedFlowStage=null;
-  function closeFlowPanel(){
-    $('#flowDetails').open=false;
-    selectedFlowStage=null;
-    $$('.step').forEach(btn=>{btn.classList.remove('selected');btn.setAttribute('aria-expanded','false');});
+  let selectedFlowStage = null;
+  function closeFlowPanel() {
+    $('#flowDetails').open = false;
+    selectedFlowStage = null;
+    $$('.step').forEach((btn) => {
+      btn.classList.remove('selected');
+      btn.setAttribute('aria-expanded', 'false');
+    });
   }
-  function focusFlowStage(name){
-    if($('#flowDetails').open && selectedFlowStage===name){closeFlowPanel();return;}
-    selectedFlowStage=name;
-    $$('.step').forEach(btn=>btn.classList.toggle('selected',btn.dataset.step===name));
-    $$('#overview [data-stage]').forEach(card=>card.classList.toggle('revealed',card.dataset.stage===name));
-    $('#runPlaceholder').hidden=['telemetry','observation','event','incident','tools','analysis'].includes(name);
-    if(!$('#runPlaceholder').hidden)$('#runPlaceholder').textContent='此階段的審核與處置結果顯示於右側 AI 建議與人工審核。';
-    $('#flowDetails').open=true;
-    $$('.step').forEach(btn=>btn.setAttribute('aria-expanded',String(btn.dataset.step===name)));
+  function focusFlowStage(name) {
+    if ($('#flowDetails').open && selectedFlowStage === name) {
+      closeFlowPanel();
+      return;
+    }
+    selectedFlowStage = name;
+    $$('.step').forEach((btn) => btn.classList.toggle('selected', btn.dataset.step === name));
+    $$('#overview [data-stage]').forEach((card) =>
+      card.classList.toggle('revealed', card.dataset.stage === name),
+    );
+    $('#runPlaceholder').hidden = [
+      'telemetry',
+      'observation',
+      'event',
+      'incident',
+      'tools',
+      'analysis',
+    ].includes(name);
+    if (!$('#runPlaceholder').hidden)
+      $('#runPlaceholder').textContent = '此階段的審核與處置結果顯示於右側 AI 建議與人工審核。';
+    $('#flowDetails').open = true;
+    $$('.step').forEach((btn) => btn.setAttribute('aria-expanded', String(btn.dataset.step === name)));
     updateTwinUsage(false);
-    pulseNodes([$$('.step').find(n=>n.dataset.step===name),$$('#overview [data-stage]').find(n=>n.dataset.stage===name)]);
-    if(name==='tools')pulseDevices(contextDevicesFromTools());
+    pulseNodes([
+      $$('.step').find((n) => n.dataset.step === name),
+      $$('#overview [data-stage]').find((n) => n.dataset.stage === name),
+    ]);
+    if (name === 'tools') pulseDevices(contextDevicesFromTools());
   }
-  $$('.step').forEach(btn=>{btn.setAttribute('aria-controls','flowDetails');btn.setAttribute('aria-expanded','false');btn.addEventListener('click',()=>focusFlowStage(btn.dataset.step));});
-  $('#closeFlowDetails').addEventListener('click',closeFlowPanel);
-  $('#flowDetails').addEventListener('toggle',()=>{if(!$('#flowDetails').open)closeFlowPanel();});
-  document.addEventListener?.('keydown',e=>{if(e.key==='Escape' && $('#flowDetails').open)closeFlowPanel();});
+  $$('.step').forEach((btn) => {
+    btn.setAttribute('aria-controls', 'flowDetails');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.addEventListener('click', () => focusFlowStage(btn.dataset.step));
+  });
+  $('#closeFlowDetails').addEventListener('click', closeFlowPanel);
+  $('#flowDetails').addEventListener('toggle', () => {
+    if (!$('#flowDetails').open) closeFlowPanel();
+  });
+  document.addEventListener?.('keydown', (e) => {
+    if (e.key === 'Escape' && $('#flowDetails').open) closeFlowPanel();
+  });
   // Fit only the actual scene bounds; device labels keep their normal text size.
-  function fitScene(){
-    const canvas=$('#sceneCanvas'), stage=canvas?.parentElement;
-    if(!stage || !stage.clientWidth || !stage.clientHeight)return;
-    const width=Math.min(stage.clientWidth,stage.clientHeight*875/420);
-    canvas.style.width=width+'px';canvas.style.height=(width*420/875)+'px';
+  function fitScene() {
+    const canvas = $('#sceneCanvas'),
+      stage = canvas?.parentElement;
+    if (!stage || !stage.clientWidth || !stage.clientHeight) return;
+    const width = Math.min(stage.clientWidth, (stage.clientHeight * 875) / 420);
+    canvas.style.width = width + 'px';
+    canvas.style.height = (width * 420) / 875 + 'px';
   }
-  if(typeof ResizeObserver!=='undefined'){
-    const stage=$('#sceneCanvas').parentElement;
-    const sceneObserver=new ResizeObserver(fitScene);sceneObserver.observe(stage);
+  if (typeof ResizeObserver !== 'undefined') {
+    const stage = $('#sceneCanvas').parentElement;
+    const sceneObserver = new ResizeObserver(fitScene);
+    sceneObserver.observe(stage);
   }
-  if(typeof window!=='undefined')window.addEventListener('resize',fitScene);
+  if (typeof window !== 'undefined') window.addEventListener('resize', fitScene);
   fitScene();
 
-
-  function selectScenario(key){
-    selectedScenario=key;
-    document.querySelectorAll('.scenario-option').forEach(btn=>btn.classList.toggle('active',btn.dataset.scenario===key));
+  function selectScenario(key) {
+    selectedScenario = key;
+    document
+      .querySelectorAll('.scenario-option')
+      .forEach((btn) => btn.classList.toggle('active', btn.dataset.scenario === key));
     renderScenarioBrief(key);
   }
-  document.querySelectorAll('.scenario-option').forEach(btn=>btn.addEventListener('click',()=>selectScenario(btn.dataset.scenario)));
-  $('#runBtn').addEventListener('click',()=>runScenario(selectedScenario));
+  document
+    .querySelectorAll('.scenario-option')
+    .forEach((btn) => btn.addEventListener('click', () => selectScenario(btn.dataset.scenario)));
+  $('#runBtn').addEventListener('click', () => runScenario(selectedScenario));
 
-  renderCurrent(); renderContext(); renderStore();
+  renderCurrent();
+  renderContext();
+  renderStore();
   selectScenario('lake');
 })();
 </script></body></html>
