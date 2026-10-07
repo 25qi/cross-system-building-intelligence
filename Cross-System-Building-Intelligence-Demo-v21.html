@@ -2606,6 +2606,10 @@ body {
 
     // 步驟 4 要說明「怎麼判的」，不只是結果：三個條件逐條列出，
     // 不成立時指出卡在哪一條（對照步驟 3 顯示 RULE-xx 的作法）。
+    // 「間隔」是最早與最晚那個 Event 的時間差；窗是允許的上限。
+    // 兩個分支共用同一句，避免成立與不成立的措辭不一致。
+    const temporalText = (count, spanSec, windowMin) =>
+      `${count} 個 Event 最早到最晚相差 ${spanSec} 秒，${spanSec <= windowMin * 60 ? '未超過' : '超過'} ${windowMin} 分鐘的時間窗`;
     const corrRow = (label, ok, text) =>
       `<div class="obs-row"><span>${label}</span><div>${ok ? '✓' : '✗'} ${esc(text)}</div></div>`;
     const inc = currentRun.incident;
@@ -2615,11 +2619,7 @@ body {
         `<div class="incident"><div><span class="pill bad">${esc(inc.severity)}</span></div><h3 style="margin-top:8px">${esc(inc.title)}</h3><div class="small">${esc(inc.id)} · ${esc(inc.incident_type)} · ${esc(inc.zone_id)}</div>` +
         `<div class="obs-row"><span>規則</span><div>${esc(inc.rule_id)}</div></div>` +
         corrRow('語意', true, inc.rule_semantic) +
-        corrRow(
-          '時間',
-          true,
-          `${inc.event_ids.length} 個 Event 間隔 ${inc.span_sec} 秒，在 ${inc.window_min} 分鐘窗內`,
-        ) +
+        corrRow('時間', true, temporalText(inc.event_ids.length, inc.span_sec, inc.window_min)) +
         corrRow(
           '區域',
           true,
@@ -2634,7 +2634,11 @@ body {
           ? `<div class="obs-row"><span>規則</span><div>${esc(ev.rule.id)}</div></div>` +
             corrRow('語意', ev.semantic, ev.semantic_text) +
             (ev.semantic
-              ? corrRow('時間', ev.temporal, `間隔 ${ev.spanSec} 秒 / 窗 ${CORRELATION_WINDOW_MIN} 分鐘`)
+              ? corrRow(
+                  '時間',
+                  ev.temporal,
+                  temporalText(ev.matched.length, ev.spanSec, CORRELATION_WINDOW_MIN),
+                )
               : '') +
             (ev.semantic ? corrRow('區域', ev.spatial, ev.zones.join('、')) : '') +
             (ev.rule.context_text ? corrRow('脈絡', ev.context, ev.rule.context_text) : '')
