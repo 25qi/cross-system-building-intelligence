@@ -67,29 +67,44 @@ python3 -m http.server 4178
 
 | 欄位 | 內容 | 角色 |
 |---|---|---|
+| 上方 HUD `.world-readings` | 三個觀測讀數 + 情境選擇 | 四格同一列；讀數是輸入值故壓小，情境選擇是操作點 |
 | 左 `.context-left` | 設備脈絡 Context Inspector | AI 查詢快照 vs 目前狀態 |
-| 中 `.twin-scene` | 2.5D 場景 + 上方 HUD 讀數 | Building Context 的空間呈現 |
-| 右 `.context-right` | 情境選擇 → 事件證據 → AI 建議與人工審核 | 因果鏈 |
+| 中 `.twin-scene` | 2.5D 場景 | Building Context 的空間呈現 |
+| 右 `.context-right` | 事件證據 + AI 建議與人工審核 | 流程與結果一體 |
 
-右欄刻意由上而下排成一條因果鏈，表達「證據與建議是執行情境後才產生的」：
+### 右欄：流程與結果是同一件事
+
+九個流程步驟不另外擺一條獨立流程列，而是依所屬階段拆進兩個區塊：
 
 ```
-情境選擇（輸入，無左側色條）
-   ↓ 執行後產生
-事件證據（事實，灰色左側色條 #8fa3ba）
-AI 建議與人工審核（推論與決策，藍色左側色條 var(--accent)）
+事件證據            [1 Telemetry › 2 Observation › 3 Event › 4 Incident]
+                    Incident、Observation、對應的 Event 規則
+AI 建議與人工審核    [5 AI tools/query › 6 Analysis › 7 Human Review › 8 Action › 9 New Observation]
+                    分析摘要、可執行依據、核准／拒絕、執行結果、回饋 Observation
 ```
 
-左側色條不是裝飾，是把「Observation 是 source of truth、AI 只新增 inference」
-這個主張畫進介面。修改配色時請保留兩者的區別。
+前四步產生事件證據，後五步是 AI 分析與人工審核，因此步驟 7 Human Review 就長在
+核准按鈕所在的區塊上。步驟 7–9 沒有獨立資料卡，點擊它們不開資料面板，
+改為標示右欄對應區塊（見 `reviewStages`）；步驟 1–6 才開 `#flowDetails`。
 
-兩個與空間有關的約束，改版時容易踩到：
+事件證據與 AI 建議用不同顏色的左側色條（`#8fa3ba` / `var(--accent)`），
+把「Observation 是 source of truth、AI 只新增 inference」畫進介面。
 
-- `.scenario-picker` 設 `max-height: 50%` 且可捲動。展開「情境背景與展示目標」時
-  這塊會長到 500px 以上，不限高會把下方的證據與建議壓到看不見。
+### 空間約束（改版容易踩到）
+
+- **橫向流程鏈的五個步驟約需 370px 才不截斷文字。** `--right` 在 ≤1200px 設 375px
+  就是為了這個；≤950px 撐不住，才退回兩欄並移除會指向錯誤方向的 › 連接符號。
+  改動 `--right` 或步驟字級後，請用 `scrollWidth > clientWidth` 檢查是否截斷。
 - `#actionBox` 在 `PROPOSED` 期間透過 `.decision-panel.awaiting-review` 變成
   `position: sticky`，確保核准／拒絕永遠在可視範圍內。核准後 class 移除，
   才不會蓋住 `#executionBox` 與 `#feedbackBox`。
+- `.incident-context` 設 `max-height: 40%`；流程列佔掉約 30px，其餘給證據清單捲動。
+
+### 呼吸燈
+
+`pulseNodes()` 全域只維持一組。開新的一組會先 `stopPulse()` 停掉前一組，
+避免同時有多處在閃、看不出哪一個才是剛變動的。移除 class 後需強制一次 reflow
+動畫才會重播。
 
 ## 核心架構
 
@@ -134,7 +149,8 @@ localStorage key：`csbi-demo-v21`。所有讀寫都經過 `storage` 抽象層
 | `querySnapshot()` | 取出「AI 當時查詢到的狀態」，與目前狀態分開呈現 |
 | `resetScenarioState()` | 每次執行前把設備狀態還原為 buildingModel 初始值，並撤掉上一輪 Action Service 寫回的 Observation |
 | `storage` | localStorage 可用性探測與記憶體 fallback |
-| `selectScenario()` | 同步 `#scenarioSelect` 選取值、情境提示與背景說明 |
+| `selectScenario()` | 同步 `#scenarioSelect` 選取值、tooltip 提示與背景說明 |
+| `pulseNodes()` / `stopPulse()` | 呼吸燈，全域單一組 |
 
 ### Event rules
 

@@ -114,33 +114,53 @@ h3 {
 }
 /* 情境選擇放在右欄最上方，讓「選情境 → 執行 → 事件證據 → AI 建議」
    在同一欄由上而下讀完，直接表達證據與建議是執行情境後才產生的。 */
-.scenario-picker {
-  /* 展開「情境背景」時這一塊會長到 500px 以上。若不設上限，下方的事件證據
-     與 AI 建議會被壓到幾乎看不見，連核准按鈕都構不到，因此限高後自行捲動。 */
-  flex: 0 1 auto;
-  max-height: 50%;
-  overflow: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--line);
-  background: #fafcfe;
-}
-.scenario-picker > h3 {
-  font-size: 13px;
-  margin-bottom: 8px;
-}
-.scenario-picker .primary {
-  width: 100%;
-  margin-top: 8px;
-  padding: 8px 12px;
+.world-scenario .primary {
+  flex: none;
+  padding: 6px 12px;
 }
 /* 右欄由上而下是一條因果鏈：選情境 → 事實 → 推論 → 決策。
    事實與推論用不同顏色的左側色條標示，把「Observation 是 source of truth、
    AI 只新增 inference」這個主張畫進介面，而不是只寫在頁尾註腳。
    情境選擇是輸入而非產出，所以不帶色條。 */
+/* 流程的前四步就是「事件證據」的產生過程，後五步就是「AI 建議與人工審核」
+   的過程，因此流程圖直接長在這兩塊裡，而不是另外擺一條獨立的流程列。 */
+.device-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+.device-head h3 {
+  font-size: 16px;
+  margin: 0;
+}
+/* 流程維持原本的橫向鏈與 › 連接符號，只是依所屬區塊拆成 1–4 與 5–9：
+   前四步產生事件證據，後五步是 AI 分析與人工審核。兩個區塊上下相鄰，
+   讀起來仍是同一條流程，而不是九件各自獨立的事。
+   grid-auto-flow: column 讓同一組 CSS 同時處理 4 格與 5 格。 */
+.flow.flow-group {
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 7px;
+  margin: 2px 0 10px;
+}
+.flow.flow-group .step {
+  width: 100%;
+  white-space: normal;
+  font-size: 9.5px;
+  line-height: 1.25;
+  padding: 5px 4px;
+  min-height: 30px;
+}
+.flow.flow-group .flow-node:not(:last-child):after {
+  top: 50%;
+  transform: translateY(-50%);
+  right: -7px;
+}
 .incident-context {
   border-left: 3px solid #8fa3ba;
+  max-height: 40%;
 }
 .decision-panel {
   border-left: 3px solid var(--accent);
@@ -151,13 +171,6 @@ h3 {
   background: #fff;
   padding: 6px 0 12px;
   box-shadow: 0 -8px 12px -6px #ffffff;
-}
-.scenario-outcome {
-  margin-top: 10px;
-  text-align: center;
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  color: #9aa8bc;
 }
 #scenarioSelect {
   width: 100%;
@@ -558,7 +571,7 @@ h3 {
 /* One viewport, one building world, contextual panels with their own scroll. */
 :root {
   --left: clamp(220px, 19vw, 270px);
-  --right: clamp(260px, 23vw, 330px);
+  --right: clamp(300px, 29vw, 430px);
   --gap: 12px;
 }
 html,
@@ -628,7 +641,7 @@ body {
   outline: 3px solid #7294ff;
   outline-offset: 3px;
 }
-.scenario-picker .primary {
+.world-scenario .primary {
   padding: 7px 14px;
   font-size: 12px;
 }
@@ -840,13 +853,53 @@ body {
   left: calc(var(--left) + 2 * var(--gap));
   right: calc(var(--right) + 2 * var(--gap));
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* 三個讀數 + 情境選擇。讀數是情境的輸入值，選擇器才是操作點，
+     所以讀數壓小、情境格給較寬的欄位。 */
+  grid-template-columns: repeat(3, minmax(0, 0.72fr)) minmax(0, 1.1fr);
   gap: 6px;
+  align-items: start;
   z-index: 3;
   pointer-events: none;
 }
+.world-scenario {
+  pointer-events: auto;
+  position: relative;
+  padding: 5px 9px;
+  background: #fffffff5;
+  border: 1px solid #d3deeb;
+  border-radius: 8px;
+  min-width: 0;
+}
+.scenario-run {
+  display: flex;
+  gap: 6px;
+  margin-top: 3px;
+}
+.scenario-run #scenarioSelect {
+  flex: 1;
+  min-width: 0;
+}
+.world-scenario .scenario-details {
+  margin: 4px 0 0;
+  font-size: 10px;
+  line-height: 1.4;
+}
+/* 說明以浮層展開，避免把 HUD 撐高而壓縮下方場景。 */
+.world-scenario .scenario-brief {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  margin-top: 6px;
+  max-height: 58vh;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  box-shadow: 0 10px 26px #3f5b8c2e;
+}
 .world-reading {
-  padding: 6px 10px;
+  padding: 4px 9px;
   background: #fffffff0;
   border: 1px solid #dfe7f1;
   border-radius: 8px;
@@ -859,8 +912,8 @@ body {
 }
 .world-reading strong {
   display: block;
-  font-size: 18px;
-  line-height: 1.3;
+  font-size: 14px;
+  line-height: 1.35;
   color: #354e71;
   white-space: nowrap;
 }
@@ -1320,7 +1373,8 @@ body {
 @media (max-width: 1200px) {
   :root {
     --left: 210px;
-    --right: 265px;
+    /* 橫向流程鏈的五個步驟約需 370px 才不會截斷文字 */
+    --right: 375px;
     --gap: 10px;
   }
   .sidebar-title {
@@ -1359,7 +1413,7 @@ body {
   .top {
     min-height: 28px;
   }
-  .scenario-picker .primary {
+  .world-scenario .primary {
     padding: 5px 12px;
   }
   .scenario-details {
@@ -1419,8 +1473,18 @@ body {
 @media (max-width: 950px) {
   :root {
     --left: 185px;
-    --right: 230px;
+    --right: 300px;
     --gap: 8px;
+  }
+  /* 右欄到這裡撐不住橫排五格，改為兩欄；
+     連接符號在換行處會指向錯誤方向，因此一併移除。 */
+  .flow.flow-group {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+  .flow.flow-group .flow-node:not(:last-child):after {
+    content: none;
   }
   .top .badge {
     display: none;
@@ -1464,7 +1528,7 @@ body {
     --left: 165px;
     --right: 200px;
   }
-  .scenario-picker .primary {
+  .world-scenario .primary {
     padding: 5px 9px;
   }
   .inspector-panel,
@@ -1558,11 +1622,11 @@ body {
   }
 }
 </style></head><body><div class="wrap">
-<header class="top"><div><div class="kicker">陞訊 · 面試 follow-up / concept prototype</div><h1>跨系統建築智慧整合</h1><p>以事件理解現場，以建築脈絡支持決策。</p></div><div class="top-actions"><a class="secondary prd-link" id="prdLink" target="_blank" rel="noopener" title="新分頁開啟完整專案 PRD">專案 PRD <span aria-hidden="true">↗</span></a><span class="badge"><span class="dot"></span>合成情境 · 本機模擬</span><span class="badge badge-notice" id="storageNotice" hidden></span></div></header>
+<header class="top"><div><div class="kicker">陞訊 · 面試 follow-up / concept prototype</div><h1>跨系統建築智慧整合</h1><p>以事件理解現場，以建築脈絡支持決策。</p></div><div class="top-actions"><a class="secondary prd-link" id="prdLink" target="_blank" rel="noopener" title="新分頁開啟完整專案 PRD">專案 PRD <span aria-hidden="true">↗</span></a><span class="badge badge-notice" id="storageNotice" hidden></span></div></header>
 <section class="building-workspace" aria-label="智慧社區場域與上下文工作介面">
-<div class="workspace-body" id="digitalTwinSection"><div class="world-readings" aria-label="本次情境觀測數值"><div class="world-reading"><span class="hud-label" id="hudLabel-0"></span><strong id="hudValue-0">—</strong><small id="hudSource-0"></small></div><div class="world-reading"><span class="hud-label" id="hudLabel-1"></span><strong id="hudValue-1">—</strong><small id="hudSource-1"></small></div><div class="world-reading"><span class="hud-label" id="hudLabel-2"></span><strong id="hudValue-2">—</strong><small id="hudSource-2"></small></div></div>
+<div class="workspace-body" id="digitalTwinSection"><div class="world-readings" aria-label="本次情境觀測數值"><div class="world-reading"><span class="hud-label" id="hudLabel-0"></span><strong id="hudValue-0">—</strong><small id="hudSource-0"></small></div><div class="world-reading"><span class="hud-label" id="hudLabel-1"></span><strong id="hudValue-1">—</strong><small id="hudSource-1"></small></div><div class="world-reading"><span class="hud-label" id="hudLabel-2"></span><strong id="hudValue-2">—</strong><small id="hudSource-2"></small></div><div class="world-scenario"><span class="hud-label">情境選擇</span><div class="scenario-run"><select id="scenarioSelect" aria-label="選擇要執行的情境"><optgroup label="應建立 Incident"><option value="lake">情境 A · 湖區風險</option><option value="hvac">情境 B · 用電分析</option></optgroup><optgroup label="反例 · 應保持安靜"><option value="rainOnly">反例 C · 僅有強降雨</option><option value="legitHvac">反例 D · 合理的空調高負載</option></optgroup></select><button class="primary" id="runBtn">執行情境</button></div><details class="scenario-details"><summary>情境說明</summary><div class="scenario-brief" id="scenarioBrief"></div></details></div></div>
 <aside class="context-left" aria-label="選取設備脈絡"><div class="inspector-panel"><h3>設備脈絡 <span class="sidebar-title">Context Inspector</span></h3><div id="deviceDetail"></div><details class="context-read-list"><summary>查看本次 AI 引用的完整建築脈絡</summary><div id="decisionContext"></div></details></div></aside>
-<div class="twin-scene" id="twinScene"><div class="scene-top"><div><strong>社區場域 / BLDG-01</strong><small>2.5D 空間示意 · 點選模型上的設備</small></div><div id="contextLiveBanner" class="context-live-banner"></div></div><div class="scene-stage"><div class="scene-canvas" id="sceneCanvas"><svg viewBox="50 45 875 420" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-labelledby="sceneTitle sceneDesc">
+<div class="twin-scene" id="twinScene"><div class="scene-top"><div id="contextLiveBanner" class="context-live-banner"></div></div><div class="scene-stage"><div class="scene-canvas" id="sceneCanvas"><svg viewBox="50 45 875 420" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-labelledby="sceneTitle sceneDesc">
 <title id="sceneTitle">智慧社區 2.5D 場域模型</title><desc id="sceneDesc">左側湖區包含氣象站、水位感測、灌溉與排水泵；右側 A 棟包含空調、人流感測及電表。點選設備查看設備脈絡。</desc>
 <defs><linearGradient id="water" x2="1" y2="1"><stop stop-color="#bddfee"/><stop offset="1" stop-color="#7eb9d4"/></linearGradient><linearGradient id="front" x2="0" y2="1"><stop stop-color="#f3f7fc"/><stop offset="1" stop-color="#b9d0e3"/></linearGradient><linearGradient id="side" x2="1" y2="0"><stop stop-color="#a3b8d0"/><stop offset="1" stop-color="#ccd9e7"/></linearGradient><filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#afc3d4" flood-opacity=".23"/></filter></defs><g transform="scale(1 .8)">
 <ellipse cx="490" cy="478" rx="380" ry="90" fill="#dfe8ef" opacity=".38"/>
@@ -1589,10 +1653,9 @@ body {
 <text x="742" y="233" class="zone-text">TOWER A</text><text x="742" y="250" class="zone-sub">A 棟 · 三樓設備</text>
 <g transform="translate(109 330) scale(0.8)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(280 219) scale(0.8)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(379 276) scale(0.75)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(367 431) scale(1)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(577 490) scale(0.9)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(832 335) scale(0.85)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(778 400) scale(0.8)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(425 161) scale(0.65)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(492 493) scale(0.75)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><path class="query-route" data-route="W01" d="M187 263 313 380 492 411"/><path class="query-route" data-route="LS01" d="M264 385 313 380 492 411"/><path class="query-route" data-route="DP01" d="M154 415 208 373 313 380"/><path class="query-route" data-route="IRR01" d="M492 411 639 440"/><path class="query-route" data-route="AHU03" d="M602 150 650 220 639 440"/><path class="query-route" data-route="OCC03" d="M710 307 650 336 639 440"/><path class="query-route" data-route="EM01" d="M695 409 639 440"/><g class="scene-marker" data-device="W01"><circle class="pin-ring" cx="187" cy="258" r="12"/><circle class="pin" cx="187" cy="258" r="7"/></g><g class="scene-marker" data-device="LS01"><circle class="pin-ring" cx="264" cy="385" r="12"/><circle class="pin" cx="264" cy="385" r="7"/></g><g class="scene-marker" data-device="IRR01"><circle class="pin-ring" cx="492" cy="411" r="12"/><circle class="pin" cx="492" cy="411" r="7"/></g><g class="scene-marker" data-device="DP01"><circle class="pin-ring" cx="154" cy="415" r="12"/><circle class="pin" cx="154" cy="415" r="7"/></g><g class="scene-marker" data-device="AHU03"><circle class="pin-ring" cx="602" cy="150" r="12"/><circle class="pin" cx="602" cy="150" r="7"/></g><g class="scene-marker" data-device="OCC03"><circle class="pin-ring" cx="690" cy="307" r="12"/><circle class="pin" cx="690" cy="307" r="7"/></g><g class="scene-marker" data-device="EM01"><circle class="pin-ring" cx="695" cy="409" r="12"/><circle class="pin" cx="695" cy="409" r="7"/></g></g></svg><div class="device-labels"><button class="scene-device device-W01" type="button" data-device="W01" aria-label="W01 · 氣象站，查看設備脈絡"><span class="name"><span class="device-id">W01</span><span class="device-name"> · 氣象站</span></span><span class="reading" id="nodeReading-W01">待接收 Observation</span></button><button class="scene-device device-LS01" type="button" data-device="LS01" aria-label="LS01 · 水位感測，查看設備脈絡"><span class="name"><span class="device-id">LS01</span><span class="device-name"> · 水位感測</span></span><span class="reading" id="nodeReading-LS01">待接收 Observation</span></button><button class="scene-device device-DP01" type="button" data-device="DP01" aria-label="DP01 · 排水泵，查看設備脈絡"><span class="name"><span class="device-id">DP01</span><span class="device-name"> · 排水泵</span></span><span class="reading" id="nodeReading-DP01">待接收 Observation</span></button><button class="scene-device device-IRR01" type="button" data-device="IRR01" aria-label="IRR01 · 灌溉控制，查看設備脈絡"><span class="name"><span class="device-id">IRR01</span><span class="device-name"> · 灌溉控制</span></span><span class="reading" id="nodeReading-IRR01">待接收 Observation</span></button><button class="scene-device device-AHU03" type="button" data-device="AHU03" aria-label="AHU03 · 屋頂空調，查看設備脈絡"><span class="name"><span class="device-id">AHU03</span><span class="device-name"> · 屋頂空調</span></span><span class="reading" id="nodeReading-AHU03">待接收 Observation</span></button><button class="scene-device device-OCC03" type="button" data-device="OCC03" aria-label="OCC03 · 三樓人流，查看設備脈絡"><span class="name"><span class="device-id">OCC03</span><span class="device-name"> · 三樓人流</span></span><span class="reading" id="nodeReading-OCC03">待接收 Observation</span></button><button class="scene-device device-EM01" type="button" data-device="EM01" aria-label="EM01 · 總電表，查看設備脈絡"><span class="name"><span class="device-id">EM01</span><span class="device-name"> · 總電表</span></span><span class="reading" id="nodeReading-EM01">待接收 Observation</span></button></div></div></div><div class="scene-bottom"><span><i class="legend-dot"></i>藍色：AI 引用 · 虛線：查詢提示</span><span>場域位置為概念示意</span></div></div>
 
-<aside class="context-right" aria-label="情境選擇、事件證據與 AI 建議"><div class="scenario-picker"><h3>情境選擇 <span class="sidebar-title">Scenario</span></h3><select id="scenarioSelect" aria-label="選擇要執行的情境"><optgroup label="應建立 Incident"><option value="lake">情境 A · 湖區風險</option><option value="hvac">情境 B · 用電分析</option></optgroup><optgroup label="反例 · 應保持安靜"><option value="rainOnly">反例 C · 僅有強降雨</option><option value="legitHvac">反例 D · 合理的空調高負載</option></optgroup></select><p class="scenario-hint" id="scenarioHint"></p><button class="primary" id="runBtn">執行情境</button><details class="scenario-details"><summary>情境背景與展示目標</summary><div class="scenario-brief" id="scenarioBrief"></div></details><div class="scenario-outcome">執行後產生 ↓</div></div>
-<div class="incident-context"><h3>事件證據 <span class="sidebar-title">Observation / Event</span></h3><div id="decisionEvidence"></div></div>
-<div class="decision-panel" id="decisionSection"><h3>AI 建議與人工審核 <span class="sidebar-title">Inference / Review</span></h3><div class="decision-inputs">事件證據 ＋ Building Context → Recommendation</div><div id="decisionRecommendation"></div><div class="review-label">Human Review → Action → New Observation</div><div id="actionBox"></div><div id="executionBox"></div><div id="feedbackBox"></div></div></aside></div>
-<div class="workspace-toolbar" id="demoLayout"><div class="toolbar-top"><strong>宏道智慧社區 <span class="sidebar-title">Incident Processing</span></strong><span class="section-tag" id="twinUsageBadge">尚未引用建築脈絡</span></div><nav class="flow" id="flowBar" aria-label="處理流程"><div class="flow-node" data-flow="telemetry"><button class="step" type="button" data-step="telemetry" data-number="1">Telemetry</button><div class="flow-description" id="flowDescription-telemetry"></div></div><div class="flow-node" data-flow="observation"><button class="step" type="button" data-step="observation" data-number="2">Observation</button><div class="flow-description" id="flowDescription-observation"></div></div><div class="flow-node" data-flow="event"><button class="step" type="button" data-step="event" data-number="3">Event</button><div class="flow-description" id="flowDescription-event"></div></div><div class="flow-node" data-flow="incident"><button class="step" type="button" data-step="incident" data-number="4">Incident</button><div class="flow-description" id="flowDescription-incident"></div></div><div class="flow-node" data-flow="tools"><button class="step" type="button" data-step="tools" data-number="5">AI tools/query</button><div class="flow-description" id="flowDescription-tools"></div></div><div class="flow-node" data-flow="analysis"><button class="step" type="button" data-step="analysis" data-number="6">Analysis</button><div class="flow-description" id="flowDescription-analysis"></div></div><div class="flow-node" data-flow="review"><button class="step" type="button" data-step="review" data-number="7">Human Review</button><div class="flow-description" id="flowDescription-review"></div></div><div class="flow-node" data-flow="action"><button class="step" type="button" data-step="action" data-number="8">Action</button><div class="flow-description" id="flowDescription-action"></div></div><div class="flow-node" data-flow="loop"><button class="step" type="button" data-step="loop" data-number="9">New Observation</button><div class="flow-description" id="flowDescription-loop"></div></div></nav><div class="toolbar-status"><div class="flow-status" id="flowStatus" role="status" aria-live="polite">選擇情境後執行；處理結果一次顯示。</div><details class="flow-details" id="flowDetails"><summary>查看流程資料 / tool results</summary><main class="demo-main"><div class="flow-panel-head"><strong>流程資料與查詢結果</strong><button type="button" class="secondary" id="closeFlowDetails" aria-label="關閉流程資料面板">關閉 ×</button></div><div class="flow-panel-content"><section class="pane active" id="overview"><div class="run-placeholder" id="runPlaceholder">點選上方流程節點查看該階段的資料。</div><div class="grid">
+<aside class="context-right" aria-label="情境選擇、事件證據與 AI 建議"><div class="incident-context"><h3>事件證據 <span class="sidebar-title">Observation / Event</span></h3><nav class="flow flow-group" aria-label="事件處理流程 步驟 1 至 4"><div class="flow-node" data-flow="telemetry"><button class="step" type="button" data-step="telemetry" data-number="1">Telemetry</button><div class="flow-description" id="flowDescription-telemetry"></div></div><div class="flow-node" data-flow="observation"><button class="step" type="button" data-step="observation" data-number="2">Observation</button><div class="flow-description" id="flowDescription-observation"></div></div><div class="flow-node" data-flow="event"><button class="step" type="button" data-step="event" data-number="3">Event</button><div class="flow-description" id="flowDescription-event"></div></div><div class="flow-node" data-flow="incident"><button class="step" type="button" data-step="incident" data-number="4">Incident</button><div class="flow-description" id="flowDescription-incident"></div></div></nav><div id="decisionEvidence"></div></div>
+<div class="decision-panel" id="decisionSection"><h3>AI 建議與人工審核 <span class="sidebar-title">Inference / Review</span></h3><nav class="flow flow-group" aria-label="AI 分析與人工審核流程 步驟 5 至 9"><div class="flow-node" data-flow="tools"><button class="step" type="button" data-step="tools" data-number="5">AI tools/query</button><div class="flow-description" id="flowDescription-tools"></div></div><div class="flow-node" data-flow="analysis"><button class="step" type="button" data-step="analysis" data-number="6">Analysis</button><div class="flow-description" id="flowDescription-analysis"></div></div><div class="flow-node" data-flow="review"><button class="step" type="button" data-step="review" data-number="7">Human Review</button><div class="flow-description" id="flowDescription-review"></div></div><div class="flow-node" data-flow="action"><button class="step" type="button" data-step="action" data-number="8">Action</button><div class="flow-description" id="flowDescription-action"></div></div><div class="flow-node" data-flow="loop"><button class="step" type="button" data-step="loop" data-number="9">New Observation</button><div class="flow-description" id="flowDescription-loop"></div></div></nav><div class="decision-inputs">事件證據 ＋ Building Context → Recommendation</div><div id="decisionRecommendation"></div><div class="review-label">Human Review → Action → New Observation</div><div id="actionBox"></div><div id="executionBox"></div><div id="feedbackBox"></div></div></aside></div>
+<div class="workspace-toolbar" id="demoLayout"><div class="toolbar-top"><span class="section-tag" id="twinUsageBadge">尚未引用建築脈絡</span></div><div class="toolbar-status"><div class="flow-status" id="flowStatus" role="status" aria-live="polite">選擇情境後執行；處理結果一次顯示。</div><details class="flow-details" id="flowDetails"><summary>查看流程資料 / tool results</summary><main class="demo-main"><div class="flow-panel-head"><strong>流程資料與查詢結果</strong><button type="button" class="secondary" id="closeFlowDetails" aria-label="關閉流程資料面板">關閉 ×</button></div><div class="flow-panel-content"><section class="pane active" id="overview"><div class="run-placeholder" id="runPlaceholder">點選上方流程節點查看該階段的資料。</div><div class="grid">
         <div class="card" data-stage="telemetry">
           <div class="kicker">原始資料接收</div>
           <h2>1. 子系統原始資料</h2>
@@ -1649,20 +1712,28 @@ body {
     '\u003c!doctype html\u003e\u003chtml lang="zh-Hant"\u003e\u003chead\u003e\u003cmeta charset="utf-8"\u003e\u003cmeta name="viewport" content="width=device-width,initial-scale=1"\u003e\u003ctitle\u003eCross-System Building Intelligence · 面試延伸 PRD v02\u003c/title\u003e\u003cstyle\u003e\n:root{color-scheme:light;--ink:#243249;--muted:#8290a5;--line:#e1e7ef;--blue:#4569bd}*{box-sizing:border-box}body{margin:0;background:#f6f8fb;color:var(--ink);font:15px/1.85 \'Segoe UI\',\'Microsoft JhengHei\',sans-serif}.doc-header{max-width:1120px;margin:auto;padding:30px 24px 22px;border-bottom:1px solid var(--line)}.doc-header strong{font-size:13px;color:#567091}.doc-header span{display:block;font-size:11px;color:var(--muted);margin-top:4px}.doc-layout{display:grid;grid-template-columns:230px minmax(0,1fr);max-width:1120px;gap:35px;margin:auto;padding:28px 24px 70px}.doc-toc{position:sticky;top:24px;align-self:start;max-height:calc(100vh - 48px);overflow:auto;font-size:11px;padding-right:12px}.doc-toc h2{font-size:11px;letter-spacing:.08em;color:#8a98ab;margin:0 0 12px}.doc-toc a{display:block;text-decoration:none;color:#6f819b;padding:5px 0;line-height:1.5}.doc-toc a:hover{color:var(--blue)}article{background:white;border:1px solid var(--line);border-radius:12px;padding:32px 38px;min-width:0}h1{font-size:27px;line-height:1.3;letter-spacing:-.4px;margin:0 0 12px}h2{font-size:21px;line-height:1.5;margin:28px 0 14px;scroll-margin-top:24px}h3{font-size:16px;margin:22px 0 9px}h4{font-size:15px;margin:20px 0 8px}p{margin:10px 0 14px}ul{padding-left:23px;margin:8px 0 17px}li{padding-left:2px;margin:3px 0}code{font:12px/1.65 Consolas,\'Courier New\',monospace;background:#f0f4fa;padding:2px 5px;border-radius:4px;color:#4d6588}pre{background:#f3f6fa;border:1px solid #e5ebf3;border-radius:8px;padding:15px 18px;overflow:auto;margin:14px 0 20px}pre code{background:none;padding:0;color:#465d79;font-size:12px;white-space:pre}blockquote{margin:16px 0;border-left:3px solid #bdcfea;background:#f5f8fc;padding:10px 17px;color:#5f7593;border-radius:0 7px 7px 0;font-size:13px}blockquote p{margin:0}hr{border:0;border-top:1px solid #edf0f5;margin:28px 0}strong{font-weight:650}a:focus-visible{outline:2px solid #7b9beb;outline-offset:3px}.doc-footer{font-size:10px;color:#9aa7b8;padding-top:22px;border-top:1px solid var(--line);margin-top:32px}@media(max-width:800px){.doc-layout{display:block;padding:18px 14px 45px}.doc-toc{position:static;max-height:none;margin-bottom:18px;display:grid;grid-template-columns:1fr 1fr;gap:0 12px;font-size:10px}.doc-toc h2{grid-column:1/-1}article{padding:24px 20px}.doc-header{padding:22px 16px}h1{font-size:24px}h2{font-size:19px}}@media(max-width:450px){body{font-size:14px}.doc-toc{grid-template-columns:1fr}article{padding:20px 16px}pre{padding:12px}h1{font-size:22px}}\n\nhtml,body{height:100%;overflow:hidden}body{height:100vh;height:100dvh;display:flex;flex-direction:column}.doc-header{flex:0 0 auto;width:100%;padding-top:18px;padding-bottom:14px}.doc-layout{flex:1;min-height:0;width:100%;padding-top:18px;padding-bottom:18px;overflow:hidden}.doc-toc{position:static;max-height:none;min-height:0;height:100%;overflow:auto}article{min-height:0;height:100%;overflow:auto;overscroll-behavior:contain}.doc-toc{overscroll-behavior:contain}@media(max-width:800px){.doc-layout{display:flex;flex-direction:column;gap:14px}.doc-toc{flex:0 0 auto;height:auto;max-height:120px;overflow:auto;margin:0}article{flex:1;height:auto;min-height:0}.doc-header{padding:14px 16px}}\n\u003c/style\u003e\u003c/head\u003e\u003cbody\u003e\u003cheader class="doc-header"\u003e\u003cstrong\u003eCross-System Building Intelligence / 專案 PRD\u003c/strong\u003e\u003cspan\u003eConcept Design + Executable Prototype · PRD v02 完整文件\u003c/span\u003e\u003c/header\u003e\u003cmain class="doc-layout"\u003e\u003cnav class="doc-toc" aria-label="文件章節目錄"\u003e\u003ch2\u003e文件目錄\u003c/h2\u003e\u003ca href="#heading-3"\u003e1. Executive Summary\u003c/a\u003e\u003ca href="#heading-4"\u003e2. Background &amp; Problem\u003c/a\u003e\u003ca href="#heading-5"\u003e3. Product Goal\u003c/a\u003e\u003ca href="#heading-10"\u003e4. Target User\u003c/a\u003e\u003ca href="#heading-13"\u003e5. Product Concept\u003c/a\u003e\u003ca href="#heading-17"\u003e6. Core Flow\u003c/a\u003e\u003ca href="#heading-27"\u003e7. Building Context / Structured Digital Twin\u003c/a\u003e\u003ca href="#heading-32"\u003e8. Key Scenario A — Lake Risk\u003c/a\u003e\u003ca href="#heading-41"\u003e9. Scenario B — HVAC / Energy / Occupancy\u003c/a\u003e\u003ca href="#heading-43"\u003e10. Negative Scenarios\u003c/a\u003e\u003ca href="#heading-46"\u003e11. AI Role &amp; Guardrails\u003c/a\u003e\u003ca href="#heading-50"\u003e12. Persistence &amp; Auditability\u003c/a\u003e\u003ca href="#heading-57"\u003e13. MVP Scope\u003c/a\u003e\u003ca href="#heading-60"\u003e14. MVP Success Criteria\u003c/a\u003e\u003ca href="#heading-61"\u003e15. Risks &amp; Assumptions\u003c/a\u003e\u003ca href="#heading-65"\u003e16. Closing Note\u003c/a\u003e\u003c/nav\u003e\u003carticle\u003e\u003ch1 id="heading-1"\u003eCross-System Building Intelligence\u003c/h1\u003e\u003ch2 id="heading-2"\u003e面試延伸 PRD（Concept Design + Executable Prototype）\u003c/h2\u003e\u003cblockquote\u003e\u003cp\u003e本文件為面試後，基於公開智慧建築／智慧社區案例所做的概念驗證。\u003cbr\u003e內容用於展示跨系統後端設計、AI 應用邊界與可追蹤決策流程，不代表任何公司的實際 production architecture。\u003cbr\u003e本 Prototype 使用的 telemetry、threshold、device ID 與 scenario data 皆為 synthetic data。\u003c/p\u003e\u003c/blockquote\u003e\u003chr\u003e\u003ch2 id="heading-3"\u003e1. Executive Summary\u003c/h2\u003e\u003cp\u003e智慧建築內通常同時存在多個彼此獨立的子系統，例如氣象、湖面監測、灌溉、排水、HVAC、能源與人流系統。這些系統各自能產生資料與警報，但對建築管理者而言，真正需要理解的往往不是「哪一個 sensor 超標」，而是：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003e多個分散事件是否其實共同描述同一個正在發生的問題？\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003cp\u003e本 Prototype 提出一個 \u003cstrong\u003eCross-System Building Intelligence\u003c/strong\u003e 概念：先由後端將不同來源的 telemetry 標準化為 Observation，再以 deterministic rule 產生 Event，透過跨系統 correlation 建立 Incident；AI 則在 Incident 已成立之後，查詢建築的 Structured Digital Twin / Building Context，取得相關設備、能力、關係、目前狀態與歷史資料，進一步形成 evidence-backed analysis 與 recommended action。\u003c/p\u003e\u003cp\u003e系統刻意將「事實」、「規則判定」、「AI 推論」與「人工確認」分層保存：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eObservation → Event → Incident → AI Analysis → Human Review → Action → New Observation\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e其中 Observation 是 source of truth。AI 可以補充解讀，但不能覆寫原始事實；AI 也不直接控制設備，任何動作需經人工核准後執行，操作後的新設備狀態再回到 Observation pipeline，形成可追蹤的閉環。\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-4"\u003e2. Background &amp; Problem\u003c/h2\u003e\u003cp\u003e智慧建築的問題並不是缺少資料，而是資料通常分散在不同系統中。\u003c/p\u003e\u003cp\u003e例如同一個社區可能同時存在：\u003c/p\u003e\u003cul\u003e\u003cli\u003eWeather Station\u003c/li\u003e\u003cli\u003eLake Sensor\u003c/li\u003e\u003cli\u003eIrrigation Controller\u003c/li\u003e\u003cli\u003eDrainage Pump\u003c/li\u003e\u003cli\u003eHVAC\u003c/li\u003e\u003cli\u003eEnergy Meter\u003c/li\u003e\u003cli\u003eOccupancy Sensor\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e單一子系統可以知道自己的狀態，但不一定知道其他系統同時發生什麼。\u003c/p\u003e\u003cp\u003e因此管理者可能同時看到：\u003c/p\u003e\u003cul\u003e\u003cli\u003e強降雨警報\u003c/li\u003e\u003cli\u003e湖面水位升高\u003c/li\u003e\u003cli\u003e灌溉仍在執行\u003c/li\u003e\u003cli\u003e排水設備待機\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e若這些訊息分散在不同系統內，仍需要人自行判斷它們是否相關、是否需要處置，以及現場有哪些設備可以使用。\u003c/p\u003e\u003cp\u003e本 Prototype 想驗證的核心問題是：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003e能否把原本分散在不同 subsystem 的訊號整合成同一個 Incident，再結合 Building Context，讓 AI 產生可追溯、可人工審核的決策建議？\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003chr\u003e\u003ch2 id="heading-5"\u003e3. Product Goal\u003c/h2\u003e\u003cp\u003e本 Prototype 主要驗證四件事。\u003c/p\u003e\u003ch3 id="heading-6"\u003e3.1 Cross-System Understanding\u003c/h3\u003e\u003cp\u003e將不同來源的資料標準化後，以明確規則產生 Event，再透過時間、位置與語意關係，把多個 Event 關聯成同一個 Incident。\u003c/p\u003e\u003ch3 id="heading-7"\u003e3.2 Building-Aware AI\u003c/h3\u003e\u003cp\u003eAI 不只看到：\u003c/p\u003e\u003cp\u003e\u003ccode\u003eHIGH_WATER_LEVEL\u003c/code\u003e\u003c/p\u003e\u003cp\u003e而能進一步查詢：\u003c/p\u003e\u003cul\u003e\u003cli\u003eIncident 發生在哪個 Zone\u003c/li\u003e\u003cli\u003e該區域有哪些設備\u003c/li\u003e\u003cli\u003e設備目前是什麼狀態\u003c/li\u003e\u003cli\u003e設備有哪些 capability\u003c/li\u003e\u003cli\u003e哪些設備彼此相關\u003c/li\u003e\u003cli\u003e最近有哪些 Observation\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-8"\u003e3.3 Evidence-Backed Analysis\u003c/h3\u003e\u003cp\u003eAI 產生的結論需能回溯到實際 Observation / Event 與 Building Context，而不是只有自然語言敘述。\u003c/p\u003e\u003ch3 id="heading-9"\u003e3.4 Human-in-the-loop Action\u003c/h3\u003e\u003cp\u003eAI recommendation 不直接等於 execution。\u003c/p\u003e\u003cp\u003e所有具體操作需經：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eAI Recommendation → Backend Validation → Human Approval → Action → New Observation\u003c/strong\u003e\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-10"\u003e4. Target User\u003c/h2\u003e\u003ch3 id="heading-11"\u003e主要使用者：Building Operator / Facility Manager\u003c/h3\u003e\u003cp\u003e他需要快速理解：\u003c/p\u003e\u003cul\u003e\u003cli\u003e現在發生什麼\u003c/li\u003e\u003cli\u003e哪些系統彼此相關\u003c/li\u003e\u003cli\u003eAI 為什麼做出這個判斷\u003c/li\u003e\u003cli\u003e現場有哪些設備可以操作\u003c/li\u003e\u003cli\u003e下一步應該檢查或處置什麼\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-12"\u003e次要使用者：Building Engineer\u003c/h3\u003e\u003cp\u003e需要進一步確認：\u003c/p\u003e\u003cul\u003e\u003cli\u003eAI 使用了哪些 evidence\u003c/li\u003e\u003cli\u003e判定規則是什麼\u003c/li\u003e\u003cli\u003e哪些 device capability 支撐 recommendation\u003c/li\u003e\u003cli\u003e過去的操作與結果是否可追溯\u003c/li\u003e\u003c/ul\u003e\u003chr\u003e\u003ch2 id="heading-13"\u003e5. Product Concept\u003c/h2\u003e\u003cp\u003e整體系統可以分成三個相互關聯，但角色不同的部分。\u003c/p\u003e\u003ch3 id="heading-14"\u003eA. Incident Processing\u003c/h3\u003e\u003cp\u003e負責回答：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003e發生了什麼？\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003cp\u003e流程：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eTelemetry → Normalized Observation → Deterministic Event → Cross-System Incident\u003c/strong\u003e\u003c/p\u003e\u003ch3 id="heading-15"\u003eB. Structured Digital Twin / Building Context\u003c/h3\u003e\u003cp\u003e負責回答：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003e現場有什麼？在哪裡？可以做什麼？目前狀態如何？\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003cp\u003e它不是事件資料流程中的一步，而是一個持續存在的 context layer。\u003c/p\u003e\u003cp\u003e結構：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eBuilding → Zone → Device → Capability → Relationship → Current State / History\u003c/strong\u003e\u003c/p\u003e\u003ch3 id="heading-16"\u003eC. AI Decision &amp; Audit\u003c/h3\u003e\u003cp\u003eAI 同時取得：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eIncident Evidence + Building Context\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e再產生：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eStructured Analysis → Recommended Action → Human Review → Action Result\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e因此本 Prototype 的核心關係是：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eIncident 告訴 AI 發生了什麼；Building Context 告訴 AI 現場有什麼可以理解與操作；兩者一起才形成 recommendation。\u003c/strong\u003e\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-17"\u003e6. Core Flow\u003c/h2\u003e\u003ch3 id="heading-18"\u003eStep 1 — Telemetry Ingestion\u003c/h3\u003e\u003cp\u003e接收不同 subsystem 的原始 telemetry。\u003c/p\u003e\u003ch3 id="heading-19"\u003eStep 2 — Normalized Observation\u003c/h3\u003e\u003cp\u003e將不同格式資料轉成統一 Observation schema。\u003c/p\u003e\u003cp\u003eObservation 是 source of truth，保存：\u003c/p\u003e\u003cul\u003e\u003cli\u003edevice\u003c/li\u003e\u003cli\u003ezone\u003c/li\u003e\u003cli\u003emetric\u003c/li\u003e\u003cli\u003evalue\u003c/li\u003e\u003cli\u003eobserved_at\u003c/li\u003e\u003cli\u003eraw payload\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-20"\u003eStep 3 — Deterministic Event Detection\u003c/h3\u003e\u003cp\u003eRule Engine 根據明確門檻產生 Event。\u003c/p\u003e\u003cp\u003e例如：\u003c/p\u003e\u003cul\u003e\u003cli\u003erainfall &gt; threshold → \u003ccode\u003eHEAVY_RAINFALL\u003c/code\u003e\u003c/li\u003e\u003cli\u003elake water level &gt; threshold → \u003ccode\u003eHIGH_WATER_LEVEL\u003c/code\u003e\u003c/li\u003e\u003cli\u003eirrigation = RUNNING → \u003ccode\u003eIRRIGATION_ACTIVE\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003e\u003cp\u003eAI 不參與這一步。\u003c/p\u003e\u003ch3 id="heading-21"\u003eStep 4 — Incident Correlation\u003c/h3\u003e\u003cp\u003eCorrelation Engine 根據：\u003c/p\u003e\u003cul\u003e\u003cli\u003eTemporal relation\u003c/li\u003e\u003cli\u003eSpatial relation\u003c/li\u003e\u003cli\u003eSemantic relation\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e將多個 Event 整合成 Incident。\u003c/p\u003e\u003ch3 id="heading-22"\u003eStep 5 — AI Context Retrieval\u003c/h3\u003e\u003cp\u003eIncident 成立後，AI 使用 tools 查詢 Building Context，例如：\u003c/p\u003e\u003cul\u003e\u003cli\u003e\u003ccode\u003eget_devices_in_zone()\u003c/code\u003e\u003c/li\u003e\u003cli\u003e\u003ccode\u003eget_related_devices()\u003c/code\u003e\u003c/li\u003e\u003cli\u003e\u003ccode\u003eget_device_capabilities()\u003c/code\u003e\u003c/li\u003e\u003cli\u003e\u003ccode\u003eget_device_state()\u003c/code\u003e\u003c/li\u003e\u003cli\u003e\u003ccode\u003eget_recent_observations()\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-23"\u003eStep 6 — Structured AI Analysis\u003c/h3\u003e\u003cp\u003eAI 將 evidence 分成兩類：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003e事件證據\u003c/strong\u003e\u003c/p\u003e\u003cul\u003e\u003cli\u003eObservation\u003c/li\u003e\u003cli\u003eEvent\u003c/li\u003e\u003cli\u003eIncident\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e\u003cstrong\u003e建築脈絡\u003c/strong\u003e\u003c/p\u003e\u003cul\u003e\u003cli\u003eZone\u003c/li\u003e\u003cli\u003eDevice\u003c/li\u003e\u003cli\u003eCapability\u003c/li\u003e\u003cli\u003eRelationship\u003c/li\u003e\u003cli\u003eCurrent State\u003c/li\u003e\u003cli\u003eHistory\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e輸出：\u003c/p\u003e\u003cul\u003e\u003cli\u003esummary\u003c/li\u003e\u003cli\u003ehypotheses\u003c/li\u003e\u003cli\u003eevidence references\u003c/li\u003e\u003cli\u003erecommended actions\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-24"\u003eStep 7 — Human Review\u003c/h3\u003e\u003cp\u003e管理者審核 AI recommendation：\u003c/p\u003e\u003cul\u003e\u003cli\u003eApprove\u003c/li\u003e\u003cli\u003eReject\u003c/li\u003e\u003cli\u003eNeed Investigation\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-25"\u003eStep 8 — Action\u003c/h3\u003e\u003cp\u003e只有核准後才能進入 Action Service。\u003c/p\u003e\u003ch3 id="heading-26"\u003eStep 9 — Feedback to Observation Pipeline\u003c/h3\u003e\u003cp\u003e設備狀態改變後，產生新的 Observation。\u003c/p\u003e\u003cp\u003e因此形成：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003eObserve → Detect → Understand → Recommend → Approve → Act → Observe Again\u003c/strong\u003e\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-27"\u003e7. Building Context / Structured Digital Twin\u003c/h2\u003e\u003cp\u003e本 Prototype 的 Digital Twin 不以 3D 模型本身為核心。\u003c/p\u003e\u003cp\u003e核心是建立一份 \u003cstrong\u003e可被後端與 AI 查詢的建築數位狀態模型\u003c/strong\u003e。\u003c/p\u003e\u003ch3 id="heading-28"\u003e資產結構\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eBuilding\n├── Lake Zone\n│   ├── Weather Station W01\n│   ├── Lake Sensor LS01\n│   ├── Irrigation IRR01\n│   └── Drainage Pump DP01\n│\n└── Tower A\n    └── Floor 3\n        ├── AHU03\n        ├── OCC03\n        └── EM01\u003c/code\u003e\u003c/pre\u003e\u003ch3 id="heading-29"\u003eDevice Capability\u003c/h3\u003e\u003cp\u003e例如：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eIRR01\n- START\n- STOP\n- GET_STATUS\u003c/code\u003e\u003c/pre\u003e\u003ch3 id="heading-30"\u003eDevice Relationship\u003c/h3\u003e\u003cp\u003e例如：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eW01   → affects    → Lake Zone\nLS01  → monitors   → Lake Zone\nIRR01 → operates   → Lake Zone\nDP01  → controls   → Lake Water Level\u003c/code\u003e\u003c/pre\u003e\u003ch3 id="heading-31"\u003eCurrent State / History\u003c/h3\u003e\u003cp\u003e例如：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eIRR01 state = RUNNING\nDP01 state  = STANDBY\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eAI 因此不需要「猜」現場有沒有排水設備，也不需要「猜」IRR01 能不能停止。\u003c/p\u003e\u003cp\u003eRecommendation 必須建立在實際 Building Context 上。\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-32"\u003e8. Key Scenario A — Lake Risk\u003c/h2\u003e\u003ch3 id="heading-33"\u003eInput\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eRainfall          38.2 mm/h\nLake Water Level  82 cm\nIRR01             RUNNING\nDP01              STANDBY\u003c/code\u003e\u003c/pre\u003e\u003ch3 id="heading-34"\u003eDeterministic Events\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eHEAVY_RAINFALL\nHIGH_WATER_LEVEL\nIRRIGATION_ACTIVE\u003c/code\u003e\u003c/pre\u003e\u003ch3 id="heading-35"\u003eIncident\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eWEATHER_RELATED_LAKE_RISK\u003c/code\u003e\u003c/pre\u003e\u003ch3 id="heading-36"\u003eAI Context Retrieval\u003c/h3\u003e\u003cp\u003eAI 查詢：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eLake Zone devices\nIRR01 capability\nIRR01 current state\nDP01 current state\nRecent Observation history\u003c/code\u003e\u003c/pre\u003e\u003cp\u003e取得：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eIRR01 capability = STOP\nIRR01 state      = RUNNING\nDP01 state       = STANDBY\u003c/code\u003e\u003c/pre\u003e\u003ch3 id="heading-37"\u003eStructured Analysis\u003c/h3\u003e\u003cp\u003e事件證據：\u003c/p\u003e\u003cul\u003e\u003cli\u003eRainfall = 38.2 mm/h\u003c/li\u003e\u003cli\u003eLake water level = 82 cm\u003c/li\u003e\u003cli\u003eIrrigation = RUNNING\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e建築脈絡：\u003c/p\u003e\u003cul\u003e\u003cli\u003eIRR01 位於 Lake Zone\u003c/li\u003e\u003cli\u003eIRR01 支援 STOP\u003c/li\u003e\u003cli\u003eIRR01 目前為 RUNNING\u003c/li\u003e\u003cli\u003eDP01 與 Lake water level control 有關\u003c/li\u003e\u003cli\u003eDP01 目前為 STANDBY\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-38"\u003eRecommendation\u003c/h3\u003e\u003cp\u003e\u003cstrong\u003ePause IRR01 Irrigation\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e可執行依據：\u003c/p\u003e\u003cul\u003e\u003cli\u003e\u003ccode\u003eIRR01 capability = STOP\u003c/code\u003e\u003c/li\u003e\u003cli\u003e\u003ccode\u003eIRR01 current state = RUNNING\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-39"\u003eHuman Approval\u003c/h3\u003e\u003cp\u003e管理者核准後執行：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eIRR01\nRUNNING → STOPPED\u003c/code\u003e\u003c/pre\u003e\u003ch3 id="heading-40"\u003eFeedback\u003c/h3\u003e\u003cp\u003e設備狀態變化產生：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003eOBS-036\nIRR01.status = STOPPED\u003c/code\u003e\u003c/pre\u003e\u003cp\u003eOBS-036 再回到 Observation pipeline。\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-41"\u003e9. Scenario B — HVAC / Energy / Occupancy\u003c/h2\u003e\u003cp\u003e第二個情境用於驗證同一套架構是否可以跨 domain 使用。\u003c/p\u003e\u003ch3 id="heading-42"\u003eInput\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eOutdoor temperature  27°C\nOccupancy            LOW\nAHU03 power          92 kW\nBuilding energy      186 kW\u003c/code\u003e\u003c/pre\u003e\u003cp\u003e系統將 HVAC、Energy、Occupancy 與 Weather 資料整合後，形成值得進一步調查的 Incident。\u003c/p\u003e\u003cp\u003eAI 可以提出：\u003c/p\u003e\u003cul\u003e\u003cli\u003e檢查 AHU schedule\u003c/li\u003e\u003cli\u003e檢查控制設定\u003c/li\u003e\u003cli\u003e檢視近期運轉趨勢\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e但不能直接宣稱：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003eAHU03 已故障。\u003c/p\u003e\u003c/blockquote\u003e\u003cp\u003e因為目前 evidence 只能支持「值得調查」，不足以支持「設備故障」這個事實判定。\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-43"\u003e10. Negative Scenarios\u003c/h2\u003e\u003cp\u003ePrototype 不只驗證「何時應該產生 Incident」，也驗證「何時應該保持安靜」。\u003c/p\u003e\u003ch3 id="heading-44"\u003eNegative C — Heavy Rain Only\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eRainfall = 38.2 mm/h\nLake water level = 58 cm\u003c/code\u003e\u003c/pre\u003e\u003cp\u003e預期：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003e不建立 Lake Risk Incident\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e因為只有單一強降雨訊號，沒有足夠的跨系統 evidence。\u003c/p\u003e\u003ch3 id="heading-45"\u003eNegative D — Legitimate HVAC Load\u003c/h3\u003e\u003cpre\u003e\u003ccode\u003eOutdoor temperature = 35°C\nOccupancy = HIGH\nHVAC load = HIGH\u003c/code\u003e\u003c/pre\u003e\u003cp\u003e預期：\u003c/p\u003e\u003cp\u003e\u003cstrong\u003e不直接判定 HVAC anomaly\u003c/strong\u003e\u003c/p\u003e\u003cp\u003e因為高外溫與高 occupancy 可以合理解釋較高的 HVAC load。\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-46"\u003e11. AI Role &amp; Guardrails\u003c/h2\u003e\u003ch3 id="heading-47"\u003eAI 負責\u003c/h3\u003e\u003cul\u003e\u003cli\u003e理解 Incident\u003c/li\u003e\u003cli\u003e查詢 Building Context\u003c/li\u003e\u003cli\u003e整合跨系統 context\u003c/li\u003e\u003cli\u003e建立 hypothesis\u003c/li\u003e\u003cli\u003e引用 evidence\u003c/li\u003e\u003cli\u003e產生 recommendation\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-48"\u003eAI 不負責\u003c/h3\u003e\u003cul\u003e\u003cli\u003e修改 Observation\u003c/li\u003e\u003cli\u003e直接 SQL database\u003c/li\u003e\u003cli\u003e自行建立不存在的設備\u003c/li\u003e\u003cli\u003e把 hypothesis 當成 verified fact\u003c/li\u003e\u003cli\u003e直接操作設備\u003c/li\u003e\u003cli\u003e用無校準依據的精準 confidence score 製造假精確\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-49"\u003eDesign Principle\u003c/h3\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003eAI can enrich the source of truth, but cannot overwrite it.\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003chr\u003e\u003ch2 id="heading-50"\u003e12. Persistence &amp; Auditability\u003c/h2\u003e\u003cp\u003e系統分層保存：\u003c/p\u003e\u003ch3 id="heading-51"\u003eObservation\u003c/h3\u003e\u003cp\u003e原始事實。\u003c/p\u003e\u003ch3 id="heading-52"\u003eEvent\u003c/h3\u003e\u003cp\u003edeterministic rule output。\u003c/p\u003e\u003ch3 id="heading-53"\u003eIncident\u003c/h3\u003e\u003cp\u003ecross-system correlation result。\u003c/p\u003e\u003ch3 id="heading-54"\u003eAnalysis\u003c/h3\u003e\u003cp\u003eAI inference，保留 evidence reference。\u003c/p\u003e\u003ch3 id="heading-55"\u003eAction\u003c/h3\u003e\u003cp\u003e包含 recommendation、human approval、execution result。\u003c/p\u003e\u003ch3 id="heading-56"\u003eFeedback\u003c/h3\u003e\u003cp\u003e保存人工確認與實際結果。\u003c/p\u003e\u003cp\u003e因此若 AI 判斷錯誤，系統仍可保留：\u003c/p\u003e\u003cul\u003e\u003cli\u003e當時的原始 Observation\u003c/li\u003e\u003cli\u003eRule Engine 產生的 Event\u003c/li\u003e\u003cli\u003e當時建立的 Incident\u003c/li\u003e\u003cli\u003eAI 當時使用的 evidence\u003c/li\u003e\u003cli\u003eAI recommendation\u003c/li\u003e\u003cli\u003eHuman decision\u003c/li\u003e\u003cli\u003eAction result\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e而不污染 source of truth。\u003c/p\u003e\u003chr\u003e\u003ch2 id="heading-57"\u003e13. MVP Scope\u003c/h2\u003e\u003ch3 id="heading-58"\u003eIn Scope\u003c/h3\u003e\u003cul\u003e\u003cli\u003eSynthetic telemetry\u003c/li\u003e\u003cli\u003eData normalization\u003c/li\u003e\u003cli\u003eObservation persistence\u003c/li\u003e\u003cli\u003eDeterministic event rules\u003c/li\u003e\u003cli\u003eCross-system incident correlation\u003c/li\u003e\u003cli\u003eStructured Building Context\u003c/li\u003e\u003cli\u003eAI tool retrieval\u003c/li\u003e\u003cli\u003eEvidence-backed structured analysis\u003c/li\u003e\u003cli\u003eHuman approval\u003c/li\u003e\u003cli\u003eAction execution\u003c/li\u003e\u003cli\u003eNew Observation feedback loop\u003c/li\u003e\u003cli\u003eScenario A\u003c/li\u003e\u003cli\u003eScenario B\u003c/li\u003e\u003cli\u003eTwo negative scenarios\u003c/li\u003e\u003c/ul\u003e\u003ch3 id="heading-59"\u003eNon-Goals\u003c/h3\u003e\u003cp\u003e本 Prototype 不做：\u003c/p\u003e\u003cul\u003e\u003cli\u003e真實 IoT hardware integration\u003c/li\u003e\u003cli\u003e真實建築控制\u003c/li\u003e\u003cli\u003e完整 3D engine\u003c/li\u003e\u003cli\u003eNVIDIA Omniverse integration\u003c/li\u003e\u003cli\u003eDocument RAG\u003c/li\u003e\u003cli\u003eML model training\u003c/li\u003e\u003cli\u003eKafka / MQTT production infrastructure\u003c/li\u003e\u003cli\u003e完整 authentication / RBAC\u003c/li\u003e\u003cli\u003e大型 monitoring dashboard\u003c/li\u003e\u003cli\u003e完整 BIM / production Digital Twin\u003c/li\u003e\u003c/ul\u003e\u003chr\u003e\u003ch2 id="heading-60"\u003e14. MVP Success Criteria\u003c/h2\u003e\u003cp\u003e本 Prototype 完成的標準不是功能數量，而是能完整展示一條 vertical slice：\u003c/p\u003e\u003cpre\u003e\u003ccode\u003e3+ Subsystems\n↓\nTelemetry\n↓\nNormalized Observation\n↓\nDeterministic Events\n↓\nCross-System Incident\n↓\nAI retrieves Building Context\n↓\nEvidence-backed Analysis\n↓\nDevice-specific Recommendation\n↓\nHuman Approval\n↓\nAction\n↓\nNew Observation\u003c/code\u003e\u003c/pre\u003e\u003cp\u003e並額外展示：\u003c/p\u003e\u003cul\u003e\u003cli\u003e一個第二 domain scenario\u003c/li\u003e\u003cli\u003e兩個 negative scenarios\u003c/li\u003e\u003cli\u003eAI conclusion 可追溯至 evidence\u003c/li\u003e\u003cli\u003eBuilding Context 能實際支撐 recommendation\u003c/li\u003e\u003cli\u003eAction 後的新設備狀態能回到 pipeline\u003c/li\u003e\u003c/ul\u003e\u003chr\u003e\u003ch2 id="heading-61"\u003e15. Risks &amp; Assumptions\u003c/h2\u003e\u003ch3 id="heading-62"\u003eSynthetic Data\u003c/h3\u003e\u003cp\u003e本 Prototype 未取得真實智慧建築 telemetry，因此所有 scenario data、threshold 與 device identifier 皆為 synthetic。\u003c/p\u003e\u003ch3 id="heading-63"\u003eDomain Assumption\u003c/h3\u003e\u003cp\u003ePrototype 以公開案例作為研究起點，用於驗證系統設計思路，不代表真實建築現場流程或任何公司的實際架構。\u003c/p\u003e\u003ch3 id="heading-64"\u003eAI Limitation\u003c/h3\u003e\u003cp\u003eAI output 為 decision support，而非安全關鍵設備的自動控制依據。\u003c/p\u003e\u003cp\u003e在真實 production environment 中，仍需要：\u003c/p\u003e\u003cul\u003e\u003cli\u003edomain-specific validation\u003c/li\u003e\u003cli\u003edevice permission control\u003c/li\u003e\u003cli\u003esafety rules\u003c/li\u003e\u003cli\u003eoperator approval\u003c/li\u003e\u003cli\u003emonitoring and rollback mechanism\u003c/li\u003e\u003c/ul\u003e\u003chr\u003e\u003ch2 id="heading-65"\u003e16. Closing Note\u003c/h2\u003e\u003cp\u003e這個 Prototype 的目的不是在短時間內重新打造一套完整智慧建築平台。\u003c/p\u003e\u003cp\u003e我更希望驗證的是：\u003c/p\u003e\u003cblockquote\u003e\u003cp\u003e\u003cstrong\u003e面對一個原本陌生的智慧建築 domain，是否能快速理解問題、拆出資料層與系統邊界，建立可執行的 backend architecture，並判斷 AI 適合介入的位置與不應跨越的邊界。\u003c/strong\u003e\u003c/p\u003e\u003c/blockquote\u003e\u003cp\u003e因此，我將重點放在：\u003c/p\u003e\u003cul\u003e\u003cli\u003e跨系統資料整合\u003c/li\u003e\u003cli\u003eSource of Truth\u003c/li\u003e\u003cli\u003eStructured Digital Twin / Building Context\u003c/li\u003e\u003cli\u003eEvidence-backed AI reasoning\u003c/li\u003e\u003cli\u003eHuman-in-the-loop\u003c/li\u003e\u003cli\u003eAuditable feedback loop\u003c/li\u003e\u003c/ul\u003e\u003cp\u003e而不是把 AI 當成單純的聊天介面，或讓模型直接取代原有的 deterministic system。\u003c/p\u003e\u003cfooter class="doc-footer"\u003e來源：Cross-System-Building-Intelligence-Interview-PRD-v02.md\u003c/footer\u003e\u003c/article\u003e\u003c/main\u003e\u003c/body\u003e\u003c/html\u003e';
   $('#prdLink').href = URL.createObjectURL(new Blob([prdPageHtml], { type: 'text/html;charset=utf-8' }));
 
-  const pulseTimers = new WeakMap();
+  // 同一時間只保留一組呼吸燈。原本每個節點各自計時，按了下一個時上一個還在閃，
+  // 畫面會有多處同時呼吸，看不出哪一個才是剛剛變動的；改為開新的就先停掉舊的。
+  let pulsingNodes = [];
+  let pulseTimer = null;
+  function stopPulse() {
+    if (pulseTimer) {
+      clearTimeout(pulseTimer);
+      pulseTimer = null;
+    }
+    pulsingNodes.forEach((node) => node.classList.remove('state-pulse'));
+    pulsingNodes = [];
+  }
   function pulseNodes(nodes) {
-    [...new Set(nodes.filter(Boolean))].forEach((node) => {
-      const previous = pulseTimers.get(node);
-      if (previous) clearTimeout(previous);
-      node.classList.remove('state-pulse');
+    stopPulse();
+    pulsingNodes = [...new Set(nodes.filter(Boolean))];
+    if (!pulsingNodes.length) return;
+    pulsingNodes.forEach((node) => {
+      // 讀一次版面強制 reflow，剛移除的動畫才會重新開始播放
       if (typeof node.getBoundingClientRect === 'function') node.getBoundingClientRect();
       node.classList.add('state-pulse');
-      const timer = setTimeout(() => {
-        node.classList.remove('state-pulse');
-        pulseTimers.delete(node);
-      }, 3000);
-      pulseTimers.set(node, timer);
     });
+    pulseTimer = setTimeout(stopPulse, 3000);
   }
   function pulseDevices(deviceIds) {
     const ids = new Set(deviceIds);
@@ -2687,7 +2758,7 @@ body {
         }<br>保留建議產生時的脈絡，與目前狀態分開呈現。</div>`
       : '';
     $('#deviceDetail').innerHTML =
-      `${queried}<div><span class="pill info">${esc(d.id)}</span><h3 style="font-size:17px;margin:7px 0 2px">${esc(d.name)}</h3><div class="small">${esc(d.type)}</div></div>
+      `${queried}<div class="device-head" title="${esc(d.type)}"><span class="pill info">${esc(d.id)}</span><h3>${esc(d.name)}</h3></div>
       <div class="detail-row"><span>Zone</span><b>${esc(zoneName(d.zone))}</b></div>
       <div class="detail-row"><span>目前狀態</span><b id="selectedDeviceState">${esc(stateOf(d.id))}</b></div>
       <div class="detail-row"><span>Capabilities</span><div class="cap-list">${d.capabilities.map((c) => `<span class="cap">${esc(c)}</span>`).join('')}</div></div>
@@ -2870,7 +2941,17 @@ body {
       btn.setAttribute('aria-expanded', 'false');
     });
   }
+  // 步驟 7–9 沒有獨立的資料卡。流程圖併入右欄後它們就長在審核與處置區塊上，
+  // 點它們直接標示對應區塊，不要再開一個只寫著「請看右側」的空面板。
+  const reviewStages = { review: '#actionBox', action: '#executionBox', loop: '#feedbackBox' };
+
   function focusFlowStage(name) {
+    if (reviewStages[name]) {
+      selectedFlowStage = name;
+      $$('.step').forEach((btn) => btn.classList.toggle('selected', btn.dataset.step === name));
+      pulseNodes([$(reviewStages[name]), $('#decisionSection')]);
+      return;
+    }
     if ($('#flowDetails').open && selectedFlowStage === name) {
       closeFlowPanel();
       return;
@@ -2880,16 +2961,7 @@ body {
     $$('#overview [data-stage]').forEach((card) =>
       card.classList.toggle('revealed', card.dataset.stage === name),
     );
-    $('#runPlaceholder').hidden = [
-      'telemetry',
-      'observation',
-      'event',
-      'incident',
-      'tools',
-      'analysis',
-    ].includes(name);
-    if (!$('#runPlaceholder').hidden)
-      $('#runPlaceholder').textContent = '此階段的審核與處置結果顯示於右側 AI 建議與人工審核。';
+    $('#runPlaceholder').hidden = true;
     $('#flowDetails').open = true;
     $$('.step').forEach((btn) => btn.setAttribute('aria-expanded', String(btn.dataset.step === name)));
     updateTwinUsage(false);
@@ -2940,7 +3012,7 @@ body {
     selectedScenario = key;
     const select = $('#scenarioSelect');
     if (select.value !== key) select.value = key;
-    $('#scenarioHint').textContent = scenarioHints[key] || '';
+    select.title = scenarioHints[key] || '';
     renderScenarioBrief(key);
   }
   $('#scenarioSelect').addEventListener('change', (e) => selectScenario(e.target.value));
