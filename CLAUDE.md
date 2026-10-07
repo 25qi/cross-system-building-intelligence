@@ -85,8 +85,10 @@ python3 -m http.server 4178
 Incident Processing
 [1 Telemetry › 2 Normalize › 3 Event › 4 Incident]
 [5 AI tools/query › 6 Analysis › 7 Human Review › 8 Action › 9 New Observation]
-未建立 Incident 時的原因（已建立時這一塊不顯示）
 AI 分析摘要 → 可執行依據 → 拒絕／核准操作 → 執行結果 → 回饋 Observation
+
+Incident 的判定結果（含「未建立」與原因）只在步驟 4 的資料卡裡，
+不另外常駐一塊。曾有一個常駐的 #incidentSummary 與步驟 4 卡片講同一件事，已移除。
 ```
 
 **點選流程節點，該階段的資料就顯示在節點正下方**（`#overview .stage-data`），

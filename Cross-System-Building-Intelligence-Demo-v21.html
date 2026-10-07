@@ -135,9 +135,6 @@ h3 {
   font-size: 12px;
   margin-bottom: 7px;
 }
-#incidentSummary .evidence {
-  margin: 6px 0 0;
-}
 /* 觀測事實與 Event 都用「標籤 ｜ 值」兩欄，讓每一行自己說明自己是什麼。 */
 .raw-payload {
   border-bottom: 1px solid #eef1f5;
@@ -1566,7 +1563,7 @@ body {
         
         
         
-    </div></div><div class="flow-status" id="flowStatus" role="status" aria-live="polite"></div><div id="incidentSummary"></div><div id="actionBox"></div><div id="executionBox"></div><div id="feedbackBox"></div></div></aside></div>
+    </div></div><div class="flow-status" id="flowStatus" role="status" aria-live="polite"></div><div id="actionBox"></div><div id="executionBox"></div><div id="feedbackBox"></div></div></aside></div>
 <div class="workspace-footer"><details><summary>稽核鏈與保存紀錄 · Audit / localStorage</summary><div class="audit-line" id="auditLine"></div><details class="records"><summary>已保存紀錄 / localStorage</summary><div class="records-grid"><div><h3>Observation · 原始事實</h3><div id="obsStore"></div></div><div id="derivedStore"></div><div><h3>操作審核與執行</h3><div id="actionStore"></div></div></div></details></details></div></section>
 <footer class="foot"><span>Observation 是 source of truth · AI 新增 inference · 操作需 human approval</span><span>Executable concept prototype · v21</span></footer></div><script>
 (() => {
@@ -2535,8 +2532,16 @@ body {
       $('#incidentBox').innerHTML =
         `<div class="incident"><div><span class="pill bad">${esc(currentRun.incident.severity)}</span></div><h3 style="margin-top:8px">${esc(currentRun.incident.title)}</h3><div class="small">${esc(currentRun.incident.id)} · ${esc(currentRun.incident.incident_type)} · ${esc(currentRun.incident.zone_id)}</div><p>${currentRun.incident.event_ids.length} 個相關 Event 已依時間、位置與語意規則整合。</p></div>`;
     } else {
-      $('#incidentBox').innerHTML =
-        `<div class="incident none"><b>未建立 Incident。</b><p class="small">未符合跨系統關聯條件，因此不建立 Incident，也不啟動 AI 分析。</p></div>`;
+      // 未建立的原因只在步驟 4 的資料卡裡說明，不另外常駐一塊。
+      const reason =
+        currentRun.scenario === 'rainOnly'
+          ? '只有強降雨；水位 58 cm 未超過 80 cm，未產生 HIGH_WATER_LEVEL，關聯條件不成立。'
+          : currentRun.scenario === 'legitHvac'
+            ? '兩個用電 Event 都成立，但室外 35°C、人流 HIGH 可合理解釋此用電量，第二層條件擋下。'
+            : '';
+      $('#incidentBox').innerHTML = `<div class="incident none"><b>未建立 Incident。</b>${
+        reason ? `<p class="small">${esc(reason)}</p>` : ''
+      }<p class="small">未符合跨系統關聯條件，因此不建立 Incident，也不啟動 AI 分析。</p></div>`;
     }
 
     $('#toolLog').innerHTML = currentRun.tools.length
@@ -2731,16 +2736,6 @@ body {
   function renderDecision() {
     const obs = currentRun.obs.filter((o) => o.id !== 'OBS-036');
     const incident = currentRun.incident;
-    // 已建立 Incident 時不另外列出判定卡：流程步驟 4 已標示，下方 AI 分析也會描述它。
-    // 只有反例情境需要說明「為什麼不建立」，那是這個 demo 的展示重點。
-    const noIncidentReason =
-      currentRun.scenario === 'rainOnly'
-        ? '只有強降雨；水位 58 cm 未超過 80 cm。不建立 Incident，不啟動 AI。'
-        : '室外 35°C、人流 HIGH，空調高負載可能合理。不建立 Incident，不啟動 AI。';
-    $('#incidentSummary').innerHTML =
-      obs.length && !incident
-        ? `<h3>未建立 Incident <span class="sidebar-title">Correlation</span></h3><div class="small">${esc(noIncidentReason)}</div>`
-        : '';
     $('#decisionEvidence').innerHTML = `${obs
       .map((o) => {
         const event = currentRun.events.find((e) => e.source_observation_id === o.id);
