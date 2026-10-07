@@ -856,16 +856,35 @@ body {
   border-radius: 8px;
   min-width: 0;
 }
-.scenario-run {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+#scenarioSelect {
   margin-top: 3px;
 }
-/* 下限寬度：空間不足時讓按鈕換到下一行，而不是把選單壓成看不出內容的一小格 */
-.scenario-run #scenarioSelect {
-  flex: 1 1 110px;
-  min-width: 110px;
+/* 執行鈕放在情境說明最下方：先讀完這個情境在驗證什麼，再決定執行。 */
+.scenario-brief #runBtn {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+}
+/* 尚未選擇情境時持續呼吸，指出這裡是操作起點。 */
+@keyframes scenario-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 0 1px #94b0ec40;
+    background-color: #fffffff5;
+  }
+  50% {
+    box-shadow: 0 0 0 4px #88a7e870;
+    background-color: #eef3ff;
+  }
+}
+.world-scenario.awaiting-pick {
+  animation: scenario-breathe 1.9s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .world-scenario.awaiting-pick {
+    animation: none;
+    box-shadow: 0 0 0 2px #91ace5;
+  }
 }
 .world-scenario .scenario-details {
   margin: 4px 0 0;
@@ -1556,7 +1575,7 @@ body {
 </style></head><body><div class="wrap">
 <header class="top"><div><div class="kicker">陞訊 · 面試 follow-up / concept prototype</div><h1>跨系統建築智慧整合</h1><p>以事件理解現場，以建築脈絡支持決策。</p></div><div class="top-actions"><a class="secondary prd-link" id="prdLink" target="_blank" rel="noopener" title="新分頁開啟完整專案 PRD">專案 PRD <span aria-hidden="true">↗</span></a><span class="badge badge-notice" id="storageNotice" hidden></span></div></header>
 <section class="building-workspace" aria-label="智慧社區場域與上下文工作介面">
-<div class="workspace-body" id="digitalTwinSection"><div class="world-readings" aria-label="本次情境觀測數值"><div class="world-reading"><span class="hud-label" id="hudLabel-0"></span><strong id="hudValue-0">—</strong><small id="hudSource-0"></small></div><div class="world-reading"><span class="hud-label" id="hudLabel-1"></span><strong id="hudValue-1">—</strong><small id="hudSource-1"></small></div><div class="world-reading"><span class="hud-label" id="hudLabel-2"></span><strong id="hudValue-2">—</strong><small id="hudSource-2"></small></div><div class="world-scenario"><span class="hud-label">情境選擇</span><div class="scenario-run"><select id="scenarioSelect" aria-label="選擇要執行的情境"><optgroup label="應建立 Incident"><option value="lake">情境 A · 湖區風險</option><option value="hvac">情境 B · 用電分析</option></optgroup><optgroup label="反例 · 應保持安靜"><option value="rainOnly">反例 C · 僅有強降雨</option><option value="legitHvac">反例 D · 合理的空調高負載</option></optgroup></select><button class="primary" id="runBtn">執行情境</button></div><details class="scenario-details"><summary>情境說明</summary><div class="scenario-brief" id="scenarioBrief"></div></details></div></div>
+<div class="workspace-body" id="digitalTwinSection"><div class="world-readings" aria-label="本次情境觀測數值"><div class="world-reading"><span class="hud-label" id="hudLabel-0"></span><strong id="hudValue-0">—</strong><small id="hudSource-0"></small></div><div class="world-reading"><span class="hud-label" id="hudLabel-1"></span><strong id="hudValue-1">—</strong><small id="hudSource-1"></small></div><div class="world-reading"><span class="hud-label" id="hudLabel-2"></span><strong id="hudValue-2">—</strong><small id="hudSource-2"></small></div><div class="world-scenario" id="scenarioCell"><span class="hud-label">情境選擇</span><select id="scenarioSelect" aria-label="選擇要執行的情境"><option value="">———</option><option value="lake">情境 A · 湖區風險</option><option value="hvac">情境 B · 用電分析</option><option value="rainOnly">反例 C · 僅有強降雨</option><option value="legitHvac">反例 D · 合理的空調高負載</option></select><details class="scenario-details"><summary>情境說明</summary><div class="scenario-brief" id="scenarioBrief"></div></details></div></div>
 <aside class="context-left" aria-label="選取設備脈絡"><div class="inspector-panel"><h3>設備脈絡 <span class="sidebar-title">Context Inspector</span></h3><div id="deviceDetail"></div></div><div class="observation-list"><h3>本次觀測事實 <span class="sidebar-title">Observations</span></h3><div id="decisionEvidence"></div></div></aside>
 <div class="twin-scene" id="twinScene"><div class="scene-top"><div id="contextLiveBanner" class="context-live-banner"></div></div><div class="scene-stage"><div class="scene-canvas" id="sceneCanvas"><svg viewBox="50 45 875 420" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-labelledby="sceneTitle sceneDesc">
 <title id="sceneTitle">智慧社區 2.5D 場域模型</title><desc id="sceneDesc">左側湖區包含氣象站、水位感測、灌溉與排水泵；右側 A 棟包含空調、人流感測及電表。點選設備查看設備脈絡。</desc>
@@ -1954,10 +1973,15 @@ body {
   };
 
   function renderScenarioBrief(key) {
-    const b = scenarioBriefs[key] || scenarioBriefs.lake;
     const el = $('#scenarioBrief');
     if (!el) return;
-    el.innerHTML = `<div class="title">${b.title}</div><div class="body">${b.body}</div><div class="goal">${b.goal}</div>`;
+    if (!key) {
+      el.innerHTML = '<div class="body">請先選擇一個情境。</div>';
+      return;
+    }
+    const b = scenarioBriefs[key];
+    // 執行鈕是說明的結尾，不是獨立控制項；未選情境時自然就不存在。
+    el.innerHTML = `<div class="title">${b.title}</div><div class="body">${b.body}</div><div class="goal">${b.goal}</div><button class="primary" type="button" id="runBtn">執行情境</button>`;
   }
 
   const initialState = () => ({
@@ -2038,9 +2062,12 @@ body {
 
   function setBusy(value) {
     busy = value;
-    $('#runBtn').disabled = value;
+    const runBtn = $('#runBtn');
+    if (runBtn) {
+      runBtn.disabled = value;
+      runBtn.textContent = value ? '處理中…' : '執行情境';
+    }
     $('#scenarioSelect').disabled = value;
-    $('#runBtn').textContent = value ? '處理中…' : '執行情境';
     ['#approveAction', '#rejectAction'].forEach((id) => {
       const btn = $(id);
       if (btn) btn.disabled = value;
@@ -2442,7 +2469,7 @@ body {
   }
 
   async function runScenario(key) {
-    if (busy) return;
+    if (busy || !key) return;
     const token = ++runToken;
     $('#demoLayout').hidden = false;
     setBusy(true);
@@ -2459,9 +2486,8 @@ body {
     };
     clearSteps();
     resetScenarioState();
-    // 執行後自動展開情境說明：跑完才看得懂「這個情境在驗證什麼」。
-    const details = document.querySelector('.scenario-details');
-    if (details) details.open = true;
+    // 執行後收合說明與執行鈕，把畫面讓給流程結果。
+    $('.scenario-details').open = false;
     try {
       const sc = scenarios[key];
       currentRun.raw = sc.payloads;
@@ -2894,9 +2920,15 @@ body {
     if (select.value !== key) select.value = key;
     select.title = scenarioHints[key] || '';
     renderScenarioBrief(key);
+    // 選了情境就展開說明（執行鈕在說明底部）；回到 --- 則收合並恢復提示呼吸。
+    $('.scenario-details').open = !!key;
+    $('#scenarioCell').classList.toggle('awaiting-pick', !key);
   }
   $('#scenarioSelect').addEventListener('change', (e) => selectScenario(e.target.value));
-  $('#runBtn').addEventListener('click', () => runScenario(selectedScenario));
+  // 執行鈕隨說明重新產生，用事件委派綁定才不會因為 innerHTML 置換而失效。
+  $('#scenarioBrief').addEventListener('click', (e) => {
+    if (e.target.id === 'runBtn') runScenario(selectedScenario);
+  });
 
   if (!storage.persistent) {
     const notice = $('#storageNotice');
@@ -2909,6 +2941,6 @@ body {
   renderCurrent();
   renderContext();
   renderStore();
-  selectScenario('lake');
+  selectScenario('');
 })();
 </script></body></html>

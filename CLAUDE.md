@@ -111,9 +111,29 @@ AI 建議與人工審核    [5 AI tools/query › 6 Analysis › 7 Human Review 
   現為 `.inspector-panel { flex: 1 1 auto; min-height: 90px }` 搭配
   `.observation-list { flex: 0 1 auto; max-height: 45% }`，兩塊各自捲動。
 
+### 情境選擇的互動流程
+
+```
+--- （預設）   說明收合、沒有執行鈕、情境選擇持續呼吸提示
+   ↓ 選擇情境
+展開說明        情境背景與展示目標，執行鈕在說明最下方
+   ↓ 執行
+收合            把畫面讓給流程結果
+```
+
+- 執行鈕是 `renderScenarioBrief()` 產生的，會隨 innerHTML 置換而重建，
+  因此以 `#scenarioBrief` 的事件委派綁定，不可直接 `addEventListener` 在按鈕上。
+  `setBusy()` 也必須判斷按鈕是否存在（`---` 狀態下它不存在）。
+- `runScenario()` 以 `!key` 擋掉未選情境的執行。
+
 ### 呼吸燈
 
-**只在「核准並實際執行操作後」出現一次**，標示真正改變的設備與新增的紀錄。
+有兩種，用途不同：
+
+- **提示用（持續）**：`.world-scenario.awaiting-pick`，CSS 的
+  `scenario-breathe` 無限循環，只在尚未選擇情境時出現，指出操作起點。
+- **狀態改變用（一次性）**：`state-pulse`，**只在「核准並實際執行操作後」出現一次**，
+  標示真正改變的設備與新增的紀錄。
 執行情境、點選場景設備、點選流程步驟都不觸發 — 動畫是用來指出狀態改變，
 不是用來回應每一次點擊。
 
@@ -178,7 +198,7 @@ localStorage key：`csbi-demo-v21`。所有讀寫都經過 `storage` 抽象層
 | `querySnapshot()` | 取出「AI 當時查詢到的狀態」，與目前狀態分開呈現 |
 | `resetScenarioState()` | 每次執行前把設備狀態還原為 buildingModel 初始值，並撤掉上一輪 Action Service 寫回的 Observation |
 | `storage` | localStorage 可用性探測與記憶體 fallback |
-| `selectScenario()` | 同步 `#scenarioSelect` 選取值、tooltip 提示與背景說明 |
+| `selectScenario()` | 同步選取值、tooltip、背景說明、說明展開狀態與提示呼吸 |
 | `pulseNodes()` / `stopPulse()` | 呼吸燈，全域單一組 |
 
 ### Event rules
