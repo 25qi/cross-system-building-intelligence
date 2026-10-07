@@ -75,26 +75,25 @@ python3 -m http.server 4178
 | 上方 HUD `.world-readings` | 三個觀測讀數 + 情境選擇 | 四格同一列；讀數是輸入值故壓小，情境選擇是操作點 |
 | 左 `.context-left` | 設備脈絡 Context Inspector ＋ 底部本次觀測事實 | 皆為設備視角：上方是選取設備的狀態／能力／關係，下方是本次各設備量到什麼 |
 | 中 `.twin-scene` | 2.5D 場景 | Building Context 的空間呈現 |
-| 右 `.context-right` | 事件證據（流程 1–4 ＋ Incident 判定）+ AI 建議與人工審核 | 流程與結果一體；判定與推論都在這一欄 |
+| 右 `.context-right` | **Incident Processing** 單一區塊 | 九個流程步驟、Incident 判定、AI 分析與人工審核全在一塊 |
 
-### 右欄：流程與結果是同一件事
+### 右欄：Incident Processing
 
-九個流程步驟不另外擺一條獨立流程列，而是依所屬階段拆進兩個區塊：
+右欄是**單一區塊**，標題 `Incident Processing`，由上而下就是整條處理流程：
 
 ```
-事件證據            [1 Telemetry › 2 Observation › 3 Event › 4 Incident]
-                    Incident 判定結果；未建立時於同位置說明原因
-                    （各設備的原始觀測值在左欄「本次觀測事實」）
-AI 建議與人工審核    [5 AI tools/query › 6 Analysis › 7 Human Review › 8 Action › 9 New Observation]
-                    分析摘要、可執行依據、核准／拒絕、執行結果、回饋 Observation
+Incident Processing
+[1 Telemetry › 2 Observation › 3 Event › 4 Incident]
+[5 AI tools/query › 6 Analysis › 7 Human Review › 8 Action › 9 New Observation]
+Incident 判定結果（未建立時說明原因）
+AI 分析摘要 → 可執行依據 → 拒絕／核准操作 → 執行結果 → 回饋 Observation
 ```
 
-前四步產生事件證據，後五步是 AI 分析與人工審核，因此步驟 7 Human Review 就長在
-核准按鈕所在的區塊上。步驟 7–9 沒有獨立資料卡，點擊它們不開資料面板，
-改為標示右欄對應區塊（見 `reviewStages`）；步驟 1–6 才開 `#flowDetails`。
+步驟 7–9 沒有獨立資料卡，點擊它們不開資料面板，改為標示對應區塊
+（見 `reviewStages`）；步驟 1–6 才開 `#flowDetails`。
 
-事件證據與 AI 建議用不同顏色的左側色條（`#8fa3ba` / `var(--accent)`），
-把「Observation 是 source of truth、AI 只新增 inference」畫進介面。
+原始觀測值在左欄「本次觀測事實」。事實與推論的區分現在是左欄與右欄之分，
+不再靠色條。
 
 ### 空間約束（改版容易踩到）
 

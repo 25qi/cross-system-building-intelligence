@@ -118,18 +118,9 @@ h3 {
   flex: none;
   padding: 6px 12px;
 }
-/* 右欄由上而下是一條因果鏈：選情境 → 事實 → 推論 → 決策。
-   事實與推論用不同顏色的左側色條標示，把「Observation 是 source of truth、
-   AI 只新增 inference」這個主張畫進介面，而不是只寫在頁尾註腳。
-   情境選擇是輸入而非產出，所以不帶色條。 */
-/* 流程的前四步就是「事件證據」的產生過程，後五步就是「AI 建議與人工審核」
-   的過程，因此流程圖直接長在這兩塊裡，而不是另外擺一條獨立的流程列。 */
-/* Incident 是跨系統關聯的判定結果，獨立放在左欄底部；
-   未建立 Incident 時改說明原因，讓「系統何時該保持安靜」也有固定位置。 */
 /* 觀測事實是「哪個設備量到什麼」，與左欄的設備脈絡同屬設備視角，
-   因此放在左欄底部；右欄留給規則判定與關聯結果。 */
+   因此放在左欄底部。上限避免它把設備脈絡擠掉；超過就自行捲動。 */
 .observation-list {
-  /* 上限避免觀測清單把設備脈絡擠掉；超過就自行捲動 */
   flex: 0 1 auto;
   max-height: 45%;
   min-height: 0;
@@ -157,9 +148,7 @@ h3 {
   font-size: 16px;
   margin: 0;
 }
-/* 流程維持原本的橫向鏈與 › 連接符號，只是依所屬區塊拆成 1–4 與 5–9：
-   前四步產生事件證據，後五步是 AI 分析與人工審核。兩個區塊上下相鄰，
-   讀起來仍是同一條流程，而不是九件各自獨立的事。
+/* 流程維持橫向鏈與 › 連接符號，依階段拆成 1–4 與 5–9 兩列；
    grid-auto-flow: column 讓同一組 CSS 同時處理 4 格與 5 格。 */
 .flow.flow-group {
   grid-template-columns: none;
@@ -180,10 +169,6 @@ h3 {
   top: 50%;
   transform: translateY(-50%);
   right: -7px;
-}
-.incident-context {
-  border-left: 3px solid #8fa3ba;
-  max-height: 34%;
 }
 .decision-panel {
   border-left: 3px solid var(--accent);
@@ -777,29 +762,6 @@ body {
 .context-chip {
   font-size: 10px;
 }
-.incident-context {
-  flex: 0 1 auto;
-  min-height: 0;
-  max-height: 30%;
-  padding: 12px 14px;
-  overflow: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  border-bottom: 1px solid var(--line);
-}
-.incident-context h3 {
-  font-size: 13px;
-  margin-bottom: 6px;
-}
-.incident-context .empty {
-  padding: 5px 0;
-}
-.incident-context .small {
-  font-size: 11px;
-}
-.incident-context .evidence {
-  font-size: 11px;
-}
 .decision-panel {
   flex: 1;
   min-height: 0;
@@ -1370,7 +1332,6 @@ body {
     display: none;
   }
   .inspector-panel,
-  .incident-context,
   .decision-panel {
     padding: 10px 11px;
   }
@@ -1437,9 +1398,6 @@ body {
   }
   .inspector-panel > h3 {
     margin-bottom: 8px;
-  }
-  .incident-context {
-    max-height: 28%;
   }
   .context-live-banner {
     padding: 2px 5px;
@@ -1521,7 +1479,6 @@ body {
     padding: 5px 9px;
   }
   .inspector-panel,
-  .incident-context,
   .decision-panel {
     padding: 8px;
   }
@@ -1572,9 +1529,6 @@ body {
   .scene-device .name {
     font-size: 10px;
   }
-  .context-right .incident-context {
-    max-height: 28%;
-  }
 }
 </style></head><body><div class="wrap">
 <header class="top"><div><div class="kicker">陞訊 · 面試 follow-up / concept prototype</div><h1>跨系統建築智慧整合</h1><p>以事件理解現場，以建築脈絡支持決策。</p></div><div class="top-actions"><a class="secondary prd-link" id="prdLink" target="_blank" rel="noopener" title="新分頁開啟完整專案 PRD">專案 PRD <span aria-hidden="true">↗</span></a><span class="badge badge-notice" id="storageNotice" hidden></span></div></header>
@@ -1608,8 +1562,8 @@ body {
 <text x="742" y="233" class="zone-text">TOWER A</text><text x="742" y="250" class="zone-sub">A 棟 · 三樓設備</text>
 <g transform="translate(109 330) scale(0.8)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(280 219) scale(0.8)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(379 276) scale(0.75)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(367 431) scale(1)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(577 490) scale(0.9)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(832 335) scale(0.85)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(778 400) scale(0.8)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(425 161) scale(0.65)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(492 493) scale(0.75)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><path class="query-route" data-route="W01" d="M187 263 313 380 492 411"/><path class="query-route" data-route="LS01" d="M264 385 313 380 492 411"/><path class="query-route" data-route="DP01" d="M154 415 208 373 313 380"/><path class="query-route" data-route="IRR01" d="M492 411 639 440"/><path class="query-route" data-route="AHU03" d="M602 150 650 220 639 440"/><path class="query-route" data-route="OCC03" d="M710 307 650 336 639 440"/><path class="query-route" data-route="EM01" d="M695 409 639 440"/><g class="scene-marker" data-device="W01"><circle class="pin-ring" cx="187" cy="258" r="12"/><circle class="pin" cx="187" cy="258" r="7"/></g><g class="scene-marker" data-device="LS01"><circle class="pin-ring" cx="264" cy="385" r="12"/><circle class="pin" cx="264" cy="385" r="7"/></g><g class="scene-marker" data-device="IRR01"><circle class="pin-ring" cx="492" cy="411" r="12"/><circle class="pin" cx="492" cy="411" r="7"/></g><g class="scene-marker" data-device="DP01"><circle class="pin-ring" cx="154" cy="415" r="12"/><circle class="pin" cx="154" cy="415" r="7"/></g><g class="scene-marker" data-device="AHU03"><circle class="pin-ring" cx="602" cy="150" r="12"/><circle class="pin" cx="602" cy="150" r="7"/></g><g class="scene-marker" data-device="OCC03"><circle class="pin-ring" cx="690" cy="307" r="12"/><circle class="pin" cx="690" cy="307" r="7"/></g><g class="scene-marker" data-device="EM01"><circle class="pin-ring" cx="695" cy="409" r="12"/><circle class="pin" cx="695" cy="409" r="7"/></g></g></svg><div class="device-labels"><button class="scene-device device-W01" type="button" data-device="W01" aria-label="W01 · 氣象站，查看設備脈絡"><span class="name"><span class="device-id">W01</span><span class="device-name"> · 氣象站</span></span><span class="reading" id="nodeReading-W01">待接收 Observation</span></button><button class="scene-device device-LS01" type="button" data-device="LS01" aria-label="LS01 · 水位感測，查看設備脈絡"><span class="name"><span class="device-id">LS01</span><span class="device-name"> · 水位感測</span></span><span class="reading" id="nodeReading-LS01">待接收 Observation</span></button><button class="scene-device device-DP01" type="button" data-device="DP01" aria-label="DP01 · 排水泵，查看設備脈絡"><span class="name"><span class="device-id">DP01</span><span class="device-name"> · 排水泵</span></span><span class="reading" id="nodeReading-DP01">待接收 Observation</span></button><button class="scene-device device-IRR01" type="button" data-device="IRR01" aria-label="IRR01 · 灌溉控制，查看設備脈絡"><span class="name"><span class="device-id">IRR01</span><span class="device-name"> · 灌溉控制</span></span><span class="reading" id="nodeReading-IRR01">待接收 Observation</span></button><button class="scene-device device-AHU03" type="button" data-device="AHU03" aria-label="AHU03 · 屋頂空調，查看設備脈絡"><span class="name"><span class="device-id">AHU03</span><span class="device-name"> · 屋頂空調</span></span><span class="reading" id="nodeReading-AHU03">待接收 Observation</span></button><button class="scene-device device-OCC03" type="button" data-device="OCC03" aria-label="OCC03 · 三樓人流，查看設備脈絡"><span class="name"><span class="device-id">OCC03</span><span class="device-name"> · 三樓人流</span></span><span class="reading" id="nodeReading-OCC03">待接收 Observation</span></button><button class="scene-device device-EM01" type="button" data-device="EM01" aria-label="EM01 · 總電表，查看設備脈絡"><span class="name"><span class="device-id">EM01</span><span class="device-name"> · 總電表</span></span><span class="reading" id="nodeReading-EM01">待接收 Observation</span></button></div></div></div></div>
 
-<aside class="context-right" aria-label="情境選擇、事件證據與 AI 建議"><div class="incident-context"><h3>事件證據 <span class="sidebar-title">Event / Incident</span></h3><nav class="flow flow-group" aria-label="事件處理流程 步驟 1 至 4"><div class="flow-node" data-flow="telemetry"><button class="step" type="button" data-step="telemetry" data-number="1">Telemetry</button></div><div class="flow-node" data-flow="observation"><button class="step" type="button" data-step="observation" data-number="2">Observation</button></div><div class="flow-node" data-flow="event"><button class="step" type="button" data-step="event" data-number="3">Event</button></div><div class="flow-node" data-flow="incident"><button class="step" type="button" data-step="incident" data-number="4">Incident</button></div></nav><div id="incidentSummary"></div></div>
-<div class="decision-panel" id="decisionSection"><h3>AI 建議與人工審核 <span class="sidebar-title">Inference / Review</span></h3><nav class="flow flow-group" aria-label="AI 分析與人工審核流程 步驟 5 至 9"><div class="flow-node" data-flow="tools"><button class="step" type="button" data-step="tools" data-number="5">AI tools/query</button></div><div class="flow-node" data-flow="analysis"><button class="step" type="button" data-step="analysis" data-number="6">Analysis</button></div><div class="flow-node" data-flow="review"><button class="step" type="button" data-step="review" data-number="7">Human Review</button></div><div class="flow-node" data-flow="action"><button class="step" type="button" data-step="action" data-number="8">Action</button></div><div class="flow-node" data-flow="loop"><button class="step" type="button" data-step="loop" data-number="9">New Observation</button></div></nav><div id="decisionRecommendation"></div><div id="actionBox"></div><div id="executionBox"></div><div id="feedbackBox"></div></div></aside></div>
+<aside class="context-right" aria-label="事件處理流程與人工審核">
+<div class="decision-panel" id="decisionSection"><h3>Incident Processing</h3><nav class="flow flow-group" aria-label="事件處理流程 步驟 1 至 4"><div class="flow-node" data-flow="telemetry"><button class="step" type="button" data-step="telemetry" data-number="1">Telemetry</button></div><div class="flow-node" data-flow="observation"><button class="step" type="button" data-step="observation" data-number="2">Observation</button></div><div class="flow-node" data-flow="event"><button class="step" type="button" data-step="event" data-number="3">Event</button></div><div class="flow-node" data-flow="incident"><button class="step" type="button" data-step="incident" data-number="4">Incident</button></div></nav><nav class="flow flow-group" aria-label="AI 分析與人工審核流程 步驟 5 至 9"><div class="flow-node" data-flow="tools"><button class="step" type="button" data-step="tools" data-number="5">AI tools/query</button></div><div class="flow-node" data-flow="analysis"><button class="step" type="button" data-step="analysis" data-number="6">Analysis</button></div><div class="flow-node" data-flow="review"><button class="step" type="button" data-step="review" data-number="7">Human Review</button></div><div class="flow-node" data-flow="action"><button class="step" type="button" data-step="action" data-number="8">Action</button></div><div class="flow-node" data-flow="loop"><button class="step" type="button" data-step="loop" data-number="9">New Observation</button></div></nav><div id="incidentSummary"></div><div id="decisionRecommendation"></div><div id="actionBox"></div><div id="executionBox"></div><div id="feedbackBox"></div></div></aside></div>
 <div class="workspace-toolbar" id="demoLayout"><div class="toolbar-status"><div class="flow-status" id="flowStatus" role="status" aria-live="polite">選擇情境後執行；處理結果一次顯示。</div><details class="flow-details" id="flowDetails"><summary>查看流程資料 / tool results</summary><main class="demo-main"><div class="flow-panel-head"><strong>流程資料與查詢結果</strong><button type="button" class="secondary" id="closeFlowDetails" aria-label="關閉流程資料面板">關閉 ×</button></div><div class="flow-panel-content"><section class="pane active" id="overview"><div class="run-placeholder" id="runPlaceholder">點選上方流程節點查看該階段的資料。</div><div class="grid">
         <div class="card" data-stage="telemetry">
           <div class="kicker">原始資料接收</div>
