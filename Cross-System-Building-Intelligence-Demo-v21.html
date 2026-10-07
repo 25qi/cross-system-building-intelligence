@@ -2338,9 +2338,12 @@ body {
     if (busy || action.status !== 'PROPOSED') return;
     action.status = 'REJECTED';
     action.rejected_at = new Date().toISOString();
+    // Action 階段仍然有結論，只是結論是「不執行」。把它寫進紀錄並走到步驟 8，
+    // 否則流程看起來像停在審核中，也看不出「拒絕」是一個被保存的處置結果。
+    action.execution_status = 'NOT_EXECUTED_REJECTED';
     save();
     renderCurrent();
-    setStep('review', '操作已拒絕；流程結束，設備狀態維持原樣。');
+    setStep('action', '操作已拒絕；Action 未執行，設備狀態維持原樣。');
   }
 
   async function runScenario(key) {
@@ -2487,7 +2490,7 @@ body {
         html += `<div class="actionbuttons"><button class="danger" id="rejectAction">拒絕</button><button class="primary" id="approveAction">核准操作</button></div>`;
       html += '</div>';
       if (a.status === 'REJECTED')
-        html += `<div class="success" style="border-color:#f1c3be;background:#fff7f6"><b>管理者已拒絕此操作。</b><p class="small">未執行設備指令。</p></div>`;
+        html += `<div class="success" style="border-color:#f1c3be;background:#fff7f6"><b>管理者已拒絕此操作。</b></div>`;
       $('#actionBox').innerHTML = html;
       $('#approveAction')?.addEventListener('click', () => approveAction(a));
       if ($('#approveAction')) $('#approveAction').disabled = busy;
@@ -2502,9 +2505,11 @@ body {
     $('#executionBox').innerHTML =
       action?.status === 'EXECUTED'
         ? '<div class="success"><b>操作執行成功</b><p>IRR01: RUNNING → STOPPED</p></div>'
-        : action?.status === 'APPROVED'
-          ? '<p>檢查建議已核准，待管理者安排設備檢查。</p>'
-          : '';
+        : action?.status === 'REJECTED'
+          ? `<div class="evidence"><b>Action 未執行</b><p class="small">execution_status = NOT_EXECUTED_REJECTED；未送出任何控制指令，設備狀態維持原樣。</p><p class="small">處置結果已寫入 ${esc(action.id)}，可於稽核鏈與保存紀錄查看。</p></div>`
+          : action?.status === 'APPROVED'
+            ? '<p>檢查建議已核准，待管理者安排設備檢查。</p>'
+            : '';
     const feedback = currentRun.obs.find((o) => o.id === 'OBS-036');
     $('#feedbackBox').innerHTML = feedback
       ? '<div class="success"><b>新增 Observation：OBS-036</b><p>IRR01.status = STOPPED</p><p class="small">已新增至 Observation 資料儲存區，並回到相同的資料處理流程。</p></div>'
