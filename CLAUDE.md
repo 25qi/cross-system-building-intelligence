@@ -270,21 +270,27 @@ localStorage key：`csbi-demo-v21`。所有讀寫都經過 `storage` 抽象層
 ### Incident 關聯條件
 
 `correlate()` 以 `correlationRules` 驅動，**三個條件都要成立**才建立 Incident
-（PRD Step 4 的 Temporal / Spatial / Semantic 三種關聯）：
+（PRD Step 4 的 Temporal / Spatial / Semantic）：
 
 | 條件 | 怎麼判 |
 |---|---|
-| 語意 | `requires` 列的 Event 類型是否全部出現 |
-| 時間 | `collects` 到的 Event，`started_at` 最大最小差是否在 `CORRELATION_WINDOW_MIN`（15 分鐘）內 |
-| 空間 | 這些 Event 的 `zone_id` 是否同區，或有上下層關係（`zonesRelated()` 走 `buildingModel.zones` 的 parent 鏈） |
+| 語意 | **從 `buildingModel.relationships` 推導**：哪些 Event 的來源設備指向規則關注的對象（`rule.feature`），其中 `severity === 'warning'` 的要有 `MIN_RISK_EVENTS`（2）個 |
+| 時間 | 這些 Event 的 `started_at` 跨距是否在 `CORRELATION_WINDOW_MIN`（15 分鐘）內 |
+| 空間 | `zone_id` 是否同區或有上下層關係（`zonesRelated()` 走 zones 的 parent 鏈） |
 
 `CORR-02` 另有第四層「脈絡」：高負載若能被室外溫度與人流合理解釋就不報。
 
-三個條件分開評估而非混在一起，是為了能回答「為什麼不成立」。
-都不成立時，`lastCorrelation` 取**最接近成立**的那條規則（先比已出現的必要
-Event 類型數，再比已通過的條件數），否則會報到不相干的規則上。
+**規則不列舉 Event 類型。** 它只宣告「關注哪個對象」與「這個對象出事時叫什麼」；
+哪些 Event 算相關是查關係圖得到的（`eventPointsAt()` → `deviceTargets()`）。
+新增設備時只要在 `relationships` 補上指向該對象的邊，關聯自動成立，
+不需要改 `correlate()`。
 
-步驟 4 的資料卡逐條顯示 ✓／✗，與步驟 3 顯示 `RULE-xx` 的作法對應。
+因此 **`relationships` 是關聯判定的輸入，不只是 AI 查詢用的參考資料**。
+每個設備都要有指向其「關注對象」的邊，漏掉就不會被納入關聯
+（`IRR01 operates OUTDOOR` 與 `DP01 drains OUTDOOR` 原本漏寫，PRD 第 7 節有）。
+
+都不成立時 `lastCorrelation` 取**最接近成立**的那條規則（先比風險 Event 數，
+再比通過的條件數），否則會報到不相干的規則上。步驟 4 的資料卡逐條顯示 ✓／✗。
 
 
 ## 四個情境的預期結果

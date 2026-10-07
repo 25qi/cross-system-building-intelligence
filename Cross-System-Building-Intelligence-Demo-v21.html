@@ -1686,10 +1686,14 @@ body {
         state: 'ONLINE',
       },
     ],
+    // 關聯判定靠這張圖推導語意，因此每個設備都要有指向「關注對象」的邊。
+    // IRR01 operates / DP01 drains 是 PRD 第 7 節有、但先前程式碼漏掉的。
     relationships: [
       ['W01', 'influences', 'IRR01'],
       ['W01', 'affects', 'OUTDOOR'],
       ['LS01', 'monitors', 'OUTDOOR'],
+      ['IRR01', 'operates', 'OUTDOOR'],
+      ['DP01', 'drains', 'OUTDOOR'],
       ['DP01', 'controls', 'lake_water_level'],
       ['AHU03', 'serves', 'TOWER-A-L3'],
       ['EM01', 'measures', 'TOWER-A'],
@@ -2126,29 +2130,25 @@ body {
     return out;
   }
 
-  // 關聯規則：三個條件都要成立才建立 Incident。
-  // 語意＝哪些 Event 類型組合起來才有意義；時間＝是否落在同一個觀察窗內；
-  // 空間＝設備是否在同一區或有上下層關係。三者分開評估，才能說明「為什麼不成立」。
+  // 關聯規則：三個條件都要成立才建立 Incident（PRD Step 4 的 Temporal /
+  // Spatial / Semantic）。語意不再列舉 Event 類型，而是從 buildingModel
+  // 的關係圖推導：來源設備是否共同指向同一個關注對象。規則只宣告「這個對象
+  // 出事時叫什麼名字」與領域特有的排除條件。
   const CORRELATION_WINDOW_MIN = 15;
+  const MIN_RISK_EVENTS = 2;
   const correlationRules = [
     {
       id: 'CORR-01',
+      feature: 'OUTDOOR',
       incident_type: 'WEATHER_RELATED_LAKE_RISK',
       title: '降雨相關湖區風險',
-      zone_id: 'OUTDOOR',
-      requires: ['HEAVY_RAINFALL', 'HIGH_WATER_LEVEL'],
-      collects: ['HEAVY_RAINFALL', 'HIGH_WATER_LEVEL', 'IRRIGATION_ACTIVE'],
-      semantic_text: '同時出現 HEAVY_RAINFALL 與 HIGH_WATER_LEVEL',
     },
     {
       id: 'CORR-02',
+      feature: 'TOWER-A',
       incident_type: 'HVAC_ENERGY_EFFICIENCY_RISK',
       title: '空調與用電效率風險',
-      zone_id: 'TOWER-A-L3',
-      requires: ['HVAC_HIGH_CONSUMPTION', 'BUILDING_ENERGY_HIGH'],
-      collects: ['HVAC_HIGH_CONSUMPTION', 'BUILDING_ENERGY_HIGH'],
-      semantic_text: '同時出現 HVAC_HIGH_CONSUMPTION 與 BUILDING_ENERGY_HIGH',
-      // 第二層：高負載若能被外在條件合理解釋，就不該報
+      // 高負載若能被外在條件合理解釋就不該報
       context_text: '室外溫度 ≤ 30°C 且人流 = LOW',
       context_test: (obsBatch) => {
         const temp = latest(obsBatch, 'weather', 'temperature');
@@ -2157,6 +2157,8 @@ body {
       },
     },
   ];
+
+  const isZone = (id) => buildingModel.zones.some((z) => z.id === id);
 
   // 兩個 zone 是否相關：同一區，或其中一個是另一個的上層（A 棟三樓 ⊂ A 棟）。
   function zonesRelated(a, b) {
@@ -2173,27 +2175,50 @@ body {
     return chain(a).includes(b) || chain(b).includes(a);
   }
 
+  // 這個設備在關係圖上指向哪些對象
+  const deviceTargets = (deviceId) =>
+    buildingModel.relationships.filter((r) => r[0] === deviceId).map((r) => r[2]);
+
+  // 這個 Event 的來源設備，是否指向規則關注的對象
+  function eventPointsAt(event, feature) {
+    return deviceTargets(event.device_id).some(
+      (t) => t === feature || (isZone(t) && isZone(feature) && zonesRelated(t, feature)),
+    );
+  }
+
   function evaluateCorrelation(rule, obsBatch, eventBatch) {
-    const types = new Set(eventBatch.map((e) => e.event_type));
-    const semantic = rule.requires.every((t) => types.has(t));
-    const matched = eventBatch.filter((e) => rule.collects.includes(e.event_type));
-    const times = matched.map((e) => new Date(e.started_at).getTime());
+    // 語意：由關係圖推導 — 哪些 Event 的來源設備共同指向 rule.feature
+    const linked = eventBatch.filter((e) => eventPointsAt(e, rule.feature));
+    const risks = linked.filter((e) => e.severity === 'warning');
+    const semantic = risks.length >= MIN_RISK_EVENTS;
+    const semantic_text = semantic
+      ? `${[...new Set(risks.map((e) => e.device_id))].join('、')} 的 Event 經關係圖共同指向 ${rule.feature}`
+      : `指向 ${rule.feature} 的風險 Event 只有 ${risks.length} 個，需要 ${MIN_RISK_EVENTS} 個`;
+    const times = linked.map((e) => new Date(e.started_at).getTime());
     const spanSec = times.length ? Math.round((Math.max(...times) - Math.min(...times)) / 1000) : 0;
     const temporal = semantic && spanSec <= CORRELATION_WINDOW_MIN * 60;
-    const zones = [...new Set(matched.map((e) => e.zone_id))];
+    const zones = [...new Set(linked.map((e) => e.zone_id))];
     const spatial = semantic && zones.every((z) => zonesRelated(z, zones[0]));
     const context = rule.context_test ? rule.context_test(obsBatch) : true;
-    return { rule, semantic, temporal, spatial, context, matched, spanSec, zones };
+    return {
+      rule,
+      semantic,
+      semantic_text,
+      temporal,
+      spatial,
+      context,
+      matched: linked,
+      risks,
+      spanSec,
+      zones,
+    };
   }
 
   function correlate(obsBatch, eventBatch) {
     const evaluations = correlationRules.map((rule) => evaluateCorrelation(rule, obsBatch, eventBatch));
     // 都不成立時要指出「卡在哪」，所以報最接近成立的那條規則，而不是最後評估的那條。
-    // 進度 = 已出現的必要 Event 類型數，相同時再比已通過的條件數。
-    const types = new Set(eventBatch.map((e) => e.event_type));
     const progress = (ev) =>
-      ev.rule.requires.filter((t) => types.has(t)).length * 10 +
-      [ev.semantic, ev.temporal, ev.spatial, ev.context].filter(Boolean).length;
+      ev.risks.length * 10 + [ev.semantic, ev.temporal, ev.spatial, ev.context].filter(Boolean).length;
     lastCorrelation = evaluations.reduce((a, b) => (progress(b) > progress(a) ? b : a));
     for (const ev of evaluations) {
       if (!(ev.semantic && ev.temporal && ev.spatial && ev.context)) continue;
@@ -2204,13 +2229,14 @@ body {
         incident_type: rule.incident_type,
         title: rule.title,
         severity: 'MEDIUM',
-        zone_id: rule.zone_id,
+        zone_id: ev.zones[0] || rule.feature,
         status: 'OPEN',
         created_at: new Date().toISOString(),
         event_ids: ev.matched.map((e) => e.id),
         rule_id: rule.id,
-        rule_semantic: rule.semantic_text,
+        rule_semantic: ev.semantic_text,
         rule_context: rule.context_text || null,
+        feature_of_interest: rule.feature,
         window_min: CORRELATION_WINDOW_MIN,
         span_sec: ev.spanSec,
         zones: ev.zones,
@@ -2606,7 +2632,7 @@ body {
         `<div class="incident none"><b>未建立 Incident。</b>` +
         (ev
           ? `<div class="obs-row"><span>規則</span><div>${esc(ev.rule.id)}</div></div>` +
-            corrRow('語意', ev.semantic, ev.rule.semantic_text) +
+            corrRow('語意', ev.semantic, ev.semantic_text) +
             (ev.semantic
               ? corrRow('時間', ev.temporal, `間隔 ${ev.spanSec} 秒 / 窗 ${CORRELATION_WINDOW_MIN} 分鐘`)
               : '') +
