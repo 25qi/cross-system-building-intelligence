@@ -182,6 +182,28 @@ AI 分析摘要 → 可執行依據 → 拒絕／核准操作 → 執行結果 �
 - `#flowStatus` 仍存在但以 sr-only 隱藏 — 它是這個流程唯一的 `aria-live` 區域，
   刪掉會讓螢幕閱讀器收不到任何進度通知。
 
+## Telemetry 是刻意異質的
+
+步驟 1 的 payload **各子系統格式都不同**，這是這個 demo 的核心命題（跨系統整合）
+唯一能被證明的地方。曾經所有 payload 都是同一個結構，`normalize()` 實際上沒有在
+統一任何東西，PRD 卻宣稱「將不同格式資料轉成統一 schema」—— 宣稱與實作對不上。
+
+目前七種來源各有自己的欄位名稱、時間表示法與數值包法：
+
+| `source` | 識別欄位 | 時間 | 數值 |
+|---|---|---|---|
+| `WEATHER_STATION` | `msg_id` | epoch 毫秒 | 指標名稱內含單位（`rainfall_mm_per_h`） |
+| `LAKE_SENSOR` | `seq` | UTC ISO | 巢狀 `reading{quantity,value,uom}` |
+| `IRRIGATION_CTRL` | `event_ref` | 本地字串 `2026/10/07 15:19:10` | `state` 字串 |
+| `BACNET` | `notificationId` | ISO +08:00 | `presentValue` 索引 + `stateText` 字典 |
+| `BMS_POINTS` | `batchId` | 本地字串 | `points[]` 陣列 |
+| `METER` | `readingId` | UTC ISO | 欄位名即單位（`kW`） |
+| `OCCUPANCY_NODE` | `uplinkId` | epoch 秒 | `occupancy` 列舉 |
+
+新增情境或子系統時，**必須同時在 `telemetryAdapters` 加對應的 adapter**，
+否則 `normalize()` 會丟「未知的 telemetry 來源」。不要為了方便而讓新子系統
+沿用既有格式 —— 那會把這個 demo 唯一在證明的事情再次抹平。
+
 ## 核心架構
 
 9 階段 pipeline，對應畫面下方流程列與 `flowSteps` 陣列：
@@ -203,7 +225,8 @@ Telemetry → Observation → Event → Incident → AI tools/query
 | 名稱 | 說明 |
 |---|---|
 | `buildingModel` | Structured Digital Twin：`zones` / `devices` / `relationships`。device 帶 `capabilities` 與預設 `state` |
-| `scenarios` | 4 組情境的原始 telemetry payload：`lake` / `hvac` / `rainOnly` / `legitHvac` |
+| `scenarios` | 4 組情境的原生 telemetry payload：`lake` / `hvac` / `rainOnly` / `legitHvac`。**每個子系統用自己的格式**，不可預先統一 |
+| `telemetryAdapters` | 每個 telemetry 來源一個 adapter，把原生欄位對映為統一的 Observation 欄位 |
 | `scenarioBriefs` | 各情境的背景敘述與展示目標文案 |
 | `state` | 持久化狀態：`observations` / `events` / `incidents` / `analyses` / `actions` / `deviceStates`，存於 localStorage |
 | `currentRun` | 本次執行的暫態：`raw` / `obs` / `events` / `incident` / `tools` / `analysis` / `action` / `scenario` |
@@ -215,7 +238,7 @@ localStorage key：`csbi-demo-v21`。所有讀寫都經過 `storage` 抽象層
 
 | 函式 | 職責 |
 |---|---|
-| `normalize()` / `ingest()` | telemetry → 統一 Observation schema，以 `source_event_id` 去重 |
+| `normalize()` / `ingest()` | 以 adapter 對映原生 telemetry → 統一 Observation；`system` 與 `zone_id` 從 `buildingModel` 設備登錄查出而非由 telemetry 提供；以 adapter 取出的 `source_event_id` 去重 |
 | `detectEvents()` | deterministic rule 判定，產生 Event（RULE-W01/L01/I01/H01/E01） |
 | `correlate()` | 跨系統關聯，決定是否建立 Incident |
 | `tools` | AI 可呼叫的 Building Context 查詢工具（6 支） |

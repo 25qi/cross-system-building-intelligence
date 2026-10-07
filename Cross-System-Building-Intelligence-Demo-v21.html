@@ -139,6 +139,23 @@ h3 {
   margin: 6px 0 0;
 }
 /* 觀測事實與 Event 都用「標籤 ｜ 值」兩欄，讓每一行自己說明自己是什麼。 */
+.raw-payload {
+  border-bottom: 1px solid #eef1f5;
+  padding: 6px 0;
+}
+.raw-payload b {
+  font-size: 10px;
+  color: #6b7c99;
+}
+.raw-payload pre {
+  margin: 3px 0 0;
+  font:
+    10px/1.45 Consolas,
+    monospace;
+  color: #5b6b82;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
 .obs-value {
   display: block;
   font-size: 13px;
@@ -1467,7 +1484,7 @@ body {
 <header class="top"><div><div class="kicker">陞訊 · 面試 follow-up / concept prototype</div><h1>跨系統建築智慧整合</h1><p>以事件理解現場，以建築脈絡支持決策。</p></div><div class="top-actions"><a class="secondary prd-link" id="prdLink" target="_blank" rel="noopener" title="新分頁開啟完整專案 PRD">專案 PRD <span aria-hidden="true">↗</span></a><span class="badge badge-notice" id="storageNotice" hidden></span></div></header>
 <section class="building-workspace" aria-label="智慧社區場域與上下文工作介面">
 <div class="workspace-body" id="digitalTwinSection"><div class="world-readings" aria-label="本次情境觀測數值"><div class="world-reading"><span class="hud-label" id="hudLabel-0"></span><strong id="hudValue-0">—</strong><small id="hudSource-0"></small></div><div class="world-reading"><span class="hud-label" id="hudLabel-1"></span><strong id="hudValue-1">—</strong><small id="hudSource-1"></small></div><div class="world-reading"><span class="hud-label" id="hudLabel-2"></span><strong id="hudValue-2">—</strong><small id="hudSource-2"></small></div><div class="world-scenario" id="scenarioCell"><span class="hud-label">情境選擇</span><select id="scenarioSelect" aria-label="選擇要執行的情境"><option value="">———</option><option value="lake">情境 A · 湖區風險</option><option value="hvac">情境 B · 用電分析</option><option value="rainOnly">反例 C · 僅有強降雨</option><option value="legitHvac">反例 D · 合理的空調高負載</option></select><details class="scenario-details"><summary>情境說明</summary><div class="scenario-brief" id="scenarioBrief"></div></details></div></div>
-<aside class="context-left" aria-label="選取設備脈絡"><div class="inspector-panel"><h3>設備脈絡 <span class="sidebar-title">Context Inspector</span></h3><div id="deviceDetail"></div></div><div class="observation-list"><h3>本次觀測事實 <span class="sidebar-title">Observations</span></h3><div id="decisionEvidence"></div></div></aside>
+<aside class="context-left" aria-label="選取設備脈絡"><div class="inspector-panel"><h3>設備脈絡 <span class="sidebar-title">Context Inspector</span></h3><div id="deviceDetail"></div></div><div class="observation-list"><h3>本次 Observation <span class="sidebar-title">正規化後的事實</span></h3><div id="decisionEvidence"></div></div></aside>
 <div class="twin-scene" id="twinScene"><div class="scene-top"><div id="contextLiveBanner" class="context-live-banner"></div></div><div class="scene-stage"><div class="scene-canvas" id="sceneCanvas"><svg viewBox="50 45 875 420" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-labelledby="sceneTitle sceneDesc">
 <title id="sceneTitle">智慧社區 2.5D 場域模型</title><desc id="sceneDesc">左側湖區包含氣象站、水位感測、灌溉與排水泵；右側 A 棟包含空調、人流感測及電表。點選設備查看設備脈絡。</desc>
 <defs><linearGradient id="water" x2="1" y2="1"><stop stop-color="#bddfee"/><stop offset="1" stop-color="#7eb9d4"/></linearGradient><linearGradient id="front" x2="0" y2="1"><stop stop-color="#f3f7fc"/><stop offset="1" stop-color="#b9d0e3"/></linearGradient><linearGradient id="side" x2="1" y2="0"><stop stop-color="#a3b8d0"/><stop offset="1" stop-color="#ccd9e7"/></linearGradient><filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#afc3d4" flood-opacity=".23"/></filter></defs><g transform="scale(1 .8)">
@@ -1498,17 +1515,17 @@ body {
 <aside class="context-right" aria-label="事件處理流程與人工審核">
 <div class="decision-panel" id="decisionSection"><h3>Incident Processing</h3><nav class="flow flow-group" aria-label="事件處理流程 步驟 1 至 4"><div class="flow-node" data-flow="telemetry"><button class="step" type="button" data-step="telemetry" data-number="1">Telemetry</button></div><div class="flow-node" data-flow="observation"><button class="step" type="button" data-step="observation" data-number="2">Observation</button></div><div class="flow-node" data-flow="event"><button class="step" type="button" data-step="event" data-number="3">Event</button></div><div class="flow-node" data-flow="incident"><button class="step" type="button" data-step="incident" data-number="4">Incident</button></div></nav><nav class="flow flow-group" aria-label="AI 分析與人工審核流程 步驟 5 至 9"><div class="flow-node" data-flow="tools"><button class="step" type="button" data-step="tools" data-number="5">AI tools/query</button></div><div class="flow-node" data-flow="analysis"><button class="step" type="button" data-step="analysis" data-number="6">Analysis</button></div><div class="flow-node" data-flow="review"><button class="step" type="button" data-step="review" data-number="7">Human Review</button></div><div class="flow-node" data-flow="action"><button class="step" type="button" data-step="action" data-number="8">Action</button></div><div class="flow-node" data-flow="loop"><button class="step" type="button" data-step="loop" data-number="9">New Observation</button></div></nav><div class="stage-data" id="overview"><div class="grid">
         <div class="card" data-stage="telemetry">
-          <div class="kicker">原始資料接收</div>
-          <h2>1. 子系統原始資料</h2>
+          <div class="kicker">各系統格式不同</div>
+          <h2>1. 子系統原生 Telemetry</h2>
           <div id="rawTelemetry"><div class="empty">請執行情境以接收遙測資料。</div></div>
-          <div class="block-note"><b>作用與資料流：</b>接收各建築子系統的原始遙測資料，保留來源格式，供後續正規化處理。</div>
+          <div class="block-note"><b>作用與資料流：</b>各子系統用自己的格式送資料 — 欄位名稱、時間表示法（epoch 毫秒／秒、UTC、本地字串）與數值包法都不同。原樣保留，交給下一步轉換。</div>
         </div>
 
         <div class="card" data-stage="observation">
-          <div class="kicker">資料正規化</div>
-          <h2>2. 統一 Observation 紀錄</h2>
+          <div class="kicker">原生格式 → 統一 schema</div>
+          <h2>2. 正規化為 Observation</h2>
           <div id="observations"><div class="empty">尚無 Observation 紀錄。</div></div>
-          <div class="block-note"><b>作用與資料流：</b>將不同來源資料轉為統一的 Observation 格式，保存為規則判定、關聯與 AI 查詢的事實依據；AI 不覆寫原始紀錄。</div>
+          <div class="block-note"><b>作用與資料流：</b>每個子系統一個 adapter，把原生欄位對映為統一的 Observation；system 與 zone 不由 telemetry 提供，而是從 Building Context 的設備登錄查出。原始 payload 保留在 raw_payload，AI 不覆寫。</div>
         </div>
 
         <div class="card" data-stage="event">
@@ -1683,49 +1700,44 @@ body {
     ],
   };
 
+  // 每個子系統送出自己的原生格式：欄位名稱、時間表示法與數值包法都不同。
+  // 這正是步驟 1→2 要處理的問題，因此刻意不預先統一。
   const scenarios = {
     lake: {
       name: '情境 A · 強降雨、湖面水位與灌溉',
       payloads: [
+        // 氣象站：epoch 毫秒，指標名稱內含單位
         {
-          source_event_id: 'SRC-W-001',
-          device_id: 'W01',
-          zone_id: 'OUTDOOR',
-          system: 'weather',
-          metric: 'rainfall',
-          value: 38.2,
-          unit: 'mm/h',
-          observed_at: '2026-10-07T15:18:00+08:00',
+          source: 'WEATHER_STATION',
+          msg_id: 'SRC-W-001',
+          station: 'W01',
+          observed_epoch_ms: 1791357480000,
+          rainfall_mm_per_h: 38.2,
         },
+        // 湖面感測器：UTC 時間，數值包在巢狀物件，單位用 uom
         {
-          source_event_id: 'SRC-L-001',
-          device_id: 'LS01',
-          zone_id: 'OUTDOOR',
-          system: 'lake',
-          metric: 'water_level',
-          value: 82,
-          unit: 'cm',
-          observed_at: '2026-10-07T15:19:00+08:00',
+          source: 'LAKE_SENSOR',
+          seq: 'SRC-L-001',
+          sensorId: 'LS01',
+          measuredAt: '2026-10-07T07:19:00Z',
+          reading: { quantity: 'water_level', value: 82, uom: 'cm' },
         },
+        // 灌溉控制器：本地時間字串，狀態沒有單位
         {
-          source_event_id: 'SRC-I-001',
-          device_id: 'IRR01',
-          zone_id: 'OUTDOOR',
-          system: 'irrigation',
-          metric: 'status',
-          value: 'RUNNING',
-          unit: null,
-          observed_at: '2026-10-07T15:19:10+08:00',
+          source: 'IRRIGATION_CTRL',
+          event_ref: 'SRC-I-001',
+          controller_id: 'IRR01',
+          state: 'RUNNING',
+          local_time: '2026/10/07 15:19:10',
         },
+        // 排水泵（BACnet 風格）：數值 present-value 搭配狀態字典
         {
-          source_event_id: 'SRC-D-001',
-          device_id: 'DP01',
-          zone_id: 'OUTDOOR',
-          system: 'drainage',
-          metric: 'status',
-          value: 'STANDBY',
-          unit: null,
-          observed_at: '2026-10-07T15:19:15+08:00',
+          source: 'BACNET',
+          notificationId: 'SRC-D-001',
+          objectName: 'DP01',
+          presentValue: 0,
+          stateText: ['STANDBY', 'RUNNING'],
+          timestamp: '2026-10-07T15:19:15+08:00',
         },
       ],
     },
@@ -1733,69 +1745,48 @@ body {
       name: '情境 B · 空調、用電與人流',
       payloads: [
         {
-          source_event_id: 'SRC-W-002',
-          device_id: 'W01',
-          zone_id: 'OUTDOOR',
-          system: 'weather',
-          metric: 'temperature',
-          value: 27,
-          unit: '°C',
-          observed_at: '2026-10-07T14:00:00+08:00',
+          source: 'WEATHER_STATION',
+          msg_id: 'SRC-W-002',
+          station: 'W01',
+          observed_epoch_ms: 1791352800000,
+          air_temp_c: 27,
         },
+        // 人流節點：epoch 秒
         {
-          source_event_id: 'SRC-O-001',
-          device_id: 'OCC03',
-          zone_id: 'TOWER-A-L3',
-          system: 'occupancy',
-          metric: 'level',
-          value: 'LOW',
-          unit: null,
-          observed_at: '2026-10-07T14:00:03+08:00',
+          source: 'OCCUPANCY_NODE',
+          uplinkId: 'SRC-O-001',
+          node: 'OCC03',
+          occupancy: 'LOW',
+          epoch: 1791352803,
         },
+        // BMS：一次送一組 points 陣列
         {
-          source_event_id: 'SRC-H-001',
-          device_id: 'AHU03',
-          zone_id: 'TOWER-A-L3',
-          system: 'hvac',
-          metric: 'power',
-          value: 92,
-          unit: 'kW',
-          observed_at: '2026-10-07T14:00:05+08:00',
+          source: 'BMS_POINTS',
+          batchId: 'SRC-H-001',
+          equip: 'AHU03',
+          tsLocal: '2026-10-07 14:00:05',
+          points: [{ name: 'power', val: 92, unit: 'kW' }],
         },
-        {
-          source_event_id: 'SRC-E-001',
-          device_id: 'EM01',
-          zone_id: 'TOWER-A',
-          system: 'energy',
-          metric: 'power',
-          value: 186,
-          unit: 'kW',
-          observed_at: '2026-10-07T14:00:08+08:00',
-        },
+        // 電表：欄位名稱就是單位
+        { source: 'METER', readingId: 'SRC-E-001', meter: 'EM01', kW: 186, readAt: '2026-10-07T06:00:08Z' },
       ],
     },
     rainOnly: {
       name: '反例 C · 僅有強降雨',
       payloads: [
         {
-          source_event_id: 'SRC-W-003',
-          device_id: 'W01',
-          zone_id: 'OUTDOOR',
-          system: 'weather',
-          metric: 'rainfall',
-          value: 38.2,
-          unit: 'mm/h',
-          observed_at: '2026-10-07T16:00:00+08:00',
+          source: 'WEATHER_STATION',
+          msg_id: 'SRC-W-003',
+          station: 'W01',
+          observed_epoch_ms: 1791360000000,
+          rainfall_mm_per_h: 38.2,
         },
         {
-          source_event_id: 'SRC-L-003',
-          device_id: 'LS01',
-          zone_id: 'OUTDOOR',
-          system: 'lake',
-          metric: 'water_level',
-          value: 58,
-          unit: 'cm',
-          observed_at: '2026-10-07T16:00:15+08:00',
+          source: 'LAKE_SENSOR',
+          seq: 'SRC-L-003',
+          sensorId: 'LS01',
+          measuredAt: '2026-10-07T08:00:15Z',
+          reading: { quantity: 'water_level', value: 58, uom: 'cm' },
         },
       ],
     },
@@ -1803,45 +1794,27 @@ body {
       name: '反例 D · 合理的空調高負載',
       payloads: [
         {
-          source_event_id: 'SRC-W-004',
-          device_id: 'W01',
-          zone_id: 'OUTDOOR',
-          system: 'weather',
-          metric: 'temperature',
-          value: 35,
-          unit: '°C',
-          observed_at: '2026-10-07T13:00:00+08:00',
+          source: 'WEATHER_STATION',
+          msg_id: 'SRC-W-004',
+          station: 'W01',
+          observed_epoch_ms: 1791349200000,
+          air_temp_c: 35,
         },
         {
-          source_event_id: 'SRC-O-004',
-          device_id: 'OCC03',
-          zone_id: 'TOWER-A-L3',
-          system: 'occupancy',
-          metric: 'level',
-          value: 'HIGH',
-          unit: null,
-          observed_at: '2026-10-07T13:00:02+08:00',
+          source: 'OCCUPANCY_NODE',
+          uplinkId: 'SRC-O-004',
+          node: 'OCC03',
+          occupancy: 'HIGH',
+          epoch: 1791349202,
         },
         {
-          source_event_id: 'SRC-H-004',
-          device_id: 'AHU03',
-          zone_id: 'TOWER-A-L3',
-          system: 'hvac',
-          metric: 'power',
-          value: 94,
-          unit: 'kW',
-          observed_at: '2026-10-07T13:00:04+08:00',
+          source: 'BMS_POINTS',
+          batchId: 'SRC-H-004',
+          equip: 'AHU03',
+          tsLocal: '2026-10-07 13:00:04',
+          points: [{ name: 'power', val: 94, unit: 'kW' }],
         },
-        {
-          source_event_id: 'SRC-E-004',
-          device_id: 'EM01',
-          zone_id: 'TOWER-A',
-          system: 'energy',
-          metric: 'power',
-          value: 189,
-          unit: 'kW',
-          observed_at: '2026-10-07T13:00:06+08:00',
-        },
+        { source: 'METER', readingId: 'SRC-E-004', meter: 'EM01', kW: 189, readAt: '2026-10-07T05:00:06Z' },
       ],
     },
   };
@@ -2011,26 +1984,103 @@ body {
     /* v12 is a single-page block layout */
   }
 
+  // 每個子系統一個 adapter，把原生 payload 的欄位名稱、時間格式與數值包法
+  // 轉成統一的中間結果。這是步驟 2 真正在做的事。
+  const telemetryAdapters = {
+    WEATHER_STATION: (p) => {
+      const rain = 'rainfall_mm_per_h' in p;
+      return {
+        source_event_id: p.msg_id,
+        device_id: p.station,
+        metric: rain ? 'rainfall' : 'temperature',
+        value: rain ? p.rainfall_mm_per_h : p.air_temp_c,
+        unit: rain ? 'mm/h' : '°C',
+        observed_at: new Date(p.observed_epoch_ms).toISOString(),
+      };
+    },
+    LAKE_SENSOR: (p) => ({
+      source_event_id: p.seq,
+      device_id: p.sensorId,
+      metric: p.reading.quantity,
+      value: p.reading.value,
+      unit: p.reading.uom,
+      observed_at: new Date(p.measuredAt).toISOString(),
+    }),
+    IRRIGATION_CTRL: (p) => ({
+      source_event_id: p.event_ref,
+      device_id: p.controller_id,
+      metric: 'status',
+      value: p.state,
+      unit: null,
+      // 本地時間字串沒有時區，依場域時區（+08:00）解讀
+      observed_at: new Date(p.local_time.replace(/\//g, '-').replace(' ', 'T') + '+08:00').toISOString(),
+    }),
+    BACNET: (p) => ({
+      source_event_id: p.notificationId,
+      device_id: p.objectName,
+      metric: 'status',
+      // present-value 是索引，要用 stateText 字典翻回狀態名稱
+      value: p.stateText[p.presentValue],
+      unit: null,
+      observed_at: new Date(p.timestamp).toISOString(),
+    }),
+    BMS_POINTS: (p) => {
+      const point = p.points[0];
+      return {
+        source_event_id: p.batchId,
+        device_id: p.equip,
+        metric: point.name,
+        value: point.val,
+        unit: point.unit,
+        observed_at: new Date(p.tsLocal.replace(' ', 'T') + '+08:00').toISOString(),
+      };
+    },
+    METER: (p) => ({
+      source_event_id: p.readingId,
+      device_id: p.meter,
+      metric: 'power',
+      value: p.kW,
+      unit: 'kW',
+      observed_at: new Date(p.readAt).toISOString(),
+    }),
+    OCCUPANCY_NODE: (p) => ({
+      source_event_id: p.uplinkId,
+      device_id: p.node,
+      metric: 'level',
+      value: p.occupancy,
+      unit: null,
+      observed_at: new Date(p.epoch * 1000).toISOString(),
+    }),
+  };
+
   function normalize(payload) {
+    const adapter = telemetryAdapters[payload.source];
+    if (!adapter) throw new Error('未知的 telemetry 來源：' + payload.source);
+    const f = adapter(payload);
+    // system 與 zone 不是 telemetry 給的，而是從 Building Context 的設備登錄查出來。
+    // 子系統只知道自己送了什麼，不知道這台設備屬於哪一區。
+    const device = buildingModel.devices.find((d) => d.id === f.device_id);
     return {
       id: uid('OBS'),
-      source_event_id: payload.source_event_id,
-      device_id: payload.device_id,
-      system: payload.system,
-      zone_id: payload.zone_id,
-      metric: payload.metric,
-      value_numeric: typeof payload.value === 'number' ? payload.value : null,
-      value_text: typeof payload.value === 'number' ? null : String(payload.value),
-      unit: payload.unit || null,
-      observed_at: payload.observed_at,
+      source_event_id: f.source_event_id,
+      device_id: f.device_id,
+      system: device?.system || 'unknown',
+      zone_id: device?.zone || 'unknown',
+      metric: f.metric,
+      value_numeric: typeof f.value === 'number' ? f.value : null,
+      value_text: typeof f.value === 'number' ? null : String(f.value),
+      unit: f.unit || null,
+      observed_at: f.observed_at,
       received_at: new Date().toISOString(),
       raw_payload: payload,
     };
   }
 
   function ingest(payload) {
-    if (state.observations.some((o) => o.source_event_id === payload.source_event_id))
-      return state.observations.find((o) => o.source_event_id === payload.source_event_id);
+    // 原生 payload 的識別欄位各不相同，先經 adapter 取出才能比對
+    const sourceId = telemetryAdapters[payload.source]?.(payload).source_event_id;
+    if (state.observations.some((o) => o.source_event_id === sourceId))
+      return state.observations.find((o) => o.source_event_id === sourceId);
     const obs = normalize(payload);
     state.observations.push(obs);
     return obs;
@@ -2460,7 +2510,7 @@ body {
       ? currentRun.raw
           .map(
             (p) =>
-              `<div class="metric"><b>${esc(p.device_id)} · ${esc(p.metric)}</b><span>${esc(p.value)} ${esc(p.unit || '')}</span></div>`,
+              `<div class="raw-payload"><b>${esc(p.source)}</b><pre>${esc(JSON.stringify(p, null, 1))}</pre></div>`,
           )
           .join('')
       : '<div class="empty">請執行情境以接收遙測資料。</div>';
