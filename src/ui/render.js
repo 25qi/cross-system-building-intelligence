@@ -188,11 +188,22 @@ function renderAudit() {
 }
 
 function renderStore() {
-  if (!$('#obsStore') || !$('#derivedStore') || !$('#actionStore')) return;
+  if (!$('#obsStore') || !$('#eventStore') || !$('#derivedStore') || !$('#actionStore')) return;
   const obs = state.observations.slice(-12).reverse();
   $('#obsStore').innerHTML = obs.length
     ? `<table class="table"><thead><tr><th>ID</th><th>設備代碼／資料項目</th><th>數值</th></tr></thead><tbody>${obs.map((o) => `<tr><td>${esc(o.id)}</td><td>${esc(o.device_id)}.${esc(o.metric)}</td><td>${esc(o.value_numeric ?? o.value_text)} ${esc(o.unit || '')}</td></tr>`).join('')}</tbody></table>`
     : '<div class="empty">尚無已保存的 Observation。</div>';
+  // Event 是六層保存紀錄之一（設計說明 §12），稽核時要能回答
+  // 「這筆事實經哪一條規則、判成什麼」，因此獨立成一欄。
+  const evs = state.events.slice(-8).reverse();
+  $('#eventStore').innerHTML = evs.length
+    ? evs
+        .map(
+          (e) =>
+            `<div class="evidence"><b>${esc(e.id)}</b> · ${esc(e.event_type)}<div class="small">${esc(e.rule_id)}：${esc(e.rule_text || '')}<br>來源 ${esc(e.source_observation_id)}</div></div>`,
+        )
+        .join('')
+    : '<div class="empty">尚無規則判定 Event。</div>';
   const incs = state.incidents.slice(-5).reverse(),
     ans = state.analyses.slice(-5).reverse();
   $('#derivedStore').innerHTML =

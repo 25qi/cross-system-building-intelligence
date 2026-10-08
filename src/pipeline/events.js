@@ -20,6 +20,15 @@ function detectEvents(obsBatch) {
     if (o.system === 'energy' && o.metric === 'power' && o.value_numeric > 170)
       e = { type: 'BUILDING_ENERGY_HIGH', severity: 'warning', rule: 'RULE-E01', text: 'power > 170 kW' };
     if (e) {
+      // deterministic rule 的同樣輸入必須得到同樣輸出：同一筆 Observation 經同一條規則
+      // 只會有一個 Event，重跑情境不應再生出一筆內容相同、ID 不同的判定。
+      const existing = state.events.find(
+        (x) => x.source_observation_id === o.id && x.rule_id === e.rule,
+      );
+      if (existing) {
+        out.push(existing);
+        continue;
+      }
       const event = {
         id: uid('EVT'),
         event_type: e.type,

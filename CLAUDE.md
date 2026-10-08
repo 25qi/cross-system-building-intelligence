@@ -303,6 +303,44 @@ localStorage key：`csbi-demo-v21`。所有讀寫都經過 `storage` 抽象層
 再比通過的條件數），否則會報到不相干的規則上。步驟 4 的資料卡逐條顯示 ✓／✗。
 
 
+### 稽核鏈與保存紀錄
+
+設計說明第 12 節宣告保存六層：Observation / Event / Incident / Analysis / Action /
+Feedback。畫面下方「已保存紀錄」要四欄到齊才對得上
+（Feedback 是 OBS-036，本來就顯示在 Observation 欄）：
+
+| 欄位 | 容器 | 對應的層 |
+|---|---|---|
+| Observation · 原始事實 | `#obsStore` | Observation + Feedback |
+| Event · 規則判定 | `#eventStore` | Event |
+| （Incident 與分析紀錄） | `#derivedStore` | Incident + Analysis |
+| 操作審核與執行 | `#actionStore` | Action |
+
+Event 欄曾經缺席：稽核鏈列出 `EVT-…`，畫面卻沒有任何地方查得到那筆 Event 的內容，
+鏈是斷的。新增紀錄層時 `renderRecords()` 開頭的容器守衛也要一起加，
+少接一個容器會整段靜默 return。
+
+### 重跑同一情境不得增生紀錄
+
+deterministic 的意思是同樣輸入得到同樣輸出。Observation 一直依 `source_event_id`
+去重，Event 與 Incident 原本沒有，於是重跑情境 A 三次會得到 4 筆 Observation 配
+9 筆 Event、3 筆 Incident —— 內容完全一樣只有 ID 不同，稽核鏈指向一堆同義紀錄。
+
+現在三層都去重，判定鍵各不相同：
+
+| 層 | 去重鍵 |
+|---|---|
+| Observation | `source_event_id`（adapter 從原生 payload 取出的來源事件 ID） |
+| Event | `source_observation_id` + `rule_id` |
+| Incident | `incident_type` + 完全相同的 `event_ids` 集合 |
+
+Analysis 與 Action **刻意不去重**：同一個 Incident 可以被分析多次，也可以先被拒絕
+再被核准，每一次都是獨立的決策紀錄，壓掉就看不出處置歷程。
+
+`uid()` 原本是 `prefix + 毫秒尾碼 + 三位亂數`，同一毫秒內連續產生多筆時實測碰撞過
+（兩筆 Observation 共用同一個 ID）。現改為「本次載入的隨機鹽 + 遞增序號」：
+序號保證同一次載入內唯一，鹽讓不同次載入的紀錄不互撞。
+
 ## 四個情境的預期結果
 
 | 情境 | 輸入 | 預期行為 |
@@ -318,7 +356,8 @@ localStorage key：`csbi-demo-v21`。所有讀寫都經過 `storage` 抽象層
 
 - 繁體中文 UI 文案；程式碼識別字、Event/Incident type、capability 一律英文大寫底線。
 - 所有插入 DOM 的動態值都要經 `esc()` 轉義。
-- ID 以 `uid(prefix)` 產生：`OBS-` / `EVT-` / `INC-` / `ANA-` / `ACT-`。
+- ID 以 `uid(prefix)` 產生：`OBS-` / `EVT-` / `INC-` / `ANA-` / `ACT-`，格式為
+  `前綴-本次載入的鹽-遞增序號`，不可改回帶時間戳的隨機尾碼（會碰撞）。
   例外：回饋 Observation 固定為 `OBS-036`（對應設計說明中的範例編號）。
 - 無測試框架。驗證方式為手動跑完四個情境（含核准與拒絕兩條分支）。
 - 修改後請同步確認 `design.html` 的敘述是否仍一致，兩者會互相對照。
