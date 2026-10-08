@@ -73,6 +73,16 @@ function correlate(obsBatch, eventBatch) {
     if (!(ev.semantic && ev.temporal && ev.spatial && ev.context)) continue;
     lastCorrelation = ev;
     const rule = ev.rule;
+    // 同一型別、指向同一批 Event 的關聯結果就是同一個 Incident；
+    // 否則重跑會讓同一個狀況存在多筆 INC，稽核時無從分辨哪一筆才算數。
+    const eventIds = ev.matched.map((e) => e.id);
+    const existing = state.incidents.find(
+      (i) =>
+        i.incident_type === rule.incident_type &&
+        i.event_ids.length === eventIds.length &&
+        i.event_ids.every((id) => eventIds.includes(id)),
+    );
+    if (existing) return existing;
     const inc = {
       id: uid('INC'),
       incident_type: rule.incident_type,
