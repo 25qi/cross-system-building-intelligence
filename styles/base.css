@@ -1,0 +1,591 @@
+
+:root {
+  --bg: #f5f7fa;
+  --panel: #fff;
+  --ink: #202b3d;
+  --muted: #778397;
+  --line: #e1e7ef;
+  --accent: #365de2;
+  --soft: #eff3ff;
+  --ok: #177245;
+  --warn: #9a6700;
+  --bad: #b42318;
+  --code: #192335;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font:
+    14px/1.55 "Segoe UI",
+    "Microsoft JhengHei",
+    sans-serif;
+}
+button {
+  font: inherit;
+  cursor: pointer;
+}
+button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+button:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #7294ff;
+  outline-offset: 3px;
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+h1 {
+  font-size: 25px;
+  letter-spacing: -0.7px;
+}
+h2 {
+  font-size: 18px;
+}
+h3 {
+  font-size: 13px;
+}
+.wrap {
+  max-width: 1760px;
+  margin: auto;
+  padding: 24px 28px 35px;
+}
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.kicker {
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  color: var(--muted);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.top p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.badge,
+.section-tag {
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.badge-notice {
+  border-color: #e3cfa2;
+  background: #fdf7ea;
+  color: var(--warn);
+  cursor: help;
+}
+.badge-notice[hidden] {
+  display: none;
+}
+.dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2a987d;
+  margin-right: 7px;
+}
+.muted,
+.small {
+  color: var(--muted);
+}
+.small {
+  font-size: 11px;
+}
+/* 情境選擇放在右欄最上方，讓「選情境 → 執行 → 事件證據 → AI 建議」
+   在同一欄由上而下讀完，直接表達證據與建議是執行情境後才產生的。 */
+.world-scenario .primary {
+  flex: none;
+  padding: 6px 12px;
+}
+/* 觀測事實是「哪個設備量到什麼」，與左欄的設備脈絡同屬設備視角，
+   因此放在左欄底部。上限避免它把設備脈絡擠掉；超過就自行捲動。 */
+.observation-list {
+  flex: 0 1 auto;
+  max-height: 45%;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  border-top: 1px solid var(--line);
+  padding: 10px 14px;
+  font-size: 11px;
+}
+.observation-list h3 {
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+/* 觀測事實與 Event 都用「標籤 ｜ 值」兩欄，讓每一行自己說明自己是什麼。 */
+.raw-payload {
+  border-bottom: 1px solid #eef1f5;
+  padding: 6px 0;
+}
+.raw-payload b {
+  font-size: 10px;
+  color: #6b7c99;
+}
+.raw-payload pre {
+  margin: 3px 0 0;
+  font:
+    10px/1.45 Consolas,
+    monospace;
+  color: #5b6b82;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.obs-value {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+.obs-row {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 8px;
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.obs-row > span {
+  color: #a3b0c2;
+}
+.obs-row > div {
+  color: #5b6b82;
+  overflow-wrap: anywhere;
+}
+.obs-row .rule {
+  color: #8494a9;
+}
+.device-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+.device-head h3 {
+  font-size: 16px;
+  margin: 0;
+}
+/* 流程維持橫向鏈與 › 連接符號，依階段拆成 1–4 與 5–9 兩列；
+   grid-auto-flow: column 讓同一組 CSS 同時處理 4 格與 5 格。 */
+.flow.flow-group {
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 7px;
+  margin: 2px 0 10px;
+}
+.flow.flow-group .step {
+  width: 100%;
+  white-space: normal;
+  font-size: 9.5px;
+  line-height: 1.25;
+  padding: 5px 4px;
+  min-height: 30px;
+}
+.flow.flow-group .flow-node:not(:last-child):after {
+  top: 50%;
+  transform: translateY(-50%);
+  right: -7px;
+}
+/* 階段資料接在流程節點正下方，點同一個節點可收合。 */
+.stage-data {
+  margin-bottom: 10px;
+}
+.stage-data:empty {
+  margin: 0;
+}
+.decision-panel {
+  border-left: 3px solid var(--accent);
+}
+.decision-panel.awaiting-review #actionBox {
+  position: sticky;
+  bottom: -12px;
+  background: #fff;
+  padding: 6px 0 12px;
+  box-shadow: 0 -8px 12px -6px #ffffff;
+}
+#scenarioSelect {
+  width: 100%;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ink);
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 9px;
+}
+#scenarioSelect:focus-visible {
+  outline: 3px solid #7294ff;
+  outline-offset: 2px;
+}
+.scenario-hint {
+  margin: 6px 0 0;
+  font-size: 10px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.primary,
+.secondary,
+.danger {
+  border-radius: 8px;
+  padding: 9px 15px;
+  font-weight: 650;
+  font-size: 12px;
+}
+.primary {
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+}
+.secondary {
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.danger {
+  background: #fff;
+  border: 1px solid var(--line);
+  color: #8f4848;
+}
+.scenario-details {
+  margin: 10px 0 0;
+  font-size: 11px;
+}
+.scenario-details summary {
+  color: var(--muted);
+  cursor: pointer;
+}
+.scenario-brief {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 9px 11px;
+  margin-top: 7px;
+  max-height: 34vh;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.scenario-brief .title {
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+.scenario-brief .body {
+  color: #516074;
+}
+.scenario-brief .goal {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 7px;
+}
+.processing {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 18px;
+}
+.processing-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 9px;
+}
+.processing-head h2 {
+  font-size: 13px;
+}
+.processing-head span {
+  font-size: 10px;
+  color: var(--muted);
+}
+.flow {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: 7px;
+}
+.flow-node {
+  display: block;
+  position: relative;
+  min-width: 0;
+}
+.flow-node:not(:last-child):after {
+  content: "›";
+  position: absolute;
+  right: -6px;
+  top: 7px;
+  color: #acb8cb;
+  z-index: 1;
+}
+.step {
+  width: 100%;
+  border: 1px solid #e6eaf1;
+  background: #f8fafc;
+  color: #8a96a8;
+  border-radius: 7px;
+  font-size: 10px;
+  padding: 8px 3px;
+  white-space: nowrap;
+}
+.step:before {
+  content: attr(data-number);
+  font-weight: 700;
+  margin-right: 4px;
+}
+.step.done {
+  color: #44618e;
+  background: #f0f4fb;
+}
+.step.active,
+.step.selected {
+  background: #edf2ff;
+  border-color: #9aafec;
+  color: #3458ce;
+}
+.step.done:before {
+  content: "✓";
+}
+.flow-connector {
+  display: none;
+}
+/* 視覺上移除：流程節點本身已標示目前階段。保留元素是因為它是這個流程唯一的
+   aria-live 區域，刪掉會讓螢幕閱讀器完全收不到進度通知。 */
+.flow-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.card {
+  border-top: 1px solid var(--line);
+  padding: 10px 0;
+  background: #fff;
+}
+.card h2 {
+  font-size: 14px;
+  margin: 3px 0 7px;
+}
+#overview .card {
+  display: none;
+}
+#overview .card.revealed {
+  display: block;
+}
+.block-note {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.metric {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid #eef1f5;
+  padding: 5px 0;
+  font-size: 11px;
+}
+.metric span {
+  color: var(--muted);
+}
+.event,
+.incident,
+.evidence {
+  background: #f5f7fb;
+  border-radius: 7px;
+  padding: 8px 10px;
+  font-size: 12px;
+  margin: 6px 0;
+}
+.incident {
+  border-left: 3px solid var(--accent);
+}
+.incident.none {
+  border-color: #b8c3d2;
+}
+.event .sub {
+  font-size: 10px;
+  color: var(--muted);
+}
+.tool {
+  padding: 7px 0;
+  border-bottom: 1px solid #edf1f5;
+  font:
+    11px/1.6 Consolas,
+    monospace;
+  overflow-wrap: anywhere;
+}
+.empty {
+  padding: 18px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.pill {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: #eef3ff;
+  color: #3458bf;
+}
+.pill.ok {
+  color: #177245;
+  background: #edf8f1;
+}
+.pill.bad,
+.pill.warn {
+  background: #eef3ff;
+  color: #3458bf;
+}
+.pane {
+  display: block;
+}
+.decision-shell {
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #fff;
+  padding: 17px;
+}
+.decision-formula {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 13px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  color: #72839b;
+}
+.decision-source b {
+  color: #526887;
+  font-size: 11px;
+}
+.decision-source span {
+  margin-left: 8px;
+  font-size: 10px;
+}
+.decision-arrow {
+  color: #8c9db6;
+}
+.decision-grid {
+  display: grid;
+  grid-template-columns: 1fr 0.95fr 1.25fr;
+  gap: 0;
+}
+.decision-card {
+  padding: 0 17px;
+  border-right: 1px solid var(--line);
+  min-width: 0;
+}
+.decision-card:first-child {
+  padding-left: 0;
+}
+.decision-card:last-child {
+  padding-right: 0;
+  border: 0;
+}
+.decision-card h3 {
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+.action {
+  background: #f3f6ff;
+  border: 1px solid #dbe4ff;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 8px;
+  font-size: 12px;
+}
+.actionbuttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.success {
+  background: #f0f8f4;
+  border: 1px solid #d0e8db;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 11px;
+  margin-top: 8px;
+}
+.audit-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  font-size: 10px;
+  color: #7d8aa0;
+  margin-top: 17px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+}
+.audit-item {
+  border: 1px solid #e3e9f2;
+  background: #fafcff;
+  border-radius: 5px;
+  padding: 4px 6px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.audit-arrow {
+  align-self: center;
+}
+.records {
+  margin-top: 12px;
+  font-size: 11px;
+  color: #6d7f97;
+}
+.records summary {
+  cursor: pointer;
+}
+.records-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 12px;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+.table th,
+.table td {
+  text-align: left;
+  padding: 6px;
+  border-bottom: 1px solid #e7ecf3;
+}
+.foot {
+  font-size: 10px;
+  color: #8995a6;
+  display: flex;
+  justify-content: space-between;
+}
+.zone-count {
+  font-size: 10px;
+  color: #99a5b5;
+  margin-top: 15px;
+}

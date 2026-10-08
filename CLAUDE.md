@@ -13,53 +13,61 @@ concept prototype，示範智慧建築／智慧社區中「多個獨立子系統
 
 ## 檔案結構
 
-本專案目前是**單一自包含 HTML 檔**，無建置流程、無相依套件、無後端。
+拆分為 ES modules，**無建置流程、無相依套件、無後端**，可直接由靜態主機提供。
 
 ```
-Cross-System-Building-Intelligence-Demo-v21.html   # 全部內容（HTML + CSS + JS + 內嵌 PRD）
-.claude/launch.json                                 # preview_start 用的本機靜態伺服器設定
+index.html   prd.html   styles/{base,dashboard,responsive}.css
+src/app.js  dom.js  building-model.js  scenarios.js  state.js
+src/pipeline/{adapters,normalize,events,correlate,agent,actions}.js
+src/ui/{pulse,scene,flow,render,scenario-picker}.js
 ```
 
-檔案內部分區（行號為 v21 當下）：
+**依賴是單向的。** `app.js` 是唯一同時認識 pipeline 與 UI 的模組；
+其餘跨層互動一律以回呼註冊，避免循環 import：
 
-| 範圍 | 內容 |
-|---|---|
-| 2–39 | `<style>`：全部 CSS |
-| 40–129 | `<body>`：版面、2.5D SVG 場景、流程列、各面板容器 |
-| 134 | `prdPageHtml` — **完整專案 PRD v02**，以 JS escaped string 內嵌 |
-| 135–701 | 應用程式邏輯（單一 IIFE） |
+| 回呼 | 註冊者 | 用途 |
+|---|---|---|
+| `onSaved()` | state.js | `save()` 後重畫，state 不需 import UI |
+| `setReviewHandlers()` | ui/render.js | 核准／拒絕的處理函式由 app.js 注入 |
+| `setOnExecuted()` | pipeline/actions.js | 執行完成後觸發重畫 |
+| `setOnCleared()` | ui/scenario-picker.js | 選回 `---` 時呼叫 `resetRun()` |
+| `setRenderDecision()` / `setRenderCurrent()` | ui/flow.js | `setStep()` 需要重畫但不應依賴 render |
 
-### 內嵌 PRD
+跨模組的可變狀態用 getter／setter 匯出（`currentRun` / `setCurrentRun`、
+`getRunToken` / `bumpRunToken`、`isBusy`、`getLastCorrelation`、
+`selectedTwinDevice` / `setSelectedTwinDevice`），不要直接匯出會被重新賦值的 `let`。
 
-PRD 不是獨立檔案，而是 line 134 的 `prdPageHtml` 字串。執行時以
-`URL.createObjectURL(new Blob([...]))` 產生 blob URL 掛到右上角「專案 PRD ↗」。
+### PRD 已是獨立檔案
 
-要閱讀／修改 PRD 內容時，請直接處理該字串（prettier 會把它轉成單引號，
-解析時用 `eval('(' + literal + ')')` 比 `JSON.parse` 穩）。改完務必重新解出渲染確認。
+`prd.html` 是完整的獨立文件，用一般 `<a href="prd.html">` 連結。
+**不要再把它變回 JS 字串。** 先前以 `prdPageHtml` escaped string 內嵌，
+改一個字都要處理跳脫，是這個專案最大的維護痛點。
 
-PRD 頁面自己有一套響應式版面：桌面版（無 media query）的
-`.doc-layout` 是 `180px minmax(0,1fr)`，側邊目錄 180px；
+PRD 頁面自己有一套響應式版面：桌面版（無 media query）的 `.doc-layout` 是
+`180px minmax(0,1fr)`；側邊目錄是可收合的 `<details class="toc-fold" open>`，
+收起時 `:has()` 會把側欄改為 `auto` 讓內文變寬。
 ≤800px 與 ≤450px 另有堆疊版本，改寬度時注意不要動錯那一條。
-PRD 共 16 章：Executive Summary、Background & Problem、Product Goal、Target User、
-Product Concept、Core Flow、Building Context、Scenario A、Scenario B、
-Negative Scenarios、AI Role & Guardrails、Persistence & Auditability、MVP Scope、
-MVP Success Criteria、Risks & Assumptions、Closing Note。
+PRD 共 16 章，第 15 節含 Building Metadata Quality 風險。
+
+### 修改 CSS 時的陷阱
+
+三個 CSS 檔是按**順序串接**的（base → dashboard → responsive），
+切分點必須落在規則之間。曾經切在 `:root { }` 中間 —— 三檔接回來 byte-identical，
+但各自都是無效 CSS，整個儀表板版面會崩掉。改動後逐檔確認大括號平衡。
 
 ## 執行方式
 
-**直接雙擊開啟（`file://`）即可，這是寄給面試官的主要使用方式。**
+**必須透過 HTTP 提供服務。** 拆成 ES modules 後，`file://` 會被 CORS 擋住模組載入，
+雙擊開啟不再可行（這是「不維持一頁式」的必然代價）。
 
-瀏覽器在 `file://` 與 `data:` URL 下會停用 `localStorage`。程式啟動時會探測可用性，
-偵測不到就降級為記憶體保存：四個情境與完整流程照常執行，只是重新整理後不保留先前紀錄，
-並在右上角顯示「記憶體模式 · 關閉頁面後不保留紀錄」提示。
-
-若要測試完整的 localStorage 持久化行為，需透過 http:// 提供服務：
+`storage` 的記憶體 fallback 仍然保留 —— localStorage 在隱私模式或封鎖站台資料時
+同樣會丟 SecurityError，此時降級為記憶體保存並在右上角顯示提示。
 
 ```bash
 python3 -m http.server 4178
 ```
 
-然後開啟 `http://localhost:4178/Cross-System-Building-Intelligence-Demo-v21.html`。
+然後開啟 <http://localhost:4178/>。線上版：https://25qi.github.io/cross-system-building-intelligence/
 （`.claude/launch.json` 已設定好同一組指令，可用 preview_start 的 `demo` 設定啟動。）
 
 版面是 `height:100dvh; overflow:hidden` 的固定視窗儀表板，為桌面寬版設計。

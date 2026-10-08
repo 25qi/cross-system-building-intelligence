@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>跨系統建築智慧整合</title>
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/dashboard.css">
+<link rel="stylesheet" href="styles/responsive.css">
+</head>
+<body><div class="wrap">
+<header class="top"><div class="top-title"><div class="kicker">Concept Prototype · 智慧建築跨系統整合</div><h1>跨系統建築智慧整合</h1><a class="secondary prd-link" href="prd.html" target="_blank" rel="noopener" title="新分頁開啟完整專案 PRD">專案 PRD <span aria-hidden="true">↗</span></a><p>以事件理解現場，以建築脈絡支持決策。</p></div><div class="top-actions"><span class="badge badge-notice" id="storageNotice" hidden></span></div></header>
+<section class="building-workspace" aria-label="智慧社區場域與上下文工作介面">
+<div class="workspace-body" id="digitalTwinSection"><div class="world-readings" aria-label="本次情境觀測數值"><div class="world-reading"><span class="hud-label" id="hudLabel-0"></span><strong id="hudValue-0">—</strong><small id="hudSource-0"></small></div><div class="world-reading"><span class="hud-label" id="hudLabel-1"></span><strong id="hudValue-1">—</strong><small id="hudSource-1"></small></div><div class="world-reading"><span class="hud-label" id="hudLabel-2"></span><strong id="hudValue-2">—</strong><small id="hudSource-2"></small></div><div class="world-scenario" id="scenarioCell"><span class="hud-label">情境選擇</span><select id="scenarioSelect" aria-label="選擇要執行的情境"><option value="">———</option><option value="lake">情境 A · 湖區風險</option><option value="hvac">情境 B · 用電分析</option><option value="rainOnly">反例 C · 僅有強降雨</option><option value="legitHvac">反例 D · 合理的空調高負載</option></select><details class="scenario-details"><summary>情境說明</summary><div class="scenario-brief" id="scenarioBrief"></div></details></div></div>
+<aside class="context-left" aria-label="選取設備脈絡"><div class="inspector-panel"><h3>設備脈絡 <span class="sidebar-title">Context Inspector</span></h3><div id="deviceDetail"></div></div><div class="observation-list"><h3>本次 Observation <span class="sidebar-title">正規化後的事實</span></h3><div id="decisionEvidence"></div></div></aside>
+<div class="twin-scene" id="twinScene"><div class="scene-top"><div id="contextLiveBanner" class="context-live-banner"></div></div><div class="scene-stage"><div class="scene-canvas" id="sceneCanvas"><svg viewBox="50 45 875 420" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-labelledby="sceneTitle sceneDesc">
+<title id="sceneTitle">智慧社區 2.5D 場域模型</title><desc id="sceneDesc">左側湖區包含氣象站、水位感測、灌溉與排水泵；右側 A 棟包含空調、人流感測及電表。點選設備查看設備脈絡。</desc>
+<defs><linearGradient id="water" x2="1" y2="1"><stop stop-color="#bddfee"/><stop offset="1" stop-color="#7eb9d4"/></linearGradient><linearGradient id="front" x2="0" y2="1"><stop stop-color="#f3f7fc"/><stop offset="1" stop-color="#b9d0e3"/></linearGradient><linearGradient id="side" x2="1" y2="0"><stop stop-color="#a3b8d0"/><stop offset="1" stop-color="#ccd9e7"/></linearGradient><filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#afc3d4" flood-opacity=".23"/></filter></defs><g transform="scale(1 .8)">
+<ellipse cx="490" cy="478" rx="380" ry="90" fill="#dfe8ef" opacity=".38"/>
+<g filter="url(#shadow)"><path d="M65 318 484 105 908 322 485 545Z" fill="#e7eef4"/><path d="M65 318v15l420 228v-16Z" fill="#d0dce8"/><path d="M485 545 908 322v16L485 561Z" fill="#bbcddd"/></g>
+<path d="M90 321 484 123 880 323 484 525Z" fill="#f6f9fc" stroke="#dce5ed"/>
+<path d="M110 321 328 210 509 303 292 414Z" fill="#e4f0e8"/><path d="M422 393 652 276 836 370 608 487Z" fill="#e9f1eb"/>
+<path d="M354 200 391 181 799 388 762 406Z" fill="#e0e6ee"/><path d="M188 429 746 145 770 158 213 442Z" fill="#e0e6ee"/><path d="M201 435 757 151" stroke="white" stroke-width="2" stroke-dasharray="11 11"/>
+<path d="M180 277 313 210 465 287 332 355Z" fill="#d1e4db"/>
+<path d="M159 335C151 302 213 272 271 279L374 321C423 349 371 393 309 401L213 368C181 358 159 347 159 335Z" fill="#a6c5ca"/>
+<path d="M156 326C156 298 214 266 270 273L374 315C423 343 369 387 309 394L213 362C181 351 156 340 156 326Z" fill="url(#water)" stroke="#d8eaf0" stroke-width="9"/>
+<path d="M197 321 257 297M232 349 325 302M276 367 362 327" stroke="#d8edf5" stroke-width="2" opacity=".65"/>
+<path d="M314 380 383 345 413 361 346 397Z" fill="#d5c7b3" stroke="#e8dfd2" stroke-width="3"/><path d="M327 375 354 389M341 368 367 382M354 361 380 375" stroke="#b7a58b"/>
+<ellipse cx="629" cy="373" rx="140" ry="49" fill="#8fa8bf" opacity=".18"/><path d="M456 347 575 286 759 378 639 440Z" fill="#d7e2ed"/><path d="M456 347 639 440v18L456 366Z" fill="#b7cada"/><path d="M639 440 759 378v18L639 458Z" fill="#9fb4c9"/>
+<path d="M505 145 650 220v175L505 320Z" fill="url(#front)" stroke="#adbed2"/><path d="M650 220 733 174v176L650 395Z" fill="url(#side)" stroke="#a1b5ca"/>
+<path d="M505 145 588 100 733 174 650 220Z" fill="#f7faff" stroke="#b8c9db" stroke-width="2"/><path d="M521 145 588 110 717 175 650 210Z" fill="#e2eaf4"/>
+<path d="M518 173 637 234v16L518 189Z" fill="#8dabc7" opacity=".48"/><path d="M660 238 722 204v16L660 254Z" fill="#7596b9" opacity=".45"/><path d="M518 205 637 266v16L518 221Z" fill="#8dabc7" opacity=".48"/><path d="M660 270 722 236v16L660 286Z" fill="#7596b9" opacity=".45"/><path d="M518 237 637 298v16L518 253Z" fill="#8dabc7" opacity=".48"/><path d="M660 302 722 268v16L660 318Z" fill="#7596b9" opacity=".45"/><path d="M518 269 637 330v16L518 285Z" fill="#8dabc7" opacity=".48"/><path d="M660 334 722 300v16L660 350Z" fill="#7596b9" opacity=".45"/><path d="M518 301 637 362v16L518 317Z" fill="#8dabc7" opacity=".48"/><path d="M660 366 722 332v16L660 382Z" fill="#7596b9" opacity=".45"/><path d="M542 185.3v144" stroke="#dae4ef" stroke-width="5"/><path d="M574 201.7v144" stroke="#dae4ef" stroke-width="5"/><path d="M606 218.1v144" stroke="#dae4ef" stroke-width="5"/><path d="M505 145 650 220 733 174" fill="none" stroke="#90b4d4" stroke-width="5"/><path d="M562 289 596 306v60l-34-17Z" fill="#758fae"/><path d="M579 298v60" stroke="#c9d6e6" stroke-width="2"/>
+<path d="M560 130 591 114 634 136 603 153Z" fill="#bacad9"/><path d="M560 130v17l43 22v-16Z" fill="#92a8be"/><path d="M603 153 634 136v17l-31 16Z" fill="#7d96b0"/>
+<ellipse cx="589" cy="133" rx="11" ry="5" fill="#7b92ac"/><ellipse cx="613" cy="144" rx="8" ry="4" fill="#7b92ac"/>
+<path d="M638 154 660 143 700 164 678 176Z" fill="#718ead" stroke="#f2f6fb" stroke-width="2"/><path d="M650 149 690 170M650 160 672 149M664 167 686 156" stroke="#a9bed3"/>
+<path d="M450 371 484 354 526 375 492 392Z" fill="#f5f8fb" stroke="#b5c8d8"/><path d="M450 371v33l42 22v-34Z" fill="#c4d5e3"/><path d="M492 392 526 375v32l-34 19Z" fill="#a3b9cf"/>
+<path d="M133 397 164 381 185 392 154 409Z" fill="#bdcedd"/><path d="M133 397v18l21 11v-17Z" fill="#8da5bb"/><path d="M154 409 185 392v18l-31 16Z" fill="#7796af"/><path d="M169 393 208 373" stroke="#8ca9bc" stroke-width="6"/>
+<path d="M187 260v-57M166 211h43M188 202l-13-8" stroke="#7f99b1" stroke-width="4"/><ellipse cx="187" cy="264" rx="13" ry="6" fill="#aabfce"/><path d="M177 199 196 190 206 195 187 204Z" fill="#becedd"/>
+<text x="214" y="251" class="zone-text">LAKE ZONE</text><text x="214" y="268" class="zone-sub">戶外水域與灌溉設施</text>
+<text x="742" y="233" class="zone-text">TOWER A</text><text x="742" y="250" class="zone-sub">A 棟 · 三樓設備</text>
+<g transform="translate(109 330) scale(0.8)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(280 219) scale(0.8)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(379 276) scale(0.75)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(367 431) scale(1)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(577 490) scale(0.9)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(832 335) scale(0.85)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(778 400) scale(0.8)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(425 161) scale(0.65)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><g transform="translate(492 493) scale(0.75)"><ellipse cy="10" rx="13" ry="6" fill="#c9dbd0"/><path d="M0 10v-25" stroke="#a4b4aa" stroke-width="4"/><ellipse cy="-24" rx="13" ry="21" fill="#a4c8b4"/><ellipse cx="-4" cy="-27" rx="9" ry="16" fill="#bed9c8"/></g><path class="query-route" data-route="W01" d="M187 263 313 380 492 411"/><path class="query-route" data-route="LS01" d="M264 385 313 380 492 411"/><path class="query-route" data-route="DP01" d="M154 415 208 373 313 380"/><path class="query-route" data-route="IRR01" d="M492 411 639 440"/><path class="query-route" data-route="AHU03" d="M602 150 650 220 639 440"/><path class="query-route" data-route="OCC03" d="M710 307 650 336 639 440"/><path class="query-route" data-route="EM01" d="M695 409 639 440"/><g class="scene-marker" data-device="W01"><circle class="pin-ring" cx="187" cy="258" r="12"/><circle class="pin" cx="187" cy="258" r="7"/></g><g class="scene-marker" data-device="LS01"><circle class="pin-ring" cx="264" cy="385" r="12"/><circle class="pin" cx="264" cy="385" r="7"/></g><g class="scene-marker" data-device="IRR01"><circle class="pin-ring" cx="492" cy="411" r="12"/><circle class="pin" cx="492" cy="411" r="7"/></g><g class="scene-marker" data-device="DP01"><circle class="pin-ring" cx="154" cy="415" r="12"/><circle class="pin" cx="154" cy="415" r="7"/></g><g class="scene-marker" data-device="AHU03"><circle class="pin-ring" cx="602" cy="150" r="12"/><circle class="pin" cx="602" cy="150" r="7"/></g><g class="scene-marker" data-device="OCC03"><circle class="pin-ring" cx="690" cy="307" r="12"/><circle class="pin" cx="690" cy="307" r="7"/></g><g class="scene-marker" data-device="EM01"><circle class="pin-ring" cx="695" cy="409" r="12"/><circle class="pin" cx="695" cy="409" r="7"/></g></g></svg><div class="device-labels"><button class="scene-device device-W01" type="button" data-device="W01" aria-label="W01 · 氣象站，查看設備脈絡"><span class="name"><span class="device-id">W01</span><span class="device-name"> · 氣象站</span></span><span class="reading" id="nodeReading-W01"></span></button><button class="scene-device device-LS01" type="button" data-device="LS01" aria-label="LS01 · 水位感測，查看設備脈絡"><span class="name"><span class="device-id">LS01</span><span class="device-name"> · 水位感測</span></span><span class="reading" id="nodeReading-LS01"></span></button><button class="scene-device device-DP01" type="button" data-device="DP01" aria-label="DP01 · 排水泵，查看設備脈絡"><span class="name"><span class="device-id">DP01</span><span class="device-name"> · 排水泵</span></span><span class="reading" id="nodeReading-DP01"></span></button><button class="scene-device device-IRR01" type="button" data-device="IRR01" aria-label="IRR01 · 灌溉控制，查看設備脈絡"><span class="name"><span class="device-id">IRR01</span><span class="device-name"> · 灌溉控制</span></span><span class="reading" id="nodeReading-IRR01"></span></button><button class="scene-device device-AHU03" type="button" data-device="AHU03" aria-label="AHU03 · 屋頂空調，查看設備脈絡"><span class="name"><span class="device-id">AHU03</span><span class="device-name"> · 屋頂空調</span></span><span class="reading" id="nodeReading-AHU03"></span></button><button class="scene-device device-OCC03" type="button" data-device="OCC03" aria-label="OCC03 · 三樓人流，查看設備脈絡"><span class="name"><span class="device-id">OCC03</span><span class="device-name"> · 三樓人流</span></span><span class="reading" id="nodeReading-OCC03"></span></button><button class="scene-device device-EM01" type="button" data-device="EM01" aria-label="EM01 · 總電表，查看設備脈絡"><span class="name"><span class="device-id">EM01</span><span class="device-name"> · 總電表</span></span><span class="reading" id="nodeReading-EM01"></span></button></div></div></div></div>
+
+<aside class="context-right" aria-label="事件處理流程與人工審核">
+<div class="decision-panel" id="decisionSection"><h3>Incident Processing</h3><nav class="flow flow-group" aria-label="事件處理流程 步驟 1 至 4"><div class="flow-node" data-flow="telemetry"><button class="step" type="button" data-step="telemetry" data-number="1">Telemetry</button></div><div class="flow-node" data-flow="observation"><button class="step" type="button" data-step="observation" data-number="2">Normalize</button></div><div class="flow-node" data-flow="event"><button class="step" type="button" data-step="event" data-number="3">Event</button></div><div class="flow-node" data-flow="incident"><button class="step" type="button" data-step="incident" data-number="4">Incident</button></div></nav><nav class="flow flow-group" aria-label="AI 分析與人工審核流程 步驟 5 至 9"><div class="flow-node" data-flow="tools"><button class="step" type="button" data-step="tools" data-number="5">AI tools/query</button></div><div class="flow-node" data-flow="analysis"><button class="step" type="button" data-step="analysis" data-number="6">Analysis</button></div><div class="flow-node" data-flow="review"><button class="step" type="button" data-step="review" data-number="7">Human Review</button></div><div class="flow-node" data-flow="action"><button class="step" type="button" data-step="action" data-number="8">Action</button></div><div class="flow-node" data-flow="loop"><button class="step" type="button" data-step="loop" data-number="9">New Observation</button></div></nav><div class="stage-data" id="overview"><div class="grid">
+        <div class="card" data-stage="telemetry">
+          <div class="kicker">各系統格式不同</div>
+          <h2>1. 子系統原生 Telemetry</h2>
+          <div id="rawTelemetry"><div class="empty">請執行情境以接收遙測資料。</div></div>
+          <div class="block-note"><b>作用與資料流：</b>各子系統用自己的格式送資料 — 欄位名稱、時間表示法（epoch 毫秒／秒、UTC、本地字串）與數值包法都不同。原樣保留，交給下一步轉換。</div>
+        </div>
+
+        <div class="card" data-stage="observation">
+          <div class="kicker">原生格式 → 統一 schema</div>
+          <h2>2. 正規化為 Observation</h2>
+          <div id="observations"><div class="empty">尚無 Observation 紀錄。</div></div>
+          <div class="block-note"><b>作用與資料流：</b>每個子系統一個 adapter，把原生欄位對映為統一的 Observation；system 與 zone 不由 telemetry 提供，而是從 Building Context 的設備登錄查出。原始 payload 保留在 raw_payload，AI 不覆寫。</div>
+        </div>
+
+        <div class="card" data-stage="event">
+          <div class="kicker">明確規則判定</div>
+          <h2>3. 事件（Event）</h2>
+          <div id="events"><div class="empty">尚無 Event。</div></div>
+          <div class="block-note"><b>作用與資料流：</b>依明確門檻與規則，從 Observation 產生可追蹤的 Event，區分原始事實與規則判定。</div>
+        </div>
+
+        <div class="card" data-stage="incident">
+          <div class="kicker">跨系統關聯</div>
+          <h2>4. 關聯事件（Incident）</h2>
+          <div id="incidentBox"><div class="empty">尚無 Incident。</div></div>
+          <div class="block-note"><b>作用與資料流：</b>依時間、區域與語意關係，將多個 Event 整合為同一個 Incident，協助管理者掌握跨系統問題。</div>
+        </div>
+
+        <div class="card" data-stage="tools">
+          <div class="kicker">依建築脈絡查詢</div>
+          <h2>5. AI 脈絡查詢</h2>
+          <div id="toolLog"><div class="empty">建立 Incident 後才會執行工具查詢。</div></div>
+          <div class="block-note"><b>作用與資料流：</b>AI 透過設備、能力、關係、狀態與歷史紀錄查詢工具，取得 Building Context，作為分析依據。</div>
+        </div>
+
+        <div class="card" data-stage="analysis">
+          <div class="kicker">以證據支持的結構化輸出</div>
+          <h2>6. AI 分析</h2>
+          <div id="analysisBox"><div class="empty">尚無 AI 分析。</div></div>
+          <div class="block-note"><b>作用與資料流：</b>整合 Incident 與工具查詢結果，產生附有證據參照的結構化分析，保留推論與事實的區別。</div>
+        </div>
+
+        <div class="card" data-stage="review">
+          <div class="kicker">審核依據</div>
+          <h2>7. 人工審核</h2>
+          <div id="decisionRecommendation"></div>
+          <div class="block-note"><b>作用與資料流：</b>管理者依據分析與設備查詢快照核准或拒絕；核准前不送出任何控制指令。</div>
+        </div>
+
+        
+        
+        
+    </div></div><div class="flow-status" id="flowStatus" role="status" aria-live="polite"></div><div id="actionBox"></div><div id="executionBox"></div><div id="feedbackBox"></div></div></aside></div>
+<div class="workspace-footer"><details><summary>稽核鏈與保存紀錄 · Audit / localStorage</summary><div class="audit-line" id="auditLine"></div><details class="records"><summary>已保存紀錄 / localStorage</summary><div class="records-grid"><div><h3>Observation · 原始事實</h3><div id="obsStore"></div></div><div id="derivedStore"></div><div><h3>操作審核與執行</h3><div id="actionStore"></div></div></div></details></details></div></section>
+<footer class="foot"><span>Observation 是 source of truth · AI 新增 inference · 操作需 human approval</span><span>Executable concept prototype · v21</span></footer></div><script type="module" src="src/app.js"></script>
+</body>
+</html>

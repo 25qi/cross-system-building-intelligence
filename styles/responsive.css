@@ -1,0 +1,201 @@
+@media (max-width: 1200px) {
+  :root {
+    --left: 210px;
+    /* 橫向流程鏈的五個步驟約需 370px 才不會截斷文字 */
+    --right: 375px;
+    --gap: 10px;
+  }
+  .sidebar-title {
+    display: none;
+  }
+  .inspector-panel,
+  .decision-panel {
+    padding: 10px 11px;
+  }
+  .detail-row {
+    grid-template-columns: 68px minmax(0, 1fr);
+    font-size: 11px;
+  }
+  .scene-device {
+    width: 108px;
+  }
+  .top h1 {
+    font-size: 20px;
+  }
+  .toolbar-top .sidebar-title {
+    display: inline;
+  }
+  .scene-top {
+    gap: 5px;
+  }
+  .context-live-banner {
+    font-size: 9px;
+  }
+}
+@media (max-height: 650px) {
+  .wrap {
+    gap: 4px;
+    padding: 8px 10px;
+  }
+  .top {
+    min-height: 28px;
+  }
+  .world-scenario .primary {
+    padding: 5px 12px;
+  }
+  .scenario-details {
+    font-size: 10px;
+    line-height: 14px;
+  }
+  .world-reading {
+    padding: 4px 8px;
+  }
+  .world-reading strong {
+    font-size: 11px;
+  }
+  .scene-top {
+    top: 57px;
+  }
+  .scene-stage {
+    inset: 76px 0 19px;
+  }
+  .scene-device {
+    width: 104px;
+    min-height: 34px;
+    padding: 4px 6px;
+  }
+  .toolbar-top {
+    display: none;
+  }
+  .workspace-footer {
+    padding: 2px 9px 4px;
+  }
+  .inspector-panel > h3 {
+    margin-bottom: 8px;
+  }
+  .context-live-banner {
+    padding: 2px 5px;
+  }
+}
+/* 設備標籤用百分比定位但寬度固定，畫布一窄就會互相重疊。
+   這個斷點起改為只顯示設備代碼，數值交給上方 HUD 與左側設備脈絡面板呈現。 */
+@media (max-width: 1000px) {
+  .scene-device {
+    width: auto;
+    min-width: 0;
+    min-height: 0;
+    padding: 4px 7px;
+  }
+  .scene-device .device-name,
+  .scene-device .reading {
+    display: none;
+  }
+}
+@media (max-width: 950px) {
+  :root {
+    --left: 185px;
+    --right: 300px;
+    --gap: 8px;
+  }
+  /* 右欄到這裡撐不住橫排五格，改為兩欄；
+     連接符號在換行處會指向錯誤方向，因此一併移除。 */
+  .flow.flow-group {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+  .flow.flow-group .flow-node:not(:last-child):after {
+    content: none;
+  }
+  .top .badge {
+    display: none;
+  }
+  .world-reading {
+    padding: 4px 6px;
+  }
+  .world-reading strong {
+    font-size: 11px;
+  }
+  .hud-label {
+    font-size: 9px;
+  }
+  .decision-panel .evidence,
+  .decision-panel .action {
+    font-size: 11px;
+  }
+  .flow {
+    overflow: auto;
+    grid-template-columns: repeat(9, minmax(104px, 1fr));
+    scrollbar-width: thin;
+  }
+  .context-live-banner {
+    max-width: 65%;
+    font-size: 9px;
+  }
+  .scene-top strong {
+    font-size: 10px;
+  }
+  .foot > span:last-child {
+    display: none;
+  }
+}
+@media (max-width: 720px) {
+  :root {
+    --left: 165px;
+    --right: 200px;
+  }
+  .world-scenario .primary {
+    padding: 5px 9px;
+  }
+  .inspector-panel,
+  .decision-panel {
+    padding: 8px;
+  }
+  .detail-row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+    padding: 5px 0;
+  }
+  .world-reading strong {
+    font-size: 11px;
+  }
+  .scene-top strong {
+    display: none;
+  }
+  .scene-device .name,
+  .scene-device .reading {
+    font-size: 10px;
+  }
+}
+@media (max-width: 580px) {
+  .context-left,
+  .context-right {
+    top: 52%;
+    bottom: 8px;
+    width: calc(50% - 12px);
+  }
+  .twin-scene {
+    inset: 0 10px 48%;
+  }
+  .world-readings {
+    left: 10px;
+    right: 10px;
+    top: 8px;
+  }
+  .scene-top {
+    top: 53px;
+  }
+  .scene-stage {
+    inset: 67px 0 15px;
+  }
+  .scene-device {
+    min-height: 30px;
+    padding: 3px 5px;
+  }
+  .scene-device .reading {
+    font-size: 9px;
+  }
+  .scene-device .name {
+    font-size: 10px;
+  }
+}

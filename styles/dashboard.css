@@ -1,0 +1,693 @@
+/* One viewport, one building world, contextual panels with their own scroll. */
+:root {
+  --left: clamp(220px, 19vw, 270px);
+  --right: clamp(300px, 29vw, 430px);
+  --gap: 12px;
+}
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  height: 100vh;
+  height: 100dvh;
+  overscroll-behavior: none;
+  font-size: 13px;
+}
+.wrap {
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  gap: 6px;
+}
+.top {
+  flex: none;
+  margin: 0;
+  min-height: 32px;
+  gap: 12px;
+}
+.top h1 {
+  font-size: 21px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+.top .kicker,
+.top p {
+  display: none;
+}
+/* 專案 PRD 連結緊鄰標題，而不是推到另一端 */
+.top-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.badge {
+  font-size: 11px;
+  padding: 5px 10px;
+}
+.prd-link {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  text-decoration: none;
+  color: #536b8b;
+  background: white;
+  padding: 6px 12px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.prd-link:hover {
+  background: #eef3fc;
+}
+.prd-link:focus-visible {
+  outline: 3px solid #7294ff;
+  outline-offset: 3px;
+}
+.world-scenario .primary {
+  padding: 7px 14px;
+  font-size: 12px;
+}
+.scenario-details {
+  flex: none;
+  margin: 10px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.scenario-details summary {
+  width: max-content;
+  cursor: pointer;
+}
+/* 原本是錨在頂部橫列的下拉浮層；移進右欄後會被 .context-right 的
+   overflow:hidden 裁掉，改為內嵌並自行捲動。 */
+.scenario-brief {
+  margin-top: 7px;
+}
+.building-workspace {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  isolation: isolate;
+  border: 1px solid #d9e3ee;
+  border-radius: 14px;
+  background: #eef3f8;
+  overflow: hidden;
+}
+.workspace-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 48% 58%, #e0eaf3 0%, #f4f7fa 75%);
+}
+.context-left,
+.context-right {
+  position: absolute;
+  top: var(--gap);
+  bottom: var(--gap);
+  z-index: 3;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid #dce5ef;
+  border-radius: 11px;
+  background: #fffffff2;
+  box-shadow: 0 6px 18px #54769b0c;
+  display: flex;
+  flex-direction: column;
+}
+.context-left {
+  left: var(--gap);
+  width: var(--left);
+}
+.context-right {
+  right: var(--gap);
+  width: var(--right);
+}
+.inspector-panel {
+  /* flex:1 等同 flex-basis:0，這一欄只能拿「剩下的」空間；
+     下方觀測清單用自然高度把空間吃光時，設備脈絡會被壓到看不見。
+     改為 basis auto，兩塊依內容公平分配。 */
+  flex: 1 1 auto;
+  min-height: 90px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 12px 14px;
+  scrollbar-width: thin;
+}
+.inspector-panel > h3 {
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+.sidebar-title {
+  font-size: 10px;
+  font-weight: 400;
+  color: #899ab1;
+  margin-left: 5px;
+}
+.small {
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.detail-row {
+  display: grid;
+  grid-template-columns: 75px minmax(0, 1fr);
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid #edf1f6;
+  font-size: 12px;
+}
+.detail-row > span {
+  color: var(--muted);
+}
+.detail-row b {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.cap-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.cap {
+  font-size: 10px;
+  background: #f0f4fb;
+  color: #506687;
+  border-radius: 4px;
+  padding: 2px 5px;
+}
+.relation-mini {
+  font-size: 11px;
+  color: #64758d;
+  margin-top: 10px;
+  padding: 8px;
+  background: #f6f8fb;
+  border-radius: 7px;
+  overflow-wrap: anywhere;
+}
+.context-entry {
+  font-size: 11px;
+}
+.context-chip {
+  font-size: 10px;
+}
+.decision-panel {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding: 12px 14px;
+}
+.decision-panel h3 {
+  font-size: 13px;
+  margin-bottom: 7px;
+}
+.decision-panel .empty {
+  padding: 9px 0;
+}
+.decision-panel .evidence,
+.decision-panel .action {
+  font-size: 12px;
+}
+.actionbuttons {
+  gap: 6px;
+}
+.actionbuttons button {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+.twin-scene {
+  position: absolute;
+  inset: 0 calc(var(--right) + 2 * var(--gap)) 0 calc(var(--left) + 2 * var(--gap));
+  z-index: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.world-readings {
+  position: absolute;
+  top: var(--gap);
+  left: calc(var(--left) + 2 * var(--gap));
+  right: calc(var(--right) + 2 * var(--gap));
+  display: grid;
+  /* 三個讀數 + 情境選擇。讀數是情境的輸入值，選擇器才是操作點，
+     所以讀數壓小、情境格給較寬的欄位。 */
+  grid-template-columns: repeat(3, minmax(0, 0.5fr)) minmax(0, 1.3fr);
+  gap: 6px;
+  align-items: start;
+  z-index: 3;
+  pointer-events: none;
+}
+.world-scenario {
+  pointer-events: auto;
+  position: relative;
+  z-index: 4;
+  padding: 5px 9px 7px;
+  background: #fffffff5;
+  border: 1px solid #d3deeb;
+  border-radius: 8px;
+  min-width: 0;
+}
+#scenarioSelect {
+  margin-top: 3px;
+}
+/* 執行鈕放在情境說明最下方：先讀完這個情境在驗證什麼，再決定執行。 */
+.scenario-brief #runBtn {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+}
+/* 尚未選擇情境時持續呼吸，指出這裡是操作起點。 */
+@keyframes scenario-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 0 1px #94b0ec40;
+    background-color: #fffffff5;
+  }
+  50% {
+    box-shadow: 0 0 0 4px #88a7e870;
+    background-color: #eef3ff;
+  }
+}
+.world-scenario.awaiting-pick {
+  animation: scenario-breathe 1.9s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .world-scenario.awaiting-pick {
+    animation: none;
+    box-shadow: 0 0 0 2px #91ace5;
+  }
+}
+.world-scenario .scenario-details {
+  margin: 4px 0 0;
+  font-size: 10px;
+  line-height: 1.4;
+}
+/* 說明以浮層展開，避免把 HUD 撐高而壓縮下方場景。 */
+/* 說明不再是浮在格子外的下拉浮層，而是接在選單下方、共用同一個方框，
+   讓「選情境 → 讀說明 → 執行」讀起來是同一塊而不是兩塊。 */
+.world-scenario .scenario-brief {
+  position: static;
+  margin: 6px 0 0;
+  padding: 7px 0 0;
+  border: 0;
+  border-top: 1px solid #e3eaf3;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  max-height: 46vh;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.world-reading {
+  padding: 3px 8px;
+  background: #fffffff0;
+  border: 1px solid #dfe7f1;
+  border-radius: 8px;
+  min-width: 0;
+}
+.hud-label {
+  display: block;
+  font-size: 9px;
+  color: #8293ac;
+}
+.world-reading strong {
+  display: block;
+  font-size: 12px;
+  line-height: 1.35;
+  color: #354e71;
+  white-space: nowrap;
+}
+.world-reading small {
+  display: none;
+}
+.scene-top {
+  position: absolute;
+  top: 68px;
+  left: 4px;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  z-index: 3;
+  pointer-events: none;
+}
+.scene-top strong {
+  font-size: 11px;
+  color: #627b98;
+}
+.scene-top small {
+  display: none;
+}
+.context-live-banner {
+  visibility: hidden;
+  background: #e5edffde;
+  border: 1px solid #cedcf9;
+  border-radius: 20px;
+  padding: 3px 7px;
+  font-size: 10px;
+  color: #4869bc;
+  max-width: 60%;
+}
+.context-live-banner.active {
+  visibility: visible;
+}
+.scene-stage {
+  position: absolute;
+  inset: 91px 0 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  overflow: visible;
+}
+.scene-canvas {
+  position: relative;
+  flex: none;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  max-width: 100%;
+  max-height: 100%;
+}
+.scene-canvas svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.device-labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.scene-device {
+  position: absolute;
+  pointer-events: auto;
+  width: 116px;
+  min-height: 38px;
+  padding: 5px 7px;
+  text-align: left;
+  background: #fffffff5;
+  border: 1px solid #c4d5e5;
+  border-radius: 7px;
+  box-shadow: 0 3px 8px #6d8bad20;
+  cursor: pointer;
+  line-height: 1.3;
+  z-index: 2;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.scene-device .name {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #294666;
+  white-space: nowrap;
+}
+.scene-device .reading[hidden] {
+  display: none;
+}
+.scene-device .reading {
+  display: block;
+  font-size: 11px;
+  color: #617a98;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+.scene-device:hover {
+  border-color: #557cce;
+  z-index: 4;
+}
+.scene-device.selected {
+  border-color: #365de2;
+  box-shadow:
+    0 0 0 2px #365de235,
+    0 4px 12px #6d8bad22;
+}
+.scene-device.context-used {
+  background: #eff4ff;
+  border-color: #819ff0;
+}
+.scene-device:focus-visible {
+  outline: 3px solid #7294ff;
+  outline-offset: 3px;
+}
+.device-W01 {
+  left: 3%;
+  top: 16%;
+}
+.device-LS01 {
+  left: 20%;
+  top: 44%;
+}
+.device-DP01 {
+  left: 2%;
+  bottom: 8%;
+}
+.device-IRR01 {
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+}
+.device-AHU03 {
+  left: 56%;
+  top: 0;
+}
+.device-OCC03 {
+  right: 0;
+  top: 46%;
+}
+.device-EM01 {
+  right: 2%;
+  bottom: 6%;
+}
+/* svg 整體為 pointer-events:none，圖釘要單獨開啟才能點選。 */
+.scene-marker {
+  pointer-events: auto;
+  cursor: pointer;
+}
+.scene-marker .pin {
+  fill: #6f8dab;
+  stroke: white;
+  stroke-width: 3;
+}
+.scene-marker:hover .pin {
+  fill: #365de2;
+}
+.scene-marker .pin-ring {
+  fill: none;
+  stroke: #fff9;
+  stroke-width: 5;
+}
+.scene-marker.selected .pin-ring {
+  stroke: #8eaff0;
+}
+.scene-marker.context-used .pin {
+  fill: #365de2;
+}
+.query-route {
+  stroke: #365de2;
+  stroke-width: 2;
+  stroke-dasharray: 6 5;
+  fill: none;
+  opacity: 0;
+}
+.query-route.used {
+  opacity: 0.65;
+}
+.zone-text {
+  font:
+    700 14px "Segoe UI",
+    sans-serif;
+  letter-spacing: 1px;
+  fill: #547594;
+}
+.zone-sub {
+  font:
+    12px "Microsoft JhengHei",
+    sans-serif;
+  fill: #718fa7;
+}
+.toolbar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  gap: 12px;
+}
+.toolbar-top strong {
+  font-size: 11px;
+}
+.toolbar-top .section-tag {
+  font-size: 9px;
+  padding: 1px 6px;
+}
+.flow {
+  gap: 5px;
+}
+.step {
+  padding: 5px 3px;
+  font-size: 10px;
+  line-height: 1.3;
+  min-height: 25px;
+}
+.flow-node:not(:last-child):after {
+  top: 2px;
+  right: -5px;
+}
+.flow-description {
+  display: none;
+}
+.card {
+  padding: 6px 0;
+  border: 0;
+}
+.card h2 {
+  font-size: 15px;
+}
+.tool {
+  font-size: 12px;
+}
+.metric {
+  font-size: 12px;
+}
+.block-note {
+  font-size: 11px;
+}
+.workspace-footer {
+  position: relative;
+  flex: none;
+  padding: 3px 10px 5px;
+  background: #f5f8fb;
+  z-index: 6;
+  font-size: 10px;
+}
+.workspace-footer summary {
+  cursor: pointer;
+  font-size: 10px;
+}
+.workspace-footer > details[open] {
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+  right: 10px;
+  padding: 12px;
+  max-height: min(380px, 65dvh);
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: white;
+  border: 1px solid #dce5ef;
+  border-radius: 10px;
+  box-shadow: 0 -6px 28px #405c8d25;
+}
+.foot {
+  flex: none;
+  margin: 0;
+  font-size: 9px;
+  line-height: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.table {
+  overflow-wrap: anywhere;
+}
+.audit-line {
+  margin-top: 12px;
+}
+.records-grid {
+  gap: 12px;
+}
+@keyframes state-breathe {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px #94b0ec35,
+      0 0 4px #5d87e20a;
+    background-color: #f3f7ff;
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px #88a7e875,
+      0 0 16px #6b92e636;
+    background-color: #e8f0ff;
+  }
+}
+@keyframes device-breathe {
+  0%,
+  100% {
+    stroke: #7199e0;
+    stroke-width: 5;
+    stroke-opacity: 0.4;
+  }
+  50% {
+    stroke: #4676d3;
+    stroke-width: 11;
+    stroke-opacity: 0.95;
+  }
+}
+.state-pulse {
+  animation: state-breathe 1s ease-in-out 3;
+  border-radius: 7px;
+}
+.scene-marker.state-pulse {
+  animation: none;
+}
+.scene-marker.state-pulse .pin-ring {
+  animation: device-breathe 1s ease-in-out 3;
+}
+.scene-marker.state-pulse .pin {
+  fill: #4676d3;
+}
+#selectedDeviceState.state-pulse {
+  display: inline-block;
+  padding: 1px 5px;
+  margin: -1px -5px;
+}
+#recentDeviceObservations.state-pulse {
+  padding: 3px;
+  margin: -3px;
+}
+.step.state-pulse {
+  border-color: #8ca9e1;
+}
+.world-reading strong.state-pulse {
+  padding: 0 3px;
+  margin: 0 -3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .state-pulse {
+    animation: none;
+    box-shadow: 0 0 0 2px #91ace5;
+    background-color: #eef4ff;
+  }
+  .scene-marker.state-pulse {
+    box-shadow: none;
+    background: none;
+  }
+  .scene-marker.state-pulse .pin-ring {
+    animation: none;
+    stroke: #4f7ed6;
+    stroke-width: 3;
+  }
+}
