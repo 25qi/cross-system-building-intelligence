@@ -77,7 +77,7 @@ const buildingModel = {
     },
   ],
   // 關聯判定靠這張圖推導語意，因此每個設備都要有指向「關注對象」的邊。
-  // IRR01 operates / DP01 drains 是 PRD 第 7 節有、但先前程式碼漏掉的。
+  // IRR01 operates / DP01 drains 是 設計說明第 7 節有、但先前程式碼漏掉的。
   relationships: [
     ['W01', 'influences', 'IRR01'],
     ['W01', 'affects', 'OUTDOOR'],

@@ -16,7 +16,7 @@ concept prototype，示範智慧建築／智慧社區中「多個獨立子系統
 拆分為 ES modules，**無建置流程、無相依套件、無後端**，可直接由靜態主機提供。
 
 ```
-index.html   prd.html   styles/{base,dashboard,responsive}.css
+index.html   design.html   styles/{base,dashboard,responsive}.css
 src/app.js  dom.js  building-model.js  scenarios.js  state.js
 src/pipeline/{adapters,normalize,events,correlate,agent,actions}.js
 src/ui/{pulse,scene,flow,render,scenario-picker}.js
@@ -37,17 +37,19 @@ src/ui/{pulse,scene,flow,render,scenario-picker}.js
 `getRunToken` / `bumpRunToken`、`isBusy`、`getLastCorrelation`、
 `selectedTwinDevice` / `setSelectedTwinDevice`），不要直接匯出會被重新賦值的 `let`。
 
-### PRD 已是獨立檔案
+### 設計說明已是獨立檔案
 
-`prd.html` 是完整的獨立文件，用一般 `<a href="prd.html">` 連結。
+`design.html`（原 prd.html）是完整的獨立文件，用一般 `<a href="design.html">` 連結。
+文件原本叫「PRD」，但全文沒有一條需求、16 章裡 10 章是架構與已實作的範例，
+且寫在建造之後 —— 那是設計文件而非 PRD，已更名為「概念設計與原型說明」。
 **不要再把它變回 JS 字串。** 先前以 `prdPageHtml` escaped string 內嵌，
 改一個字都要處理跳脫，是這個專案最大的維護痛點。
 
-PRD 頁面自己有一套響應式版面：桌面版（無 media query）的 `.doc-layout` 是
+設計說明頁自己有一套響應式版面：桌面版（無 media query）的 `.doc-layout` 是
 `180px minmax(0,1fr)`；側邊目錄是可收合的 `<details class="toc-fold" open>`，
 收起時 `:has()` 會把側欄改為 `auto` 讓內文變寬。
 ≤800px 與 ≤450px 另有堆疊版本，改寬度時注意不要動錯那一條。
-PRD 共 16 章，第 15 節含 Building Metadata Quality 風險。
+共 16 章，第 15 節含 Building Metadata Quality 風險。
 
 ### 修改 CSS 時的陷阱
 
@@ -196,7 +198,7 @@ Incident 的判定結果（含「未建立」與原因）只在步驟 4 的資�
 
 步驟 1 的 payload **各子系統格式都不同**，這是這個 demo 的核心命題（跨系統整合）
 唯一能被證明的地方。曾經所有 payload 都是同一個結構，`normalize()` 實際上沒有在
-統一任何東西，PRD 卻宣稱「將不同格式資料轉成統一 schema」—— 宣稱與實作對不上。
+統一任何東西，設計說明卻宣稱「將不同格式資料轉成統一 schema」—— 宣稱與實作對不上。
 
 目前七種來源各有自己的欄位名稱、時間表示法與數值包法：
 
@@ -278,7 +280,7 @@ localStorage key：`csbi-demo-v21`。所有讀寫都經過 `storage` 抽象層
 ### Incident 關聯條件
 
 `correlate()` 以 `correlationRules` 驅動，**三個條件都要成立**才建立 Incident
-（PRD Step 4 的 Temporal / Spatial / Semantic）：
+（設計說明 Step 4 的 Temporal / Spatial / Semantic）：
 
 | 條件 | 怎麼判 |
 |---|---|
@@ -295,7 +297,7 @@ localStorage key：`csbi-demo-v21`。所有讀寫都經過 `storage` 抽象層
 
 因此 **`relationships` 是關聯判定的輸入，不只是 AI 查詢用的參考資料**。
 每個設備都要有指向其「關注對象」的邊，漏掉就不會被納入關聯
-（`IRR01 operates OUTDOOR` 與 `DP01 drains OUTDOOR` 原本漏寫，PRD 第 7 節有）。
+（`IRR01 operates OUTDOOR` 與 `DP01 drains OUTDOOR` 原本漏寫，設計說明第 7 節有）。
 
 都不成立時 `lastCorrelation` 取**最接近成立**的那條規則（先比風險 Event 數，
 再比通過的條件數），否則會報到不相干的規則上。步驟 4 的資料卡逐條顯示 ✓／✗。
@@ -317,16 +319,16 @@ localStorage key：`csbi-demo-v21`。所有讀寫都經過 `storage` 抽象層
 - 繁體中文 UI 文案；程式碼識別字、Event/Incident type、capability 一律英文大寫底線。
 - 所有插入 DOM 的動態值都要經 `esc()` 轉義。
 - ID 以 `uid(prefix)` 產生：`OBS-` / `EVT-` / `INC-` / `ANA-` / `ACT-`。
-  例外：回饋 Observation 固定為 `OBS-036`（對應 PRD 文件中的範例編號）。
+  例外：回饋 Observation 固定為 `OBS-036`（對應設計說明中的範例編號）。
 - 無測試框架。驗證方式為手動跑完四個情境（含核准與拒絕兩條分支）。
-- 修改後請同步確認內嵌 PRD（`prdPageHtml`）敘述是否仍一致，兩者會互相對照。
+- 修改後請同步確認 `design.html` 的敘述是否仍一致，兩者會互相對照。
 
 ## 注意事項
 
 - **場景互動有兩個入口**：浮動的設備標籤按鈕（`.scene-device`）與 SVG 上的圖釘
   （`.scene-marker`）。SVG 整體是 `pointer-events:none`，圖釘靠 `.scene-marker`
   單獨開啟，兩者都在 `renderContext()` 綁定點擊。新增設備時兩邊都要接。
-- **`OBS-036` 是寫死的 ID**，對應 PRD 文件中的範例編號，因此同時只會存在一筆回饋
+- **`OBS-036` 是寫死的 ID**，對應設計說明中的範例編號，因此同時只會存在一筆回饋
   Observation。清除判定靠 `raw_payload.source === 'action_service'`，不是靠 ID。
 - `.scene-device` 的寬度在 `max-height: 650px` 斷點仍為固定值（短視窗但寬螢幕時
   標籤不需收合），修改 RWD 時注意不要和 ≤1000px 的收合規則互相覆寫。

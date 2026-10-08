@@ -7,7 +7,7 @@ import { latest } from './normalize.js';
 let lastCorrelation = null;
 const getLastCorrelation = () => lastCorrelation;
 
-// 關聯規則：三個條件都要成立才建立 Incident（PRD Step 4 的 Temporal /
+// 關聯規則：三個條件都要成立才建立 Incident（設計說明 Step 4 的 Temporal /
 // Spatial / Semantic）。語意不再列舉 Event 類型，而是從 buildingModel
 // 的關係圖推導：來源設備是否共同指向同一個關注對象。規則只宣告「這個對象
 // 出事時叫什麼名字」與領域特有的排除條件。

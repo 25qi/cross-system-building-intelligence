@@ -5,7 +5,7 @@
 可人工審核的決策建議。
 
 **線上展示：** https://25qi.github.io/cross-system-building-intelligence/
-**完整 PRD：** [prd.html](prd.html)
+**概念設計與原型說明：** [design.html](design.html)
 
 > 所有 telemetry、threshold、device ID 與 scenario data 皆為 **synthetic data**，
 > 不代表任何公司的實際 production architecture。
@@ -41,7 +41,7 @@ python3 -m http.server 4178
 
 ```
 index.html              主畫面標記
-prd.html                完整 PRD（獨立文件，不再內嵌於 JS）
+design.html             概念設計與原型說明（獨立文件，不再內嵌於 JS）
 styles/
   base.css              基礎樣式
   dashboard.css         固定視窗儀表板版面

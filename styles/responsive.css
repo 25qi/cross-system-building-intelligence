@@ -25,9 +25,6 @@
   .toolbar-top .sidebar-title {
     display: inline;
   }
-  .scene-top {
-    gap: 5px;
-  }
   .context-live-banner {
     font-size: 9px;
   }
@@ -52,9 +49,6 @@
   }
   .world-reading strong {
     font-size: 11px;
-  }
-  .scene-top {
-    top: 57px;
   }
   .scene-stage {
     inset: 76px 0 19px;
@@ -132,9 +126,6 @@
     max-width: 65%;
     font-size: 9px;
   }
-  .scene-top strong {
-    font-size: 10px;
-  }
   .foot > span:last-child {
     display: none;
   }
@@ -159,9 +150,6 @@
   .world-reading strong {
     font-size: 11px;
   }
-  .scene-top strong {
-    display: none;
-  }
   .scene-device .name,
   .scene-device .reading {
     font-size: 10px;
@@ -181,9 +169,6 @@
     left: 10px;
     right: 10px;
     top: 8px;
-  }
-  .scene-top {
-    top: 53px;
   }
   .scene-stage {
     inset: 67px 0 15px;

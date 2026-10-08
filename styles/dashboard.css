@@ -44,7 +44,7 @@ body {
 .top p {
   display: none;
 }
-/* 專案 PRD 連結緊鄰標題，而不是推到另一端 */
+/* 設計說明連結緊鄰標題，而不是推到另一端 */
 .top-title {
   display: flex;
   align-items: center;
@@ -60,7 +60,7 @@ body {
   font-size: 11px;
   padding: 5px 10px;
 }
-.prd-link {
+.doc-link {
   display: inline-flex;
   gap: 8px;
   align-items: center;
@@ -71,10 +71,10 @@ body {
   font-size: 12px;
   white-space: nowrap;
 }
-.prd-link:hover {
+.doc-link:hover {
   background: #eef3fc;
 }
-.prd-link:focus-visible {
+.doc-link:focus-visible {
   outline: 3px solid #7294ff;
   outline-offset: 3px;
 }
@@ -337,26 +337,12 @@ body {
 .world-reading small {
   display: none;
 }
-.scene-top {
-  position: absolute;
-  top: 68px;
-  left: 4px;
-  right: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  z-index: 3;
-  pointer-events: none;
-}
-.scene-top strong {
-  font-size: 11px;
-  color: #627b98;
-}
-.scene-top small {
-  display: none;
-}
+/* 引用設備數放在建築圖右下角，不壓在場景上方 */
 .context-live-banner {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  z-index: 3;
   visibility: hidden;
   background: #e5edffde;
   border: 1px solid #cedcf9;
